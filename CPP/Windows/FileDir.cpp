@@ -1114,17 +1114,15 @@ bool MyMoveFile(CFSTR oldFile, CFSTR newFile)
   return MyMoveFile_with_Progress(oldFile, newFile, NULL);
 }
 
+static bool CreateDir2(CFSTR path)
+{
+  return (mkdir(path, ACCESSPERMS) == 0);
+}
 
 bool CreateDir(CFSTR path)
 {
-  return (mkdir(path, 0777) == 0); // change it
+  return CreateDir2(path);
 }
-
-static bool CreateDir2(CFSTR path)
-{
-  return (mkdir(path, 0777) == 0); // change it
-}
-
 
 bool DeleteFileAlways(CFSTR path)
 {
@@ -1248,7 +1246,7 @@ struct C_umask
   {
     /* by security reasons we restrict attributes according
        with process's file mode creation mask (umask) */
-    const mode_t um = umask(0); // octal :0022 is expected
+    const mode_t um = umask(0); // octal :0022 is expected // NOSONAR
     mask = 0777 & (~um);        // octal: 0755 is expected
     umask(um);  // restore the umask
     // printf("\n umask = 0%03o mask = 0%03o\n", um, mask);
