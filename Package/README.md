@@ -288,8 +288,11 @@ only the user can change it (Windows settings, "open with", or the other
 program's own dialog).
 
 The "system default app" column uses the Windows shell association query, so
-it includes both `UserChoice` and the normal association fallback. It refreshes
-when this tab is selected and when the options window regains the foreground.
+it includes both `UserChoice` and the normal association fallback. Results are loaded
+on a background thread when the page is first shown and cached across tab
+switches. Window activation and settings notifications invalidate the cache;
+visible rows refresh asynchronously. Closing the dialog does not wait for the
+query worker, and there is no permanent polling timer.
 
 Double clicking a row opens the app's Windows Default Apps settings page. On
 older Windows without that settings URI, it falls back to `SHOpenWithDialog`.

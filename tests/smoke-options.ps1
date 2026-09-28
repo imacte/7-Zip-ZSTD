@@ -30,7 +30,14 @@ public class OptionsSmoke {
   }
 }
 "@
-$p = Start-Process -FilePath $Exe -WindowStyle Hidden -PassThru
+function Start-SmokeProcess([string]$Path, [string]$Arguments = '') {
+  $info = [Diagnostics.ProcessStartInfo]::new($Path, $Arguments)
+  $info.UseShellExecute = $false
+  $info.WindowStyle = [Diagnostics.ProcessWindowStyle]::Hidden
+  return [Diagnostics.Process]::Start($info)
+}
+Write-Output 'Starting options smoke test'
+$p = Start-SmokeProcess $Exe
 try {
   Start-Sleep -Seconds 2
   $main = [OptionsSmoke]::Window($p.Id, '7-Zip::FM')
@@ -66,6 +73,28 @@ try {
     if ([OptionsSmoke]::Window($p.Id, '#32770') -ne [IntPtr]::Zero) { throw 'Cancel did not close options' }
   }
   Write-Output 'PASS: options reopened 3 times; all tabs and menu modes work; changes cancelled.'
+  # Close while the first default-app query can still be running. Each worker
+  # must own its data and stop independently of the destroyed page object.
+  for ($round = 0; $round -lt 12; $round++) {
+    [void][OptionsSmoke]::PostMessage($main, 0x111, [IntPtr]900, [IntPtr]::Zero)
+    $dialog = [IntPtr]::Zero
+    for ($retry = 0; $retry -lt 100 -and $dialog -eq [IntPtr]::Zero; $retry++) {
+      Start-Sleep -Milliseconds 10
+      $dialog = [OptionsSmoke]::Window($p.Id, '#32770')
+    }
+    if ($dialog -eq [IntPtr]::Zero) { throw 'Rapid reopen failed' }
+    [void][OptionsSmoke]::Send($dialog,0x465,0)
+    [void][OptionsSmoke]::PostMessage($dialog,0x111,[IntPtr]2,[IntPtr]::Zero)
+    for ($retry = 0; $retry -lt 100; $retry++) {
+      Start-Sleep -Milliseconds 10
+      if ([OptionsSmoke]::Window($p.Id, '#32770') -eq [IntPtr]::Zero) { break }
+    }
+    if ($retry -eq 100 -or $p.HasExited) { throw 'Rapid close stalled or crashed' }
+  }
+  Start-Sleep -Milliseconds 500
+  [void][OptionsSmoke]::Send($main,0,0)
+  Write-Output 'PASS: 12 rapid open/close cycles with background default-app queries.'
+
 } finally {
   if (-not $p.HasExited) { [void][OptionsSmoke]::PostMessage($main,0x10,[IntPtr]::Zero,[IntPtr]::Zero); if (-not $p.WaitForExit(3000)) { Stop-Process -Id $p.Id } }
 }
@@ -84,7 +113,7 @@ try {
     $archive = Join-Path $testDir $name
     [void](New-Item -ItemType Directory -Path (Split-Path $archive -Parent) -Force)
     [IO.File]::WriteAllBytes($archive, $emptyZip)
-    $p = Start-Process -FilePath $testExe -ArgumentList ('"' + $archive + '"') -WindowStyle Hidden -PassThru
+    $p = Start-SmokeProcess $testExe ('"' + $archive + '"')
     try {
       Start-Sleep -Seconds 2
       $main = [OptionsSmoke]::Window($p.Id, '7-Zip::FM')
@@ -97,7 +126,11 @@ try {
 } finally {
   # Only this test's freshly created files; leave an unexpected file untouched.
   foreach($name in @('7zFM.exe','7z.dll','backup-ShellMenu=unregister.zip','backup-ShellMenu=register.zip','7zipzs-setdefault/sample.zip')) {
-    Remove-Item -LiteralPath (Join-Path $testDir $name) -ErrorAction SilentlyContinue
+    $file = Join-Path $testDir $name
+    for ($retry = 0; $retry -lt 20 -and (Test-Path -LiteralPath $file); $retry++) {
+      try { Remove-Item -LiteralPath $file -ErrorAction Stop }
+      catch { if ($retry -eq 19) { throw }; Start-Sleep -Milliseconds 100 }
+    }
   }
   [IO.Directory]::Delete((Join-Path $testDir '7zipzs-setdefault'))
   [IO.Directory]::Delete($testDir)

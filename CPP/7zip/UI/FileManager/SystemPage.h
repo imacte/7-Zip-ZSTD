@@ -84,6 +84,8 @@ struct CAssoc
   #define NUM_EXT_GROUPS 2
 #endif
 
+struct CSystemDefaultsJob;
+
 class CSystemPage: public NWindows::NControl::CPropertyPage
 {
   CExtDatabase _extDB;
@@ -97,6 +99,9 @@ class CSystemPage: public NWindows::NControl::CPropertyPage
   /* the property sheet lays the page out after OnInit(), so the buttons are
      placed above their columns a few times by a timer */
   unsigned _alignTicks;
+  CSystemDefaultsJob *_defaultsJob;
+  bool _defaultsLoaded;
+  bool _defaultsPending;
 
   HKEY GetHKey(unsigned
       #if NUM_EXT_GROUPS != 1
@@ -130,7 +135,11 @@ class CSystemPage: public NWindows::NControl::CPropertyPage
 public:
   bool WasChanged;
   
-  CSystemPage(): WasChanged(false), _needSave(false), _alignTicks(0) {}
+  CSystemPage(): _needSave(false), _alignTicks(0), _defaultsJob(NULL),
+      _defaultsLoaded(false), _defaultsPending(false), WasChanged(false) {}
+
+  virtual bool OnDestroy() Z7_override;
+  virtual bool OnMessage(UINT message, WPARAM wParam, LPARAM lParam) Z7_override;
 
   virtual bool OnInit() Z7_override;
   virtual void OnNotifyHelp() Z7_override;

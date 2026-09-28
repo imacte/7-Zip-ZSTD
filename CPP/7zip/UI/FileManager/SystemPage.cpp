@@ -279,8 +279,6 @@ bool CSystemPage::OnInit()
   if (_listView.GetItemCount() > 0)
     _listView.SetItemState(0, LVIS_FOCUSED, LVIS_FOCUSED);
 
-  UpdateSystemDefaults();
-
   /* the list columns are not touched here: they keep the widths from OnInit()
      (80/152/152/140 pixels). The "+" buttons are placed above the column they act
      on - which has to happen after the property sheet has laid the page out (it
@@ -395,75 +393,158 @@ void CSystemPage::ResetSystemDefault(unsigned listIndex)
 }
 
 
-/* Query the shell's effective association, including UserChoice and the
-   ordinary per-user/machine association when no UserChoice exists. */
-void CSystemPage::UpdateSystemDefaults()
+// The worker owns its input and output; it never touches the page or its HWND.
+// Closing the dialog drops the UI reference without waiting for shell handlers.
+struct CSystemDefaultsJob
 {
-  const unsigned kColumn = 1 + NUM_EXT_GROUPS;
-  FOR_VECTOR (i, _items)
+  LONG References, Done, Cancel;
+  UStringVector Exts, Names;
+  CSystemDefaultsJob(): References(1), Done(0), Cancel(0) {}
+  void Release() { if (::InterlockedDecrement(&References) == 0) delete this; }
+  static DWORD WINAPI Run(LPVOID param)
   {
-    UString &name = _items[i].SystemDefault;
-    name.Empty();
-    #ifndef UNDER_CE
-    const UString ext = UString(L".") + _extDB.Exts[i].Ext;
-    DWORD size = 0;
-    AssocQueryStringW(ASSOCF_NOTRUNCATE, ASSOCSTR_FRIENDLYAPPNAME,
-        ext, L"open", NULL, &size);
-    if (size != 0)
+    CSystemDefaultsJob *job = (CSystemDefaultsJob *)param;
+    const HRESULT apartment = ::CoInitializeEx(NULL, COINIT_MULTITHREADED);
+    try
     {
-      const HRESULT hr = AssocQueryStringW(ASSOCF_NOTRUNCATE,
-          ASSOCSTR_FRIENDLYAPPNAME, ext, L"open", name.GetBuf(size), &size);
-      if (SUCCEEDED(hr))
-        name.ReleaseBuf_CalcLen(size);
-      else
+      FOR_VECTOR (i, job->Exts)
       {
-        name.ReleaseBuf_SetLen(0);
-        name.Empty();
+        if (::InterlockedCompareExchange(&job->Cancel, 0, 0)) break;
+        UString name;
+        #ifndef UNDER_CE
+        wchar_t buffer[512] = {};
+        DWORD size = Z7_ARRAY_SIZE(buffer);
+        HRESULT hr = AssocQueryStringW(ASSOCF_NOTRUNCATE, ASSOCSTR_FRIENDLYAPPNAME,
+            job->Exts[i], L"open", buffer, &size);
+        if (SUCCEEDED(hr)) name = buffer;
+        else if (hr == E_POINTER && size > Z7_ARRAY_SIZE(buffer))
+        {
+          hr = AssocQueryStringW(ASSOCF_NOTRUNCATE, ASSOCSTR_FRIENDLYAPPNAME,
+              job->Exts[i], L"open", name.GetBuf(size), &size);
+          if (SUCCEEDED(hr)) name.ReleaseBuf_CalcLen(size);
+          else name.ReleaseBuf_SetLen(0);
+        }
+        #endif
+        job->Names.Add(name);
       }
     }
-    #endif
-    _listView.SetSubItem(i, kColumn, name);
+    catch (...) {} // A failed lookup must not take down the options dialog.
+    if (SUCCEEDED(apartment)) ::CoUninitialize();
+    ::InterlockedExchange(&job->Done, 1);
+    job->Release();
+    return 0;
   }
+};
+
+#ifndef UNDER_CE
+static const UINT kRefreshDefaults = WM_APP + 107;
+static LRESULT CALLBACK DefaultsSheetProc(HWND hwnd, UINT message, WPARAM wParam,
+    LPARAM lParam, UINT_PTR id, DWORD_PTR data)
+{
+  if ((message == WM_ACTIVATE && LOWORD(wParam) != WA_INACTIVE)
+      || message == WM_SETTINGCHANGE)
+    ::PostMessage((HWND)data, kRefreshDefaults, 0, 0);
+  if (message == WM_NCDESTROY)
+    ::RemoveWindowSubclass(hwnd, DefaultsSheetProc, id);
+  return ::DefSubclassProc(hwnd, message, wParam, lParam);
+}
+#endif
+
+void CSystemPage::UpdateSystemDefaults()
+{
+  _defaultsLoaded = false;
+  if (_defaultsJob) { _defaultsPending = true; return; }
+  CSystemDefaultsJob *job = new CSystemDefaultsJob;
+  try
+  {
+    FOR_VECTOR (i, _extDB.Exts)
+      job->Exts.Add(UString(L".") + _extDB.Exts[i].Ext);
+  }
+  catch (...) { job->Release(); throw; }
+  if (!::SetTimer(*this, 2, 50, NULL)) { job->Release(); return; }
+  ::InterlockedIncrement(&job->References);
+  HANDLE thread = ::CreateThread(NULL, 0, CSystemDefaultsJob::Run, job, 0, NULL);
+  if (!thread)
+  {
+    ::KillTimer(*this, 2);
+    job->Release(); job->Release();
+    return;
+  }
+  _defaultsJob = job;
+  ::CloseHandle(thread);
 }
 
+bool CSystemPage::OnMessage(UINT message, WPARAM wParam, LPARAM lParam)
+{
+  #ifndef UNDER_CE
+  if (message == kRefreshDefaults)
+  {
+    _defaultsLoaded = false;
+    if (_defaultsJob) _defaultsPending = true;
+    else if (::IsWindowVisible(*this)) UpdateSystemDefaults();
+    return true;
+  }
+  #endif
+  return CPropertyPage::OnMessage(message, wParam, lParam);
+}
+
+bool CSystemPage::OnDestroy()
+{
+  ::KillTimer(*this, 1);
+  ::KillTimer(*this, 2);
+  #ifndef UNDER_CE
+  ::RemoveWindowSubclass(::GetParent(*this), DefaultsSheetProc, (UINT_PTR)(HWND)*this);
+  #endif
+  if (_defaultsJob)
+  {
+    ::InterlockedExchange(&_defaultsJob->Cancel, 1);
+    _defaultsJob->Release();
+    _defaultsJob = NULL;
+  }
+  return CPropertyPage::OnDestroy();
+}
 
 LONG CSystemPage::OnSetActive()
 {
-  /* the default app can be changed outside of 7-Zip (Windows settings or another
-     archiver), so the column is refreshed whenever this page is shown; a timer is
-     started as well, because the property sheet lays the page out after OnInit()
-     (see OnTimer) */
+  #ifndef UNDER_CE
+  ::SetWindowSubclass(::GetParent(*this), DefaultsSheetProc,
+      (UINT_PTR)(HWND)*this, (DWORD_PTR)(HWND)*this);
+  #endif
   _alignTicks = 0;
-  if (!::SetTimer(*this, 1, 250, NULL))
-    Position_MenuButtons();
-  UpdateSystemDefaults();
-  return false;   // false = OK
+  if (!::SetTimer(*this, 1, 250, NULL)) Position_MenuButtons();
+  if (!_defaultsLoaded && !_defaultsJob) UpdateSystemDefaults();
+  return false;
 }
-
 
 bool CSystemPage::OnTimer(WPARAM timerID, LPARAM /* lParam */)
 {
-  if (timerID != 1)
-    return false;
-
-  /* place the buttons after the property sheet has laid the page out */
-  if (_alignTicks < 4)
+  if (timerID == 1)
+  {
     Position_MenuButtons();
-
-  if (_alignTicks < 4)
-  {
-    if (++_alignTicks == 4)
-      ::SetTimer(*this, 1, 1000, NULL);
+    if (++_alignTicks == 4) ::KillTimer(*this, 1);
+    return true;
   }
-  else if (::IsWindowVisible(*this)
-      && ::GetForegroundWindow() == ::GetParent(*this))
+  if (timerID != 2) return false;
+  if (_defaultsJob && ::InterlockedCompareExchange(&_defaultsJob->Done, 0, 0))
   {
-    if (_alignTicks == 4)
-      UpdateSystemDefaults();
-    _alignTicks = 5;
+    ::KillTimer(*this, 2);
+    if (!_defaultsPending)
+    {
+      FOR_VECTOR (i, _defaultsJob->Names)
+      {
+        _items[i].SystemDefault = _defaultsJob->Names[i];
+        _listView.SetSubItem(i, 1 + NUM_EXT_GROUPS, _items[i].SystemDefault);
+      }
+      _defaultsLoaded = _defaultsJob->Names.Size() == _items.Size();
+    }
+    _defaultsJob->Release();
+    _defaultsJob = NULL;
+    if (_defaultsPending)
+    {
+      _defaultsPending = false;
+      if (::IsWindowVisible(*this)) UpdateSystemDefaults();
+    }
   }
-  else
-    _alignTicks = 4;
   return true;
 }
 
