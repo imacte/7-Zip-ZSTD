@@ -330,8 +330,29 @@ void CSystemPage::OpenDefaultAppDialog(unsigned listIndex)
   /* Windows shows the picker only for a file type that has no default yet: if a
      UserChoice exists (the type is assigned to some program), the shell opens the
      settings page instead. So the choice of that type is removed first - the
-     picker writes a new one, which is exactly the "set default" step. */
+     picker writes a new one, which is exactly the "set default" step.
+
+     The shell needs a moment to notice the removal (SHChangeNotify alone is not
+     always enough for the "openas" verb, which runs in Explorer), so the picker
+     is started after a short pause - otherwise the first double click only
+     removes the old assignment and a second one would be needed. */
+  UString oldChoice;
+  {
+    UString keyName = L"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.";
+    keyName += _extDB.Exts[realIndex].Ext;
+    keyName += L"\\UserChoice";
+    NRegistry::CKey key;
+    if (key.Open(HKEY_CURRENT_USER, keyName, KEY_READ) == ERROR_SUCCESS)
+      key.QueryValue(L"ProgId", oldChoice);
+  }
+
   ResetSystemDefault(listIndex);
+
+  if (!oldChoice.IsEmpty())
+  {
+    ::SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL);
+    ::Sleep(1200);
+  }
 
   UString fileName;
   {
@@ -663,6 +684,18 @@ LONG CSystemPage::OnApply()
           const CPluginToIcon &plug = extInfo.Plugins[0];
           res2 = NRegistryAssoc::AddShellExtensionInfo(key, GetSystemString(extInfo.Ext),
               title, command, plug.IconPath, plug.IconIndex);
+
+          /* 7-Zip ZS: Windows 10/11 ignores the classic ProgID while a UserChoice
+             exists for that file type, so that entry is removed as well -
+             otherwise setting the association here would have no effect and the
+             "system default app" column would keep showing the other program. */
+          if (res2 == 0)
+          {
+            UString userChoiceKey = L"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.";
+            userChoiceKey += extInfo.Ext;
+            userChoiceKey += L"\\UserChoice";
+            ::RegDeleteKeyW(HKEY_CURRENT_USER, userChoiceKey.Ptr());
+          }
         }
         else if (mi.State == kExtState_Clear)
           res2 = NRegistryAssoc::DeleteShellExtensionInfo(key, GetSystemString(extInfo.Ext));
