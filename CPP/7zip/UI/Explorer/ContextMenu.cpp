@@ -1607,7 +1607,17 @@ void CZipExplorerCommand::LoadItems(IShellItemArray *psiItemArray)
   CZipExplorerCommand *crcHandler = NULL;
   CZipExplorerCommand *openHandler = NULL;
 
-  bool useCascadedCrc = true; // false;
+  /* The Windows 11 modern (compact) context menu renders only ONE level, so
+     cascaded sub-commands ("7-Zip ZS Hash", and the "open archive with ..."
+     cascade for archives) opened empty flyouts there, and flattening them made
+     the flyout unnecessarily long. Those cascades are therefore not part of the
+     modern command: the remaining items are the plain commands (the leaf
+     "Open archive" command is kept). The hash commands stay available in 7zFM,
+     and the classic legacy handler - QueryContextMenu() - still builds both
+     cascades for a registration without a package. */
+  const bool skipNestedCascades = true;
+
+  bool useCascadedCrc = false; // true;
   bool useCascadedOpen = true; // false;
 
   for (unsigned i = 0; i < _commandMap.Size(); i++)
@@ -1616,6 +1626,13 @@ void CZipExplorerCommand::LoadItems(IShellItemArray *psiItemArray)
 
     if (cmi.IsPopup)
       if (!cmi.IsSubMenu())
+        continue;
+
+    if (skipNestedCascades)
+      if (cmi.CtxCommandType == CtxCommandType_CrcRoot
+          || cmi.CtxCommandType == CtxCommandType_CrcChild
+          || cmi.CtxCommandType == CtxCommandType_OpenRoot
+          || cmi.CtxCommandType == CtxCommandType_OpenChild)
         continue;
 
     // if (cmi.IsSubMenu()) continue // for debug
@@ -1664,7 +1681,9 @@ Z7_COMWF_B CZipExplorerCommand::GetTitle(IShellItemArray *psiItemArray, LPWSTR *
   if (IsRoot)
   {
     LoadItems(psiItemArray);
-    name = "7-Zip"; //  "New"
+    // The name of the root command of the Windows 11 (modern) context menu.
+    // It's the same name that is used for the classic context menu of this fork.
+    name = "7-Zip ZS"; //  "New"
   }
   else
     name = "7-Zip item";
@@ -1795,10 +1814,70 @@ Z7_COMWF_B CZipExplorerCommand::EnumSubCommands(IEnumExplorerCommand **ppEnum)
   }
  
   // shellExt->
-  return QueryInterface(IID_IEnumExplorerCommand, (void **)ppEnum);
+  // Every call has to return a *new* enumerator: the shell enumerates the
+  // children more than once, so returning "this" (with a single shared position)
+  // made every enumeration after the first one come back empty.
+  {
+    CSubCommandsEnumerator *e = new CSubCommandsEnumerator;
+    CMyComPtr<IEnumExplorerCommand> eRef = e;
+    e->Init(SubCommands);
+    *ppEnum = eRef.Detach();
+  }
+  return S_OK;
 
   // return S_OK;
   // COM_TRY_END
+}
+
+
+Z7_COMWF_B CSubCommandsEnumerator::Next(ULONG celt, IExplorerCommand **pUICommand, ULONG *pceltFetched)
+{
+  ODS("CSubCommandsEnumerator::Next()")
+  COM_TRY_BEGIN
+  ULONG fetched = 0;
+  for (ULONG i = 0; i < celt; i++)
+    pUICommand[i] = NULL;
+  for (; fetched < celt && _current < _commands.Size(); fetched++)
+  {
+    pUICommand[fetched] = _commands[_current++];
+    pUICommand[fetched]->AddRef();
+  }
+  if (pceltFetched)
+    *pceltFetched = fetched;
+  return (fetched == celt) ? S_OK : S_FALSE;
+  COM_TRY_END
+}
+
+
+Z7_COMWF_B CSubCommandsEnumerator::Skip(ULONG celt)
+{
+  const unsigned left = (_current < _commands.Size()) ? (unsigned)(_commands.Size() - _current) : 0;
+  if (celt > left)
+  {
+    _current = _commands.Size();
+    return S_FALSE;
+  }
+  _current += celt;
+  return S_OK;
+}
+
+
+Z7_COMWF_B CSubCommandsEnumerator::Reset(void)
+{
+  _current = 0;
+  return S_OK;
+}
+
+
+Z7_COMWF_B CSubCommandsEnumerator::Clone(IEnumExplorerCommand **ppenum)
+{
+  *ppenum = NULL;
+  CSubCommandsEnumerator *e = new CSubCommandsEnumerator;
+  CMyComPtr<IEnumExplorerCommand> eRef = e;
+  e->Init(_commands);
+  e->SetPos(_current);
+  *ppenum = eRef.Detach();
+  return S_OK;
 }
 
 

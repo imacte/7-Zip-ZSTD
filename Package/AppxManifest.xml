@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  7-Zip ZS - sparse package for the modern (Windows 11) File Explorer context menu.
+
+  This package contains no binaries. It gives the already installed 7-Zip ZS
+  (7-zip.dll + 7zFM.exe) a package identity and registers the IExplorerCommand
+  implementation of 7-zip.dll as a "windows.fileExplorerContextMenus" command,
+  so "7-Zip ZS" appears directly in the Windows 11 context menu (with a cascaded
+  submenu), instead of only in "Show more options".
+
+  Identity/@Publisher must match the subject of the code signing certificate.
+  See build-shell-package.ps1.
+-->
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:uap10="http://schemas.microsoft.com/appx/manifest/uap/windows10/10"
+  xmlns:com="http://schemas.microsoft.com/appx/manifest/com/windows10"
+  xmlns:desktop4="http://schemas.microsoft.com/appx/manifest/desktop/windows10/4"
+  xmlns:desktop5="http://schemas.microsoft.com/appx/manifest/desktop/windows10/5"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  IgnorableNamespaces="uap uap10 com desktop4 desktop5 rescap">
+
+  <Identity
+    Name="SevenZipZS.ShellExtension"
+    Publisher="CN=7-Zip ZS Sparse Package"
+    Version="1.0.0.0"
+    ProcessorArchitecture="x64" />
+
+  <Properties>
+    <DisplayName>7-Zip ZS Shell Extension</DisplayName>
+    <PublisherDisplayName>7-Zip ZS</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+    <uap10:AllowExternalContent>true</uap10:AllowExternalContent>
+  </Properties>
+
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.19041.0" MaxVersionTested="10.0.26200.0" />
+  </Dependencies>
+
+  <Resources>
+    <Resource Language="en-us" />
+  </Resources>
+
+  <Applications>
+    <Application
+      Id="SevenZipZS.FileManager"
+      Executable="7zFM.exe"
+      uap10:TrustLevel="mediumIL"
+      uap10:RuntimeBehavior="win32App">
+      <uap:VisualElements
+        AppListEntry="none"
+        DisplayName="7-Zip ZS"
+        Description="7-Zip ZS file manager"
+        BackgroundColor="transparent"
+        Square150x150Logo="Assets\Square150x150Logo.png"
+        Square44x44Logo="Assets\Square44x44Logo.png" />
+      <Extensions>
+        <!-- The shell extension DLL of 7-Zip ZS. It is loaded by dllhost.exe
+             (surrogate) and must be present in the external location
+             (the 7-Zip ZS installation directory). -->
+        <com:Extension Category="windows.comServer">
+          <com:ComServer>
+            <com:SurrogateServer DisplayName="7-Zip ZS Shell Extension">
+              <com:Class
+                Id="23170F69-20BB-278A-1000-000100020000"
+                Path="7-zip.dll"
+                ThreadingModel="STA" />
+            </com:SurrogateServer>
+          </com:ComServer>
+        </com:Extension>
+        <!-- The cascaded "7-Zip ZS" submenu of the Windows 11 context menu.
+             The CLSID is the CLSID_CZipContextMenu of this fork, and the
+             submenu items come from IExplorerCommand::EnumSubCommands(). -->
+        <desktop4:Extension Category="windows.fileExplorerContextMenus">
+          <desktop4:FileExplorerContextMenus>
+            <desktop5:ItemType Type="*">
+              <desktop5:Verb Id="SevenZipZSFiles" Clsid="23170F69-20BB-278A-1000-000100020000" />
+            </desktop5:ItemType>
+            <desktop5:ItemType Type="Directory">
+              <desktop5:Verb Id="SevenZipZSDirectory" Clsid="23170F69-20BB-278A-1000-000100020000" />
+            </desktop5:ItemType>
+            <desktop5:ItemType Type="Directory\Background">
+              <desktop5:Verb Id="SevenZipZSBackground" Clsid="23170F69-20BB-278A-1000-000100020000" />
+            </desktop5:ItemType>
+          </desktop4:FileExplorerContextMenus>
+        </desktop4:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust" />
+    <rescap:Capability Name="unvirtualizedResources" />
+  </Capabilities>
+</Package>

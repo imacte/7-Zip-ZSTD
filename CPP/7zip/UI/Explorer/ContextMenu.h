@@ -23,7 +23,46 @@ enum enum_CtxCommandType
   CtxCommandType_CrcRoot,
   CtxCommandType_CrcChild
 };
-   
+
+
+/* A separate enumerator for IExplorerCommand::EnumSubCommands().
+
+   The shell enumerates the sub-commands of a command more than once (while it
+   sizes/renders the flyout and again when the flyout is opened) and it also
+   calls IEnumExplorerCommand::Clone(). The command object itself must not be
+   returned as the enumerator: then all consumers would share a single position,
+   and every enumeration after the first one returned zero items - which is why
+   a nested flyout (for example "7-Zip ZS Hash") opened empty. */
+class CSubCommandsEnumerator Z7_final:
+  public IEnumExplorerCommand,
+  public CMyUnknownImp
+{
+  Z7_COM_UNKNOWN_IMP_1_MT(IEnumExplorerCommand)
+
+  CObjectVector< CMyComPtr<IExplorerCommand> > _commands;
+  unsigned _current;
+
+public:
+  CSubCommandsEnumerator(): _current(0) {}
+
+  void Init(const CObjectVector< CMyComPtr<IExplorerCommand> > &commands)
+  {
+    _commands.Clear();
+    FOR_VECTOR (i, commands)
+      _commands.Add(commands[i]);
+    _current = 0;
+  }
+
+  unsigned GetPos() const { return _current; }
+  void SetPos(unsigned pos) { _current = pos; }
+
+  // IEnumExplorerCommand
+  STDMETHOD(Next)(ULONG celt, IExplorerCommand **pUICommand, ULONG *pceltFetched) Z7_override;
+  STDMETHOD(Skip)(ULONG celt) Z7_override;
+  STDMETHOD(Reset)(void) Z7_override;
+  STDMETHOD(Clone)(IEnumExplorerCommand **ppenum) Z7_override;
+};
+
 
 class CZipContextMenu Z7_final:
   public IContextMenu,
