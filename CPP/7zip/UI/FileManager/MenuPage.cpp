@@ -371,6 +371,15 @@ void CMenuPage::Set_MenuMode_Controls(enum_MenuMode mode)
     case kMenuMode_None:    id = IDX_SYSTEM_MENU_NONE; break;
   }
   ::CheckRadioButton(*this, IDX_SYSTEM_MENU_CLASSIC, IDX_SYSTEM_MENU_NONE, (int)id);
+
+  /* The two checkboxes below control the machine-wide classic registration
+     (HKEY_LOCAL_MACHINE, including the 32-bit DLL). The Windows 11 menu does not
+     use it - it needs the sparse package - and an active classic registration
+     next to the package would list 7-Zip ZS twice in the classic menu, so they
+     are hidden unless a mode uses the classic registration. */
+  const bool classic = (mode == kMenuMode_Classic || mode == kMenuMode_Both);
+  ShowItem_Bool(IDX_SYSTEM_INTEGRATE_TO_MENU, classic);
+  ShowItem_Bool(IDX_SYSTEM_INTEGRATE_TO_MENU_2, classic);
 }
 
 
@@ -591,6 +600,9 @@ bool CMenuPage::OnButtonClicked(unsigned buttonID, HWND buttonHWND)
     case IDX_SYSTEM_MENU_BOTH:
     case IDX_SYSTEM_MENU_NONE:
       _menuMode_Changed = true;
+      /* the classic checkboxes only make sense for the modes that use the classic
+         registration - show or hide them right away */
+      Set_MenuMode_Controls(Get_Checked_MenuMode());
       break;
       
     default:
