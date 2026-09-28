@@ -144,6 +144,41 @@ out / sign in) before the packaged command is listed again. Measured with the
 probe: `7-Zip entries in the classic menu: 0` for ~20 seconds after
 `explorer.exe` was restarted, `1` afterwards.
 
+## Choosing the menus: configure-shell-menu.ps1
+
+```powershell
+pwsh -File Package\configure-shell-menu.ps1              # show the current state (no elevation)
+pwsh -File Package\configure-shell-menu.ps1 -Mode Modern # (default) Windows 11 menu + classic, one entry each
+pwsh -File Package\configure-shell-menu.ps1 -Mode Classic # classic only, with the full cascaded submenus
+pwsh -File Package\configure-shell-menu.ps1 -Mode Both    # both variants (classic menu then lists it twice)
+pwsh -File Package\configure-shell-menu.ps1 -Mode None    # neither
+```
+
+| mode | Windows 11 menu | classic menu ("Show more options") |
+|---|---|---|
+| `Modern` | package, files and folders | files: package, folders: classic `Folder`/`Directory` registration - one entry each |
+| `Classic` | none | classic registration for `*`, `Folder`, `Directory`, with the full cascaded submenus (HASH, open-with) |
+| `Both` | package | package **and** classic registration -> 7-Zip ZS twice for files |
+| `None` | none | none |
+
+Measured behaviour of the shell on Windows 11 26200: the commands of a sparse
+package appear in the classic menu for **files** but **not for directories**.
+That is why `Modern` also keeps a classic registration for `Folder`/`Directory`
+- the result is exactly one entry in every menu, for files and folders, without
+duplicates.
+
+Everything except the plain status query elevates once (UAC).
+
+Pitfalls when writing those registry keys from PowerShell:
+
+* `HKCR\*` must always be addressed with `-LiteralPath` in the registry provider
+  (`Test-Path`, `Get-Item`, ...). Without it `*` is a wildcard: the whole
+  `HKEY_CLASSES_ROOT` tree gets enumerated (looks like a hang) and the (Default)
+  value can silently end up empty - the key exists, but the shell ignores it and
+  there is no menu entry for files.
+* `New-Item` has **no** `-LiteralPath` at all; `reg.exe add "<key>" /ve /t REG_SZ
+  /d <clsid> /f` is used instead (reg.exe treats the key name literally).
+
 ## Duplicate "7-Zip ZS" in the classic menu
 
 Windows 11 shows the commands of a sparse package
