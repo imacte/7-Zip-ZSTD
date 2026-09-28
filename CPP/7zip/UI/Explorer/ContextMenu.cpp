@@ -503,9 +503,13 @@ static void MyFormatNew_ReducedName(UString &s, const UString &name)
   s = MyFormatNew(s, GetQuotedReducedString(name));
 }
 
+/* Note: video container extensions (3gp, avi, mkv, mov, mp4, mpe, mpeg, mpg,
+   webm, wmv) are not excluded here: such a file is not an archive by itself,
+   but it can contain an archive inside (for example, an archive that was
+   appended to the video file), and 7-Zip can find and extract it.
+   So the extract commands are shown for those extensions. */
 static const char * const kExtractExcludeExtensions =
-  " 3gp"
-  " aac ans ape asc asm asp aspx avi awk"
+  " aac ans ape asc asm asp aspx awk"
   " bas bat bmp"
   " c cs cls clw cmd cpp csproj css ctl cxx"
   " def dep dlg dsp dsw"
@@ -516,14 +520,14 @@ static const char * const kExtractExcludeExtensions =
   " ico idl inc ini inl"
   " java jpeg jpg js"
   " la lnk log"
-  " mak manifest wmv mov mp3 mp4 mpe mpeg mpg m4a"
+  " mak manifest mp3 m4a"
   " ofr ogg"
   " pac pas pdf php php3 php4 php5 phptml pl pm png ps py pyo"
   " ra rb rc reg rka rm rtf"
   " sed sh shn shtml sln sql srt swa"
   " tcl tex tiff tta txt"
   " vb vcproj vbs"
-  " mkv wav webm wma wv"
+  " wav wma wv"
   " xml xsd xsl xslt"
   " ";
 

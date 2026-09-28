@@ -1664,7 +1664,7 @@ HRESULT CArc::OpenStream2(const COpenOptions &op)
       isMainFormatArr[i] = false;
   }
 
-  const UInt64 maxStartOffset =
+  UInt64 maxStartOffset =
       op.openType.MaxStartOffset_Defined ?
       op.openType.MaxStartOffset :
       kMaxCheckStartPosition;
@@ -2089,6 +2089,18 @@ HRESULT CArc::OpenStream2(const COpenOptions &op)
 
   if (!op.stream)
     return S_FALSE;
+
+  /* If the extension of the file is not used by any archive handler
+     (for example: .mp4, .mkv, .mov, .avi and other video files,
+     or any other file with unknown extension), the file is not an archive.
+     But such file can contain an archive inside: for example, an archive
+     that was appended to the video file, or that was stored in some
+     unused part of the container. So we scan the whole file to find
+     such embedded archives. Note: the scan can be limited by
+     the MaxStartOffset property of the open type (for example, with "-t*:s8M"). */
+  const bool scanWholeFile =
+      (numMainTypes == 0)
+      && !op.openType.MaxStartOffset_Defined;
 
   if (formatIndex >= 0 && !mode.CanReturnParser)
   {
@@ -2579,8 +2591,13 @@ HRESULT CArc::OpenStream2(const COpenOptions &op)
         if (!mode.CanReturnParser)
         {
           if (pos > maxStartOffset)
-            break;
-          UInt64 remScan = maxStartOffset - pos;
+          {
+            if (!scanWholeFile || pos >= fileSize)
+              break;
+            // the extension is unknown, so we scan the rest of the file
+            maxStartOffset = fileSize;
+          }
+          const UInt64 remScan = maxStartOffset - pos;
           if (scanSize > remScan)
             scanSize = (size_t)remScan;
         }
