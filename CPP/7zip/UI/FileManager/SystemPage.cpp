@@ -306,67 +306,83 @@ bool CSystemPage::OnInit()
 }
 
 
-/* Opens the Windows settings for the default apps.
+/* Opens the Windows picker "which app should open .xxx files" for one file type.
 
-   Preferred is the app's own page ("Default apps" -> 7-Zip ZS), which needs an
-   entry in HKLM\SOFTWARE\RegisteredApplications pointing to a Capabilities key:
-   Package\register-app-capabilities.ps1 writes both and the name is taken from
-   there, so both stay in sync. Without that entry - or if the call fails - the
-   general settings page is opened.
-
-   The default app itself cannot be set by the program: Windows 11 does not let
-   SHOpenWithDialog change it (measured on build 26200 with a bare extension and
-   with a real file of that type) and the UserChoice value is protected by a
-   hash. */
+   That picker is the only way an application can get the effective default app
+   changed on Windows 10/11: the user's choice makes Windows write the protected
+   UserChoice value itself. It is shown by SHOpenWithDialog, but Windows answers
+   "go to Settings > Apps > Default apps" when
+     * a bare extension (".rar") is passed, or
+     * a file with the FILE_ATTRIBUTE_TEMPORARY attribute is passed,
+   so a normal (empty) sample file of that type is created in %TEMP% and removed
+   afterwards. If that is not possible, or if the API is unavailable, the general
+   settings page is opened instead. */
 void CSystemPage::OpenDefaultAppDialog(unsigned listIndex)
 {
   const unsigned realIndex = GetRealIndex(listIndex);
   if (realIndex >= _extDB.Exts.Size())
     return;
 
-  UString appName;
+  UString fileName;
+
+  /* a normal file of that type: a bare extension or a file with the temporary
+     attribute makes the shell refuse to offer the "always use this app" option */
+  FString tempFile;
   {
-    NRegistry::CKey key;
-    if (key.Open(HKEY_LOCAL_MACHINE, L"Software\\7-Zip-Zstandard\\Capabilities", KEY_READ) == ERROR_SUCCESS)
+    wchar_t buf[MAX_PATH + 1];
+    const DWORD n = ::GetTempPathW(MAX_PATH, buf);
+    if (n > 0 && n <= MAX_PATH)
     {
-      UString name;
-      if (key.QueryValue(L"ApplicationName", name) == ERROR_SUCCESS && !name.IsEmpty())
+      FString dir = buf;
+      dir += "7zipzs-setdefault";
+      ::CreateDirectoryW(dir, NULL);
+      dir.Add_PathSepar();
+      dir += "sample.";
+      dir += us2fs(_extDB.Exts[realIndex].Ext);
+
+      const HANDLE h = ::CreateFileW(dir, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS,
+          FILE_ATTRIBUTE_NORMAL, NULL);
+      if (h != INVALID_HANDLE_VALUE)
       {
-        NRegistry::CKey keyApp;
-        if (keyApp.Open(HKEY_LOCAL_MACHINE, L"Software\\RegisteredApplications", KEY_READ) == ERROR_SUCCESS)
-        {
-          UString path;
-          if (keyApp.QueryValue(name, path) == ERROR_SUCCESS && !path.IsEmpty())
-            appName = name;
-        }
+        ::CloseHandle(h);
+        tempFile = dir;
+        fileName = fs2us(dir);
       }
     }
   }
 
-  if (!appName.IsEmpty())
+  if (!fileName.IsEmpty())
   {
-    /* The interface lives in <ShObjIdl.h>, which this project does not include,
-       so it is declared here with its documented IID/IID values. */
-    struct IAssociationRegistrationUI : public IUnknown
+    /* SHOpenWithDialog is declared for NTDDI_VISTA and up only (this project
+       targets an older version), so it is resolved dynamically; the structure
+       matches OPENASINFO of the Windows SDK. */
+    struct COpenAsInfo
     {
-      virtual HRESULT STDMETHODCALLTYPE LaunchAdvancedAssociationUI(LPCWSTR pszAppRegistryName) = 0;
+      LPCWSTR pcszFile;
+      LPCWSTR pcszClass;
+      int oaifInFlags;
     };
-    static const GUID k_IID_AssociationUI =
-      { 0x1f76a169, 0xf994, 0x40ac, { 0x8f, 0xc8, 0x09, 0x59, 0xe8, 0x87, 0x47, 0x10 } };
-    static const GUID k_CLSID_AssociationUI =
-      { 0x1968106d, 0xf3b5, 0x44cf, { 0x89, 0x0e, 0x11, 0x6f, 0xcb, 0x9e, 0xce, 0xf1 } };
+    typedef HRESULT (WINAPI *Func_SHOpenWithDialog)(HWND, const COpenAsInfo *);
 
-    IAssociationRegistrationUI *ui = NULL;
-    if (::CoCreateInstance(k_CLSID_AssociationUI, NULL, CLSCTX_INPROC_SERVER,
-        k_IID_AssociationUI, (void **)&ui) == S_OK)
+    const HMODULE hShell = ::GetModuleHandleW(L"shell32.dll");
+    const Func_SHOpenWithDialog func = hShell ?
+        (Func_SHOpenWithDialog)(void *)::GetProcAddress(hShell, "SHOpenWithDialog") : NULL;
+
+    if (func)
     {
-      const HRESULT hr = ui->LaunchAdvancedAssociationUI(appName.Ptr());
-      ui->Release();
-      if (hr == S_OK)
-        return;
+      COpenAsInfo info;
+      info.pcszFile = fileName.Ptr();
+      info.pcszClass = NULL;
+      info.oaifInFlags = OAIF_ALLOW_REGISTRATION | OAIF_REGISTER_EXT;
+      func(*this, &info);
+
+      ::DeleteFileW(tempFile);
+      UpdateSystemDefaults();
+      return;
     }
   }
 
+  /* fallback: the general page of the default apps settings */
   ::ShellExecuteW(*this, L"open", L"ms-settings:defaultapps", NULL, NULL, SW_SHOWNORMAL);
 }
 
