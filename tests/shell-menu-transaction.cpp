@@ -51,6 +51,15 @@ struct CBackend
 
 int main()
 {
+  // Explicit checkbox edits win over the mode's default DLL mask.
+  assert(MergeClassicMask(0, 3, true, true, 2, 0) == 1);
+  assert(MergeClassicMask(1, 3, false, true, 2, 2) == 3);
+  assert(MergeClassicMask(3, 3, true, false, 3, 3) == 0);
+  assert(MergeClassicMask(0, 1, true, true, 0, 0) == 1);
+  // An enabled but incomplete registration still invokes the repair backend.
+  const unsigned same[kNumParts] = { 0, 0, 1 };
+  CBackend repair(same, kClassic, false);
+  assert(!Apply(repair, same, same, 1u << kClassic));
   unsigned cases = 0;
   // Include partially configured folder/native/alternate registrations.
   for (unsigned modern = 0; modern < 2; modern++)

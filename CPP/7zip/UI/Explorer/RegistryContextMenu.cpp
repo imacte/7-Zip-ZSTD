@@ -119,7 +119,7 @@ static bool CheckHandlerCommon(const AString &keyName, UInt32 wow)
   return StringsAreEqualNoCase_Ascii(value, k_Clsid_A);
 }
 
-bool CheckContextMenuHandler(const UString &path, UInt32 wow)
+bool CheckContextMenuHandler_Dll(const UString &path, UInt32 wow)
 {
   // NSynchronization::CCriticalSectionLock lock(g_CS);
 
@@ -138,15 +138,36 @@ bool CheckContextMenuHandler(const UString &path, UInt32 wow)
       return false;
   }
   
-  return
-       CheckHandlerCommon(Get_ContextMenuHandler_KeyName(k_KeyName_File), wow);
-  /*
-    && CheckHandlerCommon(Get_ContextMenuHandler_KeyName(k_KeyName_Directory), wow)
-    // && CheckHandlerCommon(Get_ContextMenuHandler_KeyName(k_KeyName_Folder))
+  return true;
+}
 
-    && CheckHandlerCommon(Get_DragDropHandler_KeyName(k_KeyName_Directory), wow)
-    && CheckHandlerCommon(Get_DragDropHandler_KeyName(k_KeyName_Drive), wow);
-  */
+bool CheckContextMenuHandler(const UString &path, UInt32 wow)
+{
+  return CheckContextMenuHandler_Dll(path, wow)
+      && CheckHandlerCommon(Get_ContextMenuHandler_KeyName(k_KeyName_File), wow);
+}
+
+bool CheckContextMenuHandler_Complete(const UString &path, UInt32 wow)
+{
+  if (!CheckContextMenuHandler_Dll(path, wow)) return false;
+  CKey key;
+  CSysString value;
+  if (key.Open(HKEY_LOCAL_MACHINE, k_Approved, KEY_READ | wow) != ERROR_SUCCESS
+      || key.QueryValue(k_Clsid, value) != ERROR_SUCCESS || value != k_ShellExtName)
+    return false;
+  CSysString inproc("CLSID\\");
+  inproc += k_Clsid_A;
+  inproc += "\\InprocServer32";
+  if (key.Open(HKEY_CLASSES_ROOT, inproc, KEY_READ | wow) != ERROR_SUCCESS
+      || key.QueryValue(TEXT("ThreadingModel"), value) != ERROR_SUCCESS
+      || value != TEXT("Apartment")) return false;
+  for (unsigned i = 0; i < 2; i++)
+    for (unsigned k = 0; k < Z7_ARRAY_SIZE(k_shellex_Prefixes); k++)
+      if (k_shellex_Statuses[i][k] && !CheckHandlerCommon(
+          AString(k_shellex_Prefixes[k]) +
+          (i == 0 ? k_KeyPostfix_ContextMenu : k_KeyPostfix_DragDrop), wow))
+        return false;
+  return true;
 }
 
 
@@ -175,21 +196,26 @@ LONG SetContextMenuHandler(bool setMode, const UString &path, UInt32 wow)
       res = MyCreateKey(key, HKEY_CLASSES_ROOT, s, wow);
       if (res == ERROR_SUCCESS)
       {
-        key.SetValue(NULL, k_ShellExtName);
+        res = key.SetValue(NULL, k_ShellExtName);
+        if (res != ERROR_SUCCESS) return res;
         CKey keyInproc;
         res = MyCreateKey(keyInproc, key, k_Inproc, wow);
         if (res == ERROR_SUCCESS)
         {
           res = keyInproc.SetValue(NULL, path);
-          keyInproc.SetValue(TEXT("ThreadingModel"), TEXT("Apartment"));
+          if (res != ERROR_SUCCESS) return res;
+          res = keyInproc.SetValue(TEXT("ThreadingModel"), TEXT("Apartment"));
         }
       }
     }
     
+    if (res != ERROR_SUCCESS) return res;
     {
       CKey key;
-      if (MyCreateKey(key, HKEY_LOCAL_MACHINE, k_Approved, wow) == ERROR_SUCCESS)
-        key.SetValue(k_Clsid, k_ShellExtName);
+      res = MyCreateKey(key, HKEY_LOCAL_MACHINE, k_Approved, wow);
+      if (res != ERROR_SUCCESS) return res;
+      res = key.SetValue(k_Clsid, k_ShellExtName);
+      if (res != ERROR_SUCCESS) return res;
     }
   }
   else
@@ -197,8 +223,10 @@ LONG SetContextMenuHandler(bool setMode, const UString &path, UInt32 wow)
     CSysString s2 (s);
     s2 += "\\InprocServer32";
 
-    MyRegistry_DeleteKey_HKCR(s2, wow);
+    res = MyRegistry_DeleteKey_HKCR(s2, wow);
+    if (res != ERROR_SUCCESS && res != ERROR_FILE_NOT_FOUND) return res;
     res = MyRegistry_DeleteKey_HKCR(s, wow);
+    if (res == ERROR_FILE_NOT_FOUND) res = ERROR_SUCCESS;
   }
   }
 
@@ -213,11 +241,17 @@ LONG SetContextMenuHandler(bool setMode, const UString &path, UInt32 wow)
       if (k_shellex_Statuses[i][k])
       {
         CKey key;
-        MyCreateKey(key, HKEY_CLASSES_ROOT, s, wow);
-        key.SetValue(NULL, k_Clsid);
+        res = MyCreateKey(key, HKEY_CLASSES_ROOT, s, wow);
+        if (res != ERROR_SUCCESS) return res;
+        res = key.SetValue(NULL, k_Clsid);
+        if (res != ERROR_SUCCESS) return res;
       }
       else
-        MyRegistry_DeleteKey_HKCR(s, wow);
+      {
+        res = MyRegistry_DeleteKey_HKCR(s, wow);
+        if (res == ERROR_FILE_NOT_FOUND) res = ERROR_SUCCESS;
+        if (res != ERROR_SUCCESS) return res;
+      }
     }
   }
 
@@ -261,7 +295,8 @@ LONG SetContextMenuHandler_State(unsigned mask)
           ;
 
     const bool enable = (mask & (1u << d)) != 0;
-    if (CheckContextMenuHandler(fs2us(path), wow) == enable)
+    if (enable ? CheckContextMenuHandler_Complete(fs2us(path), wow)
+        : !CheckContextMenuHandler_Dll(fs2us(path), wow))
       continue;
     const LONG res = SetContextMenuHandler(enable, fs2us(path), wow);
     if (res != ERROR_SUCCESS)

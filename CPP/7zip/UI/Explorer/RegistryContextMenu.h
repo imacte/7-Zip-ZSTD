@@ -5,6 +5,8 @@
 
 #ifndef UNDER_CE
 
+bool CheckContextMenuHandler_Dll(const UString &path, UInt32 wow = 0);
+bool CheckContextMenuHandler_Complete(const UString &path, UInt32 wow = 0);
 bool CheckContextMenuHandler(const UString &path, UInt32 wow = 0);
 LONG SetContextMenuHandler(bool setMode, const UString &path, UInt32 wow = 0);
 

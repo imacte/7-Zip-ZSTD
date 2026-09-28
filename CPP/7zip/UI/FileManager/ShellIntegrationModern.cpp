@@ -3,6 +3,7 @@
 #include "StdAfx.h"
 
 #include "ShellIntegrationModern.h"
+#include "ShellOperationWait.h"
 
 #include "../../../Windows/DLL.h"
 #include "../../../Windows/ErrorMsg.h"
@@ -199,7 +200,9 @@ static HRESULT Run_Op(CThreadOp &op)
   HANDLE h = ::CreateThread(NULL, 0, Op_Thread, &op, 0, &threadId);
   if (!h)
     return HRESULT_FROM_WIN32(::GetLastError());
-  ::WaitForSingleObject(h, INFINITE);
+  // Keep the stack-owned operation alive even if message waiting fails.
+  if (WaitForShellOperation(h) != WAIT_OBJECT_0)
+    ::WaitForSingleObject(h, INFINITE);
   ::CloseHandle(h);
   return op.Hr;
 }
@@ -372,7 +375,7 @@ bool Is_Process_Elevated()
 }
 
 
-HRESULT Run_Elevated_Self(const UString &args, UString &errorText)
+HRESULT Run_Elevated_Self(const UString &args, UString &errorText, HWND owner)
 {
   errorText.Empty();
 
@@ -388,6 +391,7 @@ HRESULT Run_Elevated_Self(const UString &args, UString &errorText)
   SHELLEXECUTEINFOW sei;
   ZeroMemory(&sei, sizeof(sei));
   sei.cbSize = sizeof(sei);
+  sei.hwnd = owner;
   sei.fMask = SEE_MASK_NOCLOSEPROCESS | SEE_MASK_NOASYNC;
   sei.lpVerb = L"runas";                      // one UAC prompt
   sei.lpFile = exe.Ptr();
@@ -407,7 +411,7 @@ HRESULT Run_Elevated_Self(const UString &args, UString &errorText)
   if (sei.hProcess)
   {
     // Do not start a rollback while the elevated helper can still be writing.
-    const DWORD waitResult = ::WaitForSingleObject(sei.hProcess, INFINITE);
+    const DWORD waitResult = WaitForShellOperation(sei.hProcess);
     if (waitResult != WAIT_OBJECT_0)
     {
       const DWORD err = ::GetLastError();

@@ -23,6 +23,8 @@
 #include "MenuPageRes.h"
 #include "ShellIntegrationModern.h"
 #include "ShellMenuTransaction.h"
+#include "../../../Common/IntToString.h"
+#include "ShellOperationWait.h"
 
 #ifdef ZIP7_DARKMODE
 #include "../../../../DarkMode/lib/include/Darkmodelib.h"
@@ -449,20 +451,29 @@ void CMenuPage::Update_MenuMode_Controls()
 class CMenuModeBackend
 {
   CShellDll *_dlls;
+  HWND _owner;
 public:
   UString MsixPath;
   UString Error;
 
-  CMenuModeBackend(CShellDll *dlls): _dlls(dlls) {}
+  CMenuModeBackend(CShellDll *dlls, HWND owner): _dlls(dlls), _owner(owner) {}
 
   unsigned ClassicMask() const
   {
     unsigned mask = 0;
     for (unsigned d = 0; d < 2; d++)
       if (!_dlls[d].Path.IsEmpty()
-          && CheckContextMenuHandler(fs2us(_dlls[d].Path), _dlls[d].wow))
+          && CheckContextMenuHandler_Dll(fs2us(_dlls[d].Path), _dlls[d].wow))
         mask |= 1u << d;
     return mask;
+  }
+
+  bool ClassicComplete(unsigned mask) const
+  {
+    for (unsigned d = 0; d < 2; d++)
+      if ((mask & (1u << d)) && !CheckContextMenuHandler_Complete(
+          fs2us(_dlls[d].Path), _dlls[d].wow)) return false;
+    return true;
   }
 
   bool Set(unsigned part, unsigned value, bool restoring)
@@ -482,7 +493,7 @@ public:
           hr = NShellIntegrationModern::Set_FolderRegistration_Mask(value, error);
         break;
       case NShellMenuTransaction::kClassic:
-        if (ClassicMask() != value)
+        if (ClassicMask() != value || (!restoring && !ClassicComplete(value)))
         {
           if (NShellIntegrationModern::Is_Process_Elevated())
             hr = HRESULT_FROM_WIN32(SetContextMenuHandler_State(value));
@@ -490,7 +501,7 @@ public:
           {
             UString args = L"-ShellMenu=state:";
             args.Add_UInt32(value);
-            hr = NShellIntegrationModern::Run_Elevated_Self(args, error);
+            hr = NShellIntegrationModern::Run_Elevated_Self(args, error, _owner);
           }
         }
         break;
@@ -498,7 +509,13 @@ public:
     if (hr == S_OK)
       return true;
     if (error.IsEmpty())
-      error = NError::MyFormatMessage((DWORD)hr);
+      error = NError::MyFormatMessage(HRESULT_FACILITY(hr) == FACILITY_WIN32
+          ? HRESULT_CODE(hr) : (DWORD)hr);
+    char code[9];
+    ConvertUInt32ToHex8Digits((UInt32)hr, code);
+    error += L" (HRESULT 0x";
+    error += code;
+    error += L")";
     if (!Error.IsEmpty())
       Error.Add_LF();
     if (restoring)
@@ -523,7 +540,7 @@ bool CMenuPage::Apply_MenuMode(enum_MenuMode mode)
     return false;
   }
 
-  CMenuModeBackend backend(_dlls);
+  CMenuModeBackend backend(_dlls, *this);
   backend.MsixPath = NShellIntegrationModern::Get_DefaultMsixPath();
   const unsigned before[kNumParts] = {
       NShellIntegrationModern::Is_Installed() ? 1u : 0u,
@@ -549,9 +566,18 @@ bool CMenuPage::Apply_MenuMode(enum_MenuMode mode)
       return false;
     }
   }
+  unsigned changed = 0, checked = 0;
+  for (unsigned d = 0; d < 2; d++)
+  {
+    if (_dlls[d].wasChanged) changed |= 1u << d;
+    if (IsButtonCheckedBool(_dlls[d].ctrl)) checked |= 1u << d;
+  }
+  const unsigned classic = MergeClassicMask(before[kClassic], available,
+      _menuMode_Changed, wantClassic, changed, checked);
   const unsigned after[kNumParts] = {
-      wantModern ? 1u : 0u, wantModern ? 3u : 0u, wantClassic ? available : 0u };
-  if (!NShellMenuTransaction::Apply(backend, before, after))
+      wantModern ? 1u : 0u, wantModern ? 3u : 0u, classic };
+  const unsigned repair = backend.ClassicComplete(classic) ? 0 : (1u << kClassic);
+  if (!NShellMenuTransaction::Apply(backend, before, after, repair))
   {
     ShowMenuErrorMessage(backend.Error, *this);
     return false;
@@ -577,27 +603,12 @@ LONG CMenuPage::OnApply()
 {
   #ifndef UNDER_CE
 
-  if (_menuMode_Changed)
+  CShellOperationGuard guard(*this);
+  if (_menuMode_Changed || _dlls[0].wasChanged || _dlls[1].wasChanged)
   {
     if (!Apply_MenuMode(Get_Checked_MenuMode()))
       return PSNRET_INVALID_NOCHANGEPAGE;
     _menuMode_Changed = false;
-  }
-
-  for (unsigned d = 2; d != 0;)
-  {
-    d--;
-    CShellDll &dll = _dlls[d];
-    if (dll.wasChanged && !dll.Path.IsEmpty())
-    {
-      const bool newVal = IsButtonCheckedBool(dll.ctrl);
-      const LONG res = SetContextMenuHandler(newVal, fs2us(dll.Path), dll.wow);
-      if (res != ERROR_SUCCESS && (dll.prevValue != newVal || newVal))
-        ShowMenuErrorMessage(NError::MyFormatMessage(res), *this);
-      dll.prevValue = CheckContextMenuHandler(fs2us(dll.Path), dll.wow);
-      CheckButton(dll.ctrl, dll.prevValue);
-      dll.wasChanged = false;
-    }
   }
 
   #endif
@@ -678,6 +689,11 @@ bool CMenuPage::OnButtonClicked(unsigned buttonID, HWND buttonHWND)
       /* the classic checkboxes only make sense for the modes that use the classic
          registration - show or hide them right away */
       Set_MenuMode_Controls(Get_Checked_MenuMode());
+      // Show the same defaults that Apply will use, preserving explicit edits.
+      if (Get_Checked_MenuMode() == kMenuMode_Classic || Get_Checked_MenuMode() == kMenuMode_Both)
+        for (unsigned d = 0; d < 2; d++)
+          if (!_dlls[d].wasChanged && !_dlls[d].Path.IsEmpty())
+            CheckButton(_dlls[d].ctrl, true);
       break;
       
     default:

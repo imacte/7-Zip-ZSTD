@@ -9,6 +9,7 @@ FM_PAGE_HEADERS = \
   ../../UI/FileManager/LangPage.h \
   ../../UI/FileManager/ShellIntegrationModern.h \
   ../../UI/FileManager/ShellMenuTransaction.h \
+  ../../UI/FileManager/ShellOperationWait.h \
   ../../UI/FileManager/AssocCommand.h
 
 $O\OptionsDialog.obj $O\SystemPage.obj $O\MenuPage.obj $O\FoldersPage.obj \
@@ -37,7 +38,7 @@ FM_WINRT_STANDARD = -std:c++17
 !ENDIF
 
 # WinRT uses its own language standard, so it cannot share the program's PCH.
-$O\ShellIntegrationModern.obj: ../../UI/FileManager/ShellIntegrationModern.cpp ../../UI/FileManager/ShellIntegrationModern.h
+$O\ShellIntegrationModern.obj: ../../UI/FileManager/ShellIntegrationModern.cpp ../../UI/FileManager/ShellIntegrationModern.h ../../UI/FileManager/ShellOperationWait.h
 	$(CC) $(CFLAGS_O1) -DZ7_ENABLE_MODERN_SHELL_INTEGRATION $(FM_WINRT_STANDARD) -W3 -EHsc -I"$(CPPWINRT_INCLUDE)" ../../UI/FileManager/ShellIntegrationModern.cpp
 !ENDIF
 !ENDIF

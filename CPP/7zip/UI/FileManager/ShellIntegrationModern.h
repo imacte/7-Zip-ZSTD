@@ -51,7 +51,7 @@ namespace NShellIntegrationModern {
      every change that writes to HKEY_LOCAL_MACHINE / HKEY_CLASSES_ROOT, so the
      program never has to be restarted as administrator. errorText gets a message
      when the user cancels the prompt or the helper fails. */
-  HRESULT Run_Elevated_Self(const UString &args, UString &errorText);
+  HRESULT Run_Elevated_Self(const UString &args, UString &errorText, HWND owner = NULL);
 
   // convenience wrapper: "-ShellMenu=register" / "-ShellMenu=unregister"
   HRESULT Run_Elevated_ShellRegistration(bool enable, UString &errorText);

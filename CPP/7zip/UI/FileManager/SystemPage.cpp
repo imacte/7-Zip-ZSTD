@@ -28,6 +28,7 @@
 #include "ShellIntegrationModern.h"
 #include "SystemPage.h"
 #include "AssocCommand.h"
+#include "ShellOperationWait.h"
 #include "SystemPageRes.h"
 
 using namespace NWindows;
@@ -654,6 +655,7 @@ LONG CSystemPage::OnApply()
   if (!_needSave)
     return PSNRET_NOERROR;
 
+  CShellOperationGuard guard(*this);
   const UString command = GetProgramCommand();
 
   /* The "all users" group (group 1) writes to HKEY_LOCAL_MACHINE and therefore
@@ -700,13 +702,14 @@ LONG CSystemPage::OnApply()
       }
 
       UString error;
-      if (NShellIntegrationModern::Run_Elevated_Self(spec, error) == S_OK)
+      if (NShellIntegrationModern::Run_Elevated_Self(spec, error, *this) == S_OK)
         allUsersDone = true;
       else
       {
         if (error.IsEmpty())
           error = L"the elevated operation failed";
         MessageBoxW(*this, error.Ptr(), L"7-Zip ZS", MB_ICONERROR);
+        return PSNRET_INVALID_NOCHANGEPAGE;
       }
     }
   }
