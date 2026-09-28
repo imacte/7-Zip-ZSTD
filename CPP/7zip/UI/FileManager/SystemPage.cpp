@@ -295,10 +295,16 @@ bool CSystemPage::OnInit()
       const HWND h = GetItem(g == 0 ? IDB_SYSTEM_CURRENT : IDB_SYSTEM_ALL);
       RECT rb;
       ::GetWindowRect(h, &rb);
+
+      /* skip the columns in front of this one (the file type column and, for the
+         second button, the current user column), then use the width of the column
+         this button belongs to */
+      x += (int)::SendMessage(HWND(_listView), LVM_GETCOLUMNWIDTH, (WPARAM)g, 0);
       const int w = (int)::SendMessage(HWND(_listView), LVM_GETCOLUMNWIDTH, (WPARAM)(g + 1), 0);
+
       ::SetWindowPos(h, NULL, x, pList.y - (rb.bottom - rb.top) - 2, w, rb.bottom - rb.top,
           SWP_NOZORDER | SWP_NOACTIVATE);
-      x += w + 4;
+      x += w;
     }
   }
 
