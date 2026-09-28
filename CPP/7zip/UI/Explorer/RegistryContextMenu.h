@@ -16,6 +16,7 @@ LONG SetContextMenuHandler(bool setMode, const UString &path, UInt32 wow = 0);
    does not have to be restarted as administrator, the user just gets the UAC
    prompt. */
 LONG SetContextMenuHandler_All(bool setMode);
+LONG SetContextMenuHandler_State(unsigned mask);
 
 #endif
 

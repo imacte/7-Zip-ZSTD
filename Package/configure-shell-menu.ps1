@@ -103,8 +103,8 @@ if (-not $isAdmin)
   Write-Host 'Restarting with administrator rights (UAC) ...'
   if (-not (Test-Path $LogDir)) { New-Item -ItemType Directory -Path $LogDir -Force | Out-Null }
   Remove-Item $LogFile -Force -ErrorAction SilentlyContinue
-  $argLine = '-NoProfile -ExecutionPolicy Bypass -File "{0}" -KeyName "{1}" -Clsid "{2}" -BackupDir "{3}" -Mode {4} -LogFile "{5}"' -f `
-    $PSCommandPath, $KeyName, $Clsid, $BackupDir, $Mode, $LogFile
+  $argLine = '-NoProfile -ExecutionPolicy Bypass -File "{0}" -KeyName "{1}" -Clsid "{2}" -BackupDir "{3}" -Mode {4} -LogFile "{5}" -InstallDir "{6}" -PackageName "{7}" -ShellExtName "{8}"' -f `
+    $PSCommandPath, $KeyName, $Clsid, $BackupDir, $Mode, $LogFile, $InstallDir, $PackageName, $ShellExtName
   $p = Start-Process -FilePath (Get-Process -Id $PID).Path -ArgumentList $argLine -Verb RunAs -Wait -PassThru
   if (Test-Path $LogFile) { Get-Content $LogFile | ForEach-Object { Write-Host $_ } }
   exit $p.ExitCode
@@ -208,7 +208,7 @@ function Install-Package([bool]$enable)
   {
     if ($pkg) { Info "package already installed: $($pkg.PackageFullName)"; return }
     Info 'installing the sparse package (build-shell-package.ps1) ...'
-    & (Join-Path $PSScriptRoot 'build-shell-package.ps1') | ForEach-Object { Info $_ }
+    & (Join-Path $PSScriptRoot 'build-shell-package.ps1') -InstallDir $InstallDir | ForEach-Object { Info $_ }
     $pkg = Get-Pkg
     if (-not $pkg) { throw 'package installation failed' }
     Info "installed: $($pkg.PackageFullName)"

@@ -227,6 +227,11 @@ LONG SetContextMenuHandler(bool setMode, const UString &path, UInt32 wow)
 
 LONG SetContextMenuHandler_All(bool setMode)
 {
+  return SetContextMenuHandler_State(setMode ? 3 : 0);
+}
+
+LONG SetContextMenuHandler_State(unsigned mask)
+{
   const FString prefix = NDLL::GetModuleDirPrefix();
   LONG lastRes = ERROR_SUCCESS;
   bool found = false;
@@ -255,7 +260,10 @@ LONG SetContextMenuHandler_All(bool setMode)
           #endif
           ;
 
-    const LONG res = SetContextMenuHandler(setMode, fs2us(path), wow);
+    const bool enable = (mask & (1u << d)) != 0;
+    if (CheckContextMenuHandler(fs2us(path), wow) == enable)
+      continue;
+    const LONG res = SetContextMenuHandler(enable, fs2us(path), wow);
     if (res != ERROR_SUCCESS)
       lastRes = res;
   }

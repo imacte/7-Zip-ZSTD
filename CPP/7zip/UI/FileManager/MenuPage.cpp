@@ -22,6 +22,7 @@
 #include "MenuPage.h"
 #include "MenuPageRes.h"
 #include "ShellIntegrationModern.h"
+#include "ShellMenuTransaction.h"
 
 #ifdef ZIP7_DARKMODE
 #include "../../../../DarkMode/lib/include/Darkmodelib.h"
@@ -227,6 +228,8 @@ bool CMenuPage::OnInit()
   }
 
   Set_ModeControls_Text(*this);
+  EnableItem(IDX_SYSTEM_MENU_MODERN, NShellIntegrationModern::Is_Supported());
+  EnableItem(IDX_SYSTEM_MENU_BOTH, NShellIntegrationModern::Is_Supported());
   Update_MenuMode_Controls();
 
   CContextMenuInfo ci;
@@ -441,102 +444,119 @@ void CMenuPage::Update_MenuMode_Controls()
 }
 
 
-void CMenuPage::Apply_MenuMode(enum_MenuMode mode)
+#ifndef UNDER_CE
+
+class CMenuModeBackend
+{
+  CShellDll *_dlls;
+public:
+  UString MsixPath;
+  UString Error;
+
+  CMenuModeBackend(CShellDll *dlls): _dlls(dlls) {}
+
+  unsigned ClassicMask() const
+  {
+    unsigned mask = 0;
+    for (unsigned d = 0; d < 2; d++)
+      if (!_dlls[d].Path.IsEmpty()
+          && CheckContextMenuHandler(fs2us(_dlls[d].Path), _dlls[d].wow))
+        mask |= 1u << d;
+    return mask;
+  }
+
+  bool Set(unsigned part, unsigned value, bool restoring)
+  {
+    UString error;
+    HRESULT hr = S_OK;
+    switch (part)
+    {
+      case NShellMenuTransaction::kModern:
+        if (NShellIntegrationModern::Is_Installed() != (value != 0))
+          hr = value ? NShellIntegrationModern::Install(MsixPath,
+              fs2us(NDLL::GetModuleDirPrefix()), error)
+              : NShellIntegrationModern::Remove(error);
+        break;
+      case NShellMenuTransaction::kFolders:
+        if (NShellIntegrationModern::Get_FolderRegistration_Mask() != value)
+          hr = NShellIntegrationModern::Set_FolderRegistration_Mask(value, error);
+        break;
+      case NShellMenuTransaction::kClassic:
+        if (ClassicMask() != value)
+        {
+          if (NShellIntegrationModern::Is_Process_Elevated())
+            hr = HRESULT_FROM_WIN32(SetContextMenuHandler_State(value));
+          else
+          {
+            UString args = L"-ShellMenu=state:";
+            args.Add_UInt32(value);
+            hr = NShellIntegrationModern::Run_Elevated_Self(args, error);
+          }
+        }
+        break;
+    }
+    if (hr == S_OK)
+      return true;
+    if (error.IsEmpty())
+      error = NError::MyFormatMessage((DWORD)hr);
+    if (!Error.IsEmpty())
+      Error.Add_LF();
+    if (restoring)
+      Error += L"Could not restore the previous menu: ";
+    Error += error;
+    return false;
+  }
+};
+
+#endif
+
+
+bool CMenuPage::Apply_MenuMode(enum_MenuMode mode)
 {
   #ifndef UNDER_CE
+  using namespace NShellMenuTransaction;
   const bool wantClassic = (mode == kMenuMode_Classic || mode == kMenuMode_Both);
-  const bool wantModern  = (mode == kMenuMode_Modern  || mode == kMenuMode_Both);
-  UString error;
-
-  // 1) the machine-wide classic registration (the "*" root, as the checkbox does)
-  if (!_dlls[0].Path.IsEmpty())
+  const bool wantModern = (mode == kMenuMode_Modern || mode == kMenuMode_Both);
+  if (wantModern && !NShellIntegrationModern::Is_Supported())
   {
-    const UString path = fs2us(_dlls[0].Path);
-    if (CheckContextMenuHandler(path, _dlls[0].wow) != wantClassic)
-    {
-      LONG res = ERROR_SUCCESS;
-      if (NShellIntegrationModern::Is_Process_Elevated())
-      {
-        for (unsigned d = 0; d < 2; d++)
-        {
-          CShellDll &dll = _dlls[d];
-          if (dll.Path.IsEmpty())
-            continue;
-          const LONG r = SetContextMenuHandler(wantClassic, fs2us(dll.Path), dll.wow);
-          if (r != ERROR_SUCCESS)
-            res = r;
-        }
-      }
-      else
-      {
-        /* The machine-wide keys need administrator rights. The change is done by
-           "7zFM.exe -ShellMenu=..." started with "runas": one UAC prompt, the
-           program does not have to be restarted as administrator. */
-        UString err;
-        const HRESULT hr = NShellIntegrationModern::Run_Elevated_ShellRegistration(wantClassic, err);
-        if (hr != S_OK)
-        {
-          if (err.IsEmpty())
-            err = L"the elevated registration failed";
-          ShowMenuErrorMessage(err, *this);
-          res = ERROR_SUCCESS;   // already reported
-        }
-      }
-
-      if (res != ERROR_SUCCESS)
-        ShowMenuErrorMessage(NError::MyFormatMessage(res), *this);
-    }
+    ShowMenuErrorMessage(L"The Windows 11 menu is not supported in this build.", *this);
+    return false;
   }
 
-  if (wantModern)
+  CMenuModeBackend backend(_dlls);
+  backend.MsixPath = NShellIntegrationModern::Get_DefaultMsixPath();
+  const unsigned before[kNumParts] = {
+      NShellIntegrationModern::Is_Installed() ? 1u : 0u,
+      NShellIntegrationModern::Get_FolderRegistration_Mask(),
+      backend.ClassicMask() };
+  unsigned available = 0;
+  for (unsigned d = 0; d < 2; d++)
+    if (!_dlls[d].Path.IsEmpty())
+      available |= 1u << d;
+  if (wantClassic && available == 0)
   {
-    // The shell lists the commands of a sparse package in the classic menu for
-    // files but not for directories, so Folder/Directory are registered per user
-    // (HKCU\Software\Classes - no administrator rights needed).
-    if (NShellIntegrationModern::Set_FolderRegistration_PerUser(true, error) != S_OK)
-      ShowMenuErrorMessage(error, *this);
+    ShowMenuErrorMessage(L"The shell extension DLL was not found.", *this);
+    return false;
+  }
 
-    if (!NShellIntegrationModern::Is_Installed())
+  // Check the package before touching any registration. Package removal is the
+  // last operation, so a successful removal never needs a reinstall to commit.
+  if (wantModern && !before[kModern])
+  {
+    if (backend.MsixPath.IsEmpty())
     {
-      const UString msixPath = NShellIntegrationModern::Get_DefaultMsixPath();
-      if (msixPath.IsEmpty())
-      {
-        UString m = L"Package file not found:\n";
-        m += L"SevenZipZS.ShellExtension_x64.msix\n\n";
-        m += L"Run Package\\build-shell-package.ps1 (as administrator) once.";
-        ShowMenuErrorMessage(m, *this);
-      }
-      else
-      {
-        const UString dir = fs2us(NDLL::GetModuleDirPrefix());
-        if (NShellIntegrationModern::Install(msixPath, dir, error) != S_OK)
-        {
-          if (error.IsEmpty())
-            error = L"AddPackage failed";
-          ShowMenuErrorMessage(error, *this);
-        }
-      }
+      ShowMenuErrorMessage(L"Package file not found: SevenZipZS.ShellExtension*.msix", *this);
+      return false;
     }
   }
-  else
+  const unsigned after[kNumParts] = {
+      wantModern ? 1u : 0u, wantModern ? 3u : 0u, wantClassic ? available : 0u };
+  if (!NShellMenuTransaction::Apply(backend, before, after))
   {
-    if (NShellIntegrationModern::Is_Installed())
-    {
-      if (NShellIntegrationModern::Remove(error) != S_OK)
-      {
-        if (error.IsEmpty())
-          error = L"RemovePackage failed";
-        ShowMenuErrorMessage(error, *this);
-      }
-    }
-    NShellIntegrationModern::Set_FolderRegistration_PerUser(false, error);
+    ShowMenuErrorMessage(backend.Error, *this);
+    return false;
   }
-  #endif
 
-  // reflect what really is registered now
-  Update_MenuMode_Controls();
-
-  #ifndef UNDER_CE
   for (unsigned d = 0; d < 2; d++)
   {
     CShellDll &dll = _dlls[d];
@@ -548,6 +568,8 @@ void CMenuPage::Apply_MenuMode(enum_MenuMode mode)
     }
   }
   #endif
+  Update_MenuMode_Controls();
+  return true;
 }
 
 
@@ -557,7 +579,8 @@ LONG CMenuPage::OnApply()
 
   if (_menuMode_Changed)
   {
-    Apply_MenuMode(Get_Checked_MenuMode());
+    if (!Apply_MenuMode(Get_Checked_MenuMode()))
+      return PSNRET_INVALID_NOCHANGEPAGE;
     _menuMode_Changed = false;
   }
 

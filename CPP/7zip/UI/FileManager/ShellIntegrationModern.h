@@ -26,6 +26,7 @@ namespace NShellIntegrationModern {
 
   // is one of the packages of this fork registered for the current user?
   bool Is_Installed(UString *packageFullName = NULL);
+  bool Is_Supported();
 
   // register / unregister the sparse package for the current user
   // (sparse package: the payload stays in the program directory)
@@ -35,6 +36,8 @@ namespace NShellIntegrationModern {
   // classic registration for Folder/Directory in HKCU\Software\Classes
   // (needed for folders in the classic menu when the package is used)
   bool Is_FolderRegistration_PerUser();
+  unsigned Get_FolderRegistration_Mask();
+  HRESULT Set_FolderRegistration_Mask(unsigned mask, UString &errorText);
   HRESULT Set_FolderRegistration_PerUser(bool enable, UString &errorText);
 
   // the CLSID of the shell extension of this fork

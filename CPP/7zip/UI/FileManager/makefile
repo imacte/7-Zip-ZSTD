@@ -7,6 +7,7 @@ CFLAGS = $(CFLAGS) \
 !include "FM.mak"
 
 COMMON_OBJS = \
+  $O\CommandLineParser.obj \
   $O\DynLimBuf.obj \
   $O\IntToString.obj \
   $O\Lang.obj \
@@ -109,6 +110,7 @@ C_OBJS = $(C_OBJS) \
 
 !include "../../Sort.mak"
 !include "../../7zip.mak"
+!include "FMBuild.mak"
 
 # explicit rule to override UI_COMMON_OBJS pattern for CompressCall
 $O\CompressCall.obj: ../../UI/Common/CompressCall.cpp

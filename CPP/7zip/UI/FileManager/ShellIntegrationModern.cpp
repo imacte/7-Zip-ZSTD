@@ -82,6 +82,11 @@ UString Get_DefaultMsixPath()
 
 #ifdef Z7_ENABLE_MODERN_SHELL_INTEGRATION
 
+bool Is_Supported()
+{
+  return true;
+}
+
 static UString HString_To_UString(const winrt::hstring &s)
 {
   return UString(s.c_str());
@@ -250,6 +255,8 @@ HRESULT Remove(UString &errorText)
 
 #else   // Z7_ENABLE_MODERN_SHELL_INTEGRATION
 
+bool Is_Supported() { return false; }
+
 bool Is_Installed(UString *packageFullName)
 {
   if (packageFullName)
@@ -278,6 +285,12 @@ HRESULT Remove(UString &errorText)
 
 bool Is_FolderRegistration_PerUser()
 {
+  return Get_FolderRegistration_Mask() == 3;
+}
+
+unsigned Get_FolderRegistration_Mask()
+{
+  unsigned mask = 0;
   static const wchar_t *roots[] = { L"Folder", L"Directory" };
   for (unsigned i = 0; i < Z7_ARRAY_SIZE(roots); i++)
   {
@@ -287,14 +300,21 @@ bool Is_FolderRegistration_PerUser()
     key += k_RegistryKeyName;
     HKEY hKey = NULL;
     const LONG res = ::RegOpenKeyExW(HKEY_CURRENT_USER, key.Ptr(), 0, KEY_READ, &hKey);
-    if (res != ERROR_SUCCESS)
-      return false;
-    ::RegCloseKey(hKey);
+    if (res == ERROR_SUCCESS)
+    {
+      mask |= 1u << i;
+      ::RegCloseKey(hKey);
+    }
   }
-  return true;
+  return mask;
 }
 
 HRESULT Set_FolderRegistration_PerUser(bool enable, UString &errorText)
+{
+  return Set_FolderRegistration_Mask(enable ? 3 : 0, errorText);
+}
+
+HRESULT Set_FolderRegistration_Mask(unsigned mask, UString &errorText)
 {
   static const wchar_t *roots[] = { L"Folder", L"Directory" };
   errorText.Empty();
@@ -306,7 +326,7 @@ HRESULT Set_FolderRegistration_PerUser(bool enable, UString &errorText)
     key += k_RegistryKeyName;
 
     LONG res;
-    if (enable)
+    if ((mask & (1u << i)) != 0)
     {
       HKEY hKey = NULL;
       DWORD disposition = 0;
@@ -386,7 +406,15 @@ HRESULT Run_Elevated_Self(const UString &args, UString &errorText)
 
   if (sei.hProcess)
   {
-    ::WaitForSingleObject(sei.hProcess, 120000);
+    // Do not start a rollback while the elevated helper can still be writing.
+    const DWORD waitResult = ::WaitForSingleObject(sei.hProcess, INFINITE);
+    if (waitResult != WAIT_OBJECT_0)
+    {
+      const DWORD err = ::GetLastError();
+      ::CloseHandle(sei.hProcess);
+      errorText = NError::MyFormatMessage(err);
+      return HRESULT_FROM_WIN32(err);
+    }
     DWORD code = 1;
     ::GetExitCodeProcess(sei.hProcess, &code);
     ::CloseHandle(sei.hProcess);

@@ -19,6 +19,7 @@
 #include "../../../Windows/Registry.h"
 
 #include <shellapi.h>
+#include <shlwapi.h>
 
 #include "HelpUtils.h"
 #include "IFolder.h"
@@ -166,10 +167,8 @@ bool CSystemPage::OnInit()
   LangSetDlgItems(*this, kLangIDs, Z7_ARRAY_SIZE(kLangIDs));
 #endif
 
-  _listView.Attach(GetItem(IDL_SYSTEM_ASSOCIATE));  _listView.SetUnicodeFormat();
-
-  /* leftovers of an earlier session (the samples are used by the picker) */
-  RemoveSampleFiles();
+  _listView.Attach(GetItem(IDL_SYSTEM_ASSOCIATE));
+  _listView.SetUnicodeFormat();
   DWORD newFlags = LVS_EX_FULLROWSELECT;
   _listView.SetExtendedListViewStyle(newFlags, newFlags);
 
@@ -324,108 +323,41 @@ void CSystemPage::Position_MenuButtons()
 }
 
 
-/* Opens the Windows picker "select an app to open .xxx files" for one file type.
-
-   That picker is the only way an application can get the effective default app
-   changed on Windows 10/11: the user's choice makes Windows write the protected
-   UserChoice value itself.
-
-   It is started through the shell verb "openas" on a sample file: measured on
-   Windows 11 build 26200 SHOpenWithDialog only answers "go to Settings > Apps >
-   Default apps" when a program calls it (with a bare extension, with a file
-   carrying FILE_ATTRIBUTE_TEMPORARY and with a normal file), while the "openas"
-   verb shows the real picker with the "always" button.
-
-   The sample file is a normal (empty) file in %TEMP%\7zipzs-setdefault\ - it is
-   kept, because the user may choose "just once", which starts the selected
-   program with that file. */
+/* Let Windows change the default only after the user confirms, without creating
+   a sample file or launching an archive application. */
 void CSystemPage::OpenDefaultAppDialog(unsigned listIndex)
 {
   const unsigned realIndex = GetRealIndex(listIndex);
   if (realIndex >= _extDB.Exts.Size())
     return;
 
-  /* Windows shows the picker only for a file type that has no default yet: if a
-     UserChoice exists (the type is assigned to some program), the shell opens the
-     settings page instead. So the choice of that type is removed first - the
-     picker writes a new one, which is exactly the "set default" step.
-
-     The shell needs a moment to notice the removal (SHChangeNotify alone is not
-     always enough for the "openas" verb, which runs in Explorer), so the picker
-     is started after a short pause - otherwise the first double click only
-     removes the old assignment and a second one would be needed. */
-  UString oldChoice;
+  #ifndef UNDER_CE
+  // Windows 10/11 owns the confirmation and cancellation of default changes.
+  if ((INT_PTR)::ShellExecuteW(*this, L"open",
+      L"ms-settings:defaultapps?registeredAppMachine=7-Zip%20ZS",
+      NULL, NULL, SW_SHOWNORMAL) > 32)
+    return;
+  const UString ext = UString(L".") + _extDB.Exts[realIndex].Ext;
+  // Load dynamically so the file manager can still start on older Windows.
+  const HMODULE shell = ::GetModuleHandleW(L"shell32.dll");
+  if (shell)
   {
-    UString keyName = L"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.";
-    keyName += _extDB.Exts[realIndex].Ext;
-    keyName += L"\\UserChoice";
-    NRegistry::CKey key;
-    if (key.Open(HKEY_CURRENT_USER, keyName, KEY_READ) == ERROR_SUCCESS)
-      key.QueryValue(L"ProgId", oldChoice);
-  }
-
-  ResetSystemDefault(listIndex);
-
-  if (!oldChoice.IsEmpty())
-  {
-    ::SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL);
-    ::Sleep(1200);
-  }
-
-  UString fileName;
-  {
-    wchar_t buf[MAX_PATH + 1];
-    const DWORD n = ::GetTempPathW(MAX_PATH, buf);
-    if (n > 0 && n <= MAX_PATH)
+    typedef HRESULT (WINAPI *Func_SHOpenWithDialog)(HWND, const OPENASINFO *);
+    const Func_SHOpenWithDialog show = Z7_GET_PROC_ADDRESS(
+        Func_SHOpenWithDialog, shell, "SHOpenWithDialog");
+    if (show)
     {
-      FString dir = buf;
-      dir += "7zipzs-setdefault";
-      ::CreateDirectoryW(dir, NULL);
-      dir.Add_PathSepar();
-      dir += "sample.";
-      dir += us2fs(_extDB.Exts[realIndex].Ext);
-
-      const HANDLE h = ::CreateFileW(dir, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS,
-          FILE_ATTRIBUTE_NORMAL, NULL);
-      if (h != INVALID_HANDLE_VALUE)
-      {
-        /* The picker starts the selected program with this file right away (that
-           is how "open with" works - the "always" button only adds the
-           registration), so the sample is written as a minimal valid *empty ZIP*
-           archive: every archiver opens it without an error message, unlike an
-           empty file. */
-        static const Byte k_EmptyZip[22] =
-        {
-          0x50, 0x4B, 0x05, 0x06,   // "PK\5\6" - end of central directory
-          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-        };
-        DWORD written = 0;
-        ::WriteFile(h, k_EmptyZip, (DWORD)sizeof(k_EmptyZip), &written, NULL);
-        ::CloseHandle(h);
-        fileName = fs2us(dir);
-      }
-    }
-  }
-
-  if (!fileName.IsEmpty())
-  {
-    SHELLEXECUTEINFOW sei;
-    ZeroMemory(&sei, sizeof(sei));
-    sei.cbSize = sizeof(sei);
-    sei.fMask = SEE_MASK_FLAG_NO_UI;
-    sei.lpVerb = L"openas";
-    sei.lpFile = fileName.Ptr();
-    sei.nShow = SW_SHOWNORMAL;
-
-    if (::ShellExecuteExW(&sei))
-    {
+      OPENASINFO info = {};
+      info.pcszFile = ext;
+      info.oaifInFlags = OAIF_REGISTER_EXT | OAIF_FORCE_REGISTRATION;
+      const HRESULT hr = show(*this, &info);
       UpdateSystemDefaults();
-      return;
+      if (SUCCEEDED(hr) || hr == HRESULT_FROM_WIN32(ERROR_CANCELLED))
+        return;
     }
   }
-
-  /* fallback: the general page of the default apps settings */
   ::ShellExecuteW(*this, L"open", L"ms-settings:defaultapps", NULL, NULL, SW_SHOWNORMAL);
+  #endif
 }
 
 
@@ -463,91 +395,34 @@ void CSystemPage::ResetSystemDefault(unsigned listIndex)
 }
 
 
-/* Removes the sample files that the picker needs (see OpenDefaultAppDialog).
-
-   They are only there to make Windows show the "select an app" picker for a file
-   type, and the shell starts the chosen program with them once - so they are
-   deleted when the options page is closed (and leftovers are removed whenever the
-   page is opened). */
-void CSystemPage::RemoveSampleFiles()
-{
-  wchar_t buf[MAX_PATH + 1];
-  const DWORD n = ::GetTempPathW(MAX_PATH, buf);
-  if (n == 0 || n > MAX_PATH)
-    return;
-
-  FString dir = buf;
-  dir += "7zipzs-setdefault";
-  FString mask = dir;
-  mask.Add_PathSepar();
-  mask += "sample.*";
-
-  WIN32_FIND_DATAW fd;
-  const HANDLE h = ::FindFirstFileW(mask, &fd);
-  if (h == INVALID_HANDLE_VALUE)
-    return;
-
-  for (;;)
-  {
-    FString path = dir;
-    path.Add_PathSepar();
-    path += fd.cFileName;
-    ::DeleteFileW(path);
-    if (!::FindNextFileW(h, &fd))
-      break;
-  }
-  ::FindClose(h);
-  ::RemoveDirectoryW(dir);
-}
-
-
-/* Reads the effective default app (Windows 10+ "UserChoice") of every extension
-   and shows it in the last column. An application cannot write that value - it
-   is protected by a hash, only the user can change it (Windows settings, "open
-   with") - so this column exists to show what really happens on a double click
-   instead of showing the classic ProgID only. */
+/* Query the shell's effective association, including UserChoice and the
+   ordinary per-user/machine association when no UserChoice exists. */
 void CSystemPage::UpdateSystemDefaults()
 {
   const unsigned kColumn = 1 + NUM_EXT_GROUPS;
-
   FOR_VECTOR (i, _items)
   {
-    CAssoc &assoc = _items[i];
-    assoc.SystemDefault.Empty();
-
-    UString keyName = L"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.";
-    keyName += _extDB.Exts[i].Ext;
-    keyName += L"\\UserChoice";
-
-    NRegistry::CKey key;
-    if (key.Open(HKEY_CURRENT_USER, keyName, KEY_READ) == ERROR_SUCCESS)
+    UString &name = _items[i].SystemDefault;
+    name.Empty();
+    #ifndef UNDER_CE
+    const UString ext = UString(L".") + _extDB.Exts[i].Ext;
+    DWORD size = 0;
+    AssocQueryStringW(ASSOCF_NOTRUNCATE, ASSOCSTR_FRIENDLYAPPNAME,
+        ext, L"open", NULL, &size);
+    if (size != 0)
     {
-      UString progId;
-      if (key.QueryValue(L"ProgId", progId) == ERROR_SUCCESS && !progId.IsEmpty())
+      const HRESULT hr = AssocQueryStringW(ASSOCF_NOTRUNCATE,
+          ASSOCSTR_FRIENDLYAPPNAME, ext, L"open", name.GetBuf(size), &size);
+      if (SUCCEEDED(hr))
+        name.ReleaseBuf_CalcLen(size);
+      else
       {
-        UString command;
-        {
-          NRegistry::CKey keyCmd;
-          if (keyCmd.Open(HKEY_CLASSES_ROOT, progId + UString(L"\\shell\\open\\command"), KEY_READ) == ERROR_SUCCESS)
-            keyCmd.QueryValue(NULL, command);
-        }
-
-        if (command.Find(L"7zFM.exe") >= 0)
-          assoc.SystemDefault = L"7-Zip ZS";
-        else
-        {
-          UString title;
-          {
-            NRegistry::CKey keyTitle;
-            if (keyTitle.Open(HKEY_CLASSES_ROOT, progId, KEY_READ) == ERROR_SUCCESS)
-              keyTitle.QueryValue(NULL, title);
-          }
-          assoc.SystemDefault = title.IsEmpty() ? progId : title;
-        }
+        name.ReleaseBuf_SetLen(0);
+        name.Empty();
       }
     }
-
-    _listView.SetSubItem(i, kColumn, assoc.SystemDefault);
+    #endif
+    _listView.SetSubItem(i, kColumn, name);
   }
 }
 
@@ -572,10 +447,23 @@ bool CSystemPage::OnTimer(WPARAM timerID, LPARAM /* lParam */)
     return false;
 
   /* place the buttons after the property sheet has laid the page out */
-  Position_MenuButtons();
+  if (_alignTicks < 4)
+    Position_MenuButtons();
 
-  if (++_alignTicks >= 4)
-    ::KillTimer(*this, 1);
+  if (_alignTicks < 4)
+  {
+    if (++_alignTicks == 4)
+      ::SetTimer(*this, 1, 1000, NULL);
+  }
+  else if (::IsWindowVisible(*this)
+      && ::GetForegroundWindow() == ::GetParent(*this))
+  {
+    if (_alignTicks == 4)
+      UpdateSystemDefaults();
+    _alignTicks = 5;
+  }
+  else
+    _alignTicks = 4;
   return true;
 }
 
@@ -814,14 +702,6 @@ void CSystemPage::OnNotifyHelp()
 }
 
 
-bool CSystemPage::OnDestroy()
-{
-  /* the picker used its sample file already, so it is not needed any more */
-  RemoveSampleFiles();
-  return false;
-}
-
-
 bool CSystemPage::OnButtonClicked(unsigned buttonID, HWND buttonHWND)
 {
   switch (buttonID)
@@ -854,9 +734,7 @@ bool CSystemPage::OnNotify(UINT controlID, LPNMHDR lParam)
 
       case NM_DBLCLK:
       {
-        /* 7-Zip ZS: double click sets the effective default app of Windows 10+
-           (the Windows "open with" dialog, which writes the protected
-           UserChoice) */
+        // Windows owns confirmation/cancellation of the default app change.
         NMITEMACTIVATE *item = (NMITEMACTIVATE *)lParam;
         if (item->iItem >= 0)
           OpenDefaultAppDialog((unsigned)item->iItem);

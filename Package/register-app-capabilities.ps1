@@ -6,7 +6,7 @@
       HKLM\SOFTWARE\7-Zip-Zstandard\Capabilities
           ApplicationName        = 7-Zip ZS
           ApplicationDescription = ...
-          FileAssociations\7z    = 7-Zip-Zstandard.7z
+          FileAssociations\.7z   = 7-Zip-Zstandard.7z
           ...
       HKLM\SOFTWARE\RegisteredApplications
           7-Zip ZS               = Software\7-Zip-Zstandard\Capabilities
@@ -94,7 +94,13 @@ foreach ($ext in $Exts)
 {
   $progId = "$ProgIdPrefix.$ext"
   if (-not (Test-Path -LiteralPath "Registry::HKEY_CLASSES_ROOT\$progId")) { continue }
-  & reg.exe add "$regCap\FileAssociations" /v "$ext" /t REG_SZ /d "$progId" /f | Out-Null
+  & reg.exe add "$regCap\FileAssociations" /v ".$ext" /t REG_SZ /d "$progId" /f | Out-Null
+  if ($LASTEXITCODE -ne 0) { throw "Could not register .$ext" }
+  # Repair values written by earlier versions, without touching other mappings.
+  $assocKey = Get-Item -LiteralPath "Registry::HKEY_LOCAL_MACHINE\$CapabilitiesPath\FileAssociations"
+  if ($assocKey.GetValue($ext) -eq $progId) {
+    Remove-ItemProperty -LiteralPath $assocKey.PSPath -Name $ext
+  }
   $count++
 }
 Info "file types registered: $count"

@@ -17,6 +17,7 @@
 #endif
 
 #include "../../../Common/StringConvert.h"
+#include "../../../Common/CommandLineParser.h"
 #include "../../../Common/StringToInt.h"
 
 #include "../../../Windows/ErrorMsg.h"
@@ -798,18 +799,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /* hPrevInstance */,
 {
   g_hInstance = hInstance;
 
-  /* 7-Zip ZS: the "System" options page creates a sample file in
-     %TEMP%\7zipzs-setdefault\ so that Windows shows its "select an app to open
-     this file" picker for a file type. That picker starts the selected program
-     with the sample afterwards (the "always" button only adds the registration),
-     which would only open an empty archive window - so the program exits silently
-     for that file and the user sees just the picker. */
-  {
-    const wchar_t *cmd = ::GetCommandLineW();
-    if (cmd && wcsstr(cmd, L"\\7zipzs-setdefault\\"))
-      return 0;
-  }
-
   /* 7-Zip ZS: change the machine-wide shell context menu registration and exit
      without opening a window. The options page ("7-Zip ZS") starts this with
      "runas" when 7zFM.exe itself does not have administrator rights, so the user
@@ -821,26 +810,29 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /* hPrevInstance */,
      rights needed). */
   #ifndef UNDER_CE
   {
-    const wchar_t *cmd = ::GetCommandLineW();
-    if (cmd)
+    UStringVector args;
+    NCommandLineParser::SplitCommandLine(::GetCommandLineW(), args);
+    if (args.Size() == 2)
     {
+      const UString &arg = args[1];
       const wchar_t *k_Reg = L"-ShellMenu=register";
       const wchar_t *k_Unreg = L"-ShellMenu=unregister";
       const wchar_t *k_ModernOn = L"-ShellMenu=modern-on";
       const wchar_t *k_ModernOff = L"-ShellMenu=modern-off";
 
-      if (const wchar_t *p = wcsstr(cmd, k_Reg))
+      if (arg == k_Reg)
       {
         const LONG res = SetContextMenuHandler_All(true);
         return res == ERROR_SUCCESS ? 0 : 1;
       }
-      if (wcsstr(cmd, k_Unreg))
+      if (arg == k_Unreg)
       {
         const LONG res = SetContextMenuHandler_All(false);
         return res == ERROR_SUCCESS ? 0 : 1;
       }
-      if (wcsstr(cmd, k_ModernOn) || wcsstr(cmd, k_ModernOff))
-      {        const bool enable = (wcsstr(cmd, k_ModernOn) != NULL);
+      if (arg == k_ModernOn || arg == k_ModernOff)
+      {
+        const bool enable = (arg == k_ModernOn);
         UString error;
         HRESULT hr = S_OK;
         if (enable)
@@ -862,8 +854,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /* hPrevInstance */,
 
       /* the "all users" column of the system page (file type associations in
          HKEY_LOCAL_MACHINE): "-AssocAll=+ext1,ext2-ext3" */
-      if (const wchar_t *p = wcsstr(cmd, L"-AssocAll="))
-        return ApplyAssocAll_FromCommandLine(p) == 0 ? 0 : 1;
+      if (arg.IsPrefixedBy(L"-AssocAll="))
+        return ApplyAssocAll_FromCommandLine(arg) == 0 ? 0 : 1;
+      const wchar_t *statePrefix = L"-ShellMenu=state:";
+      const unsigned statePos = (unsigned)wcslen(statePrefix);
+      if (arg.Len() == statePos + 1 && arg.IsPrefixedBy(statePrefix)
+          && arg[statePos] >= L'0' && arg[statePos] <= L'3')
+        return SetContextMenuHandler_State((unsigned)(arg[statePos] - L'0')) == ERROR_SUCCESS ? 0 : 1;
     }
   }
   #endif

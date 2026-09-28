@@ -287,30 +287,39 @@ and that value cannot be written by an application - it is protected by a hash,
 only the user can change it (Windows settings, "open with", or the other
 program's own dialog).
 
-The page therefore got an extra column ("system default app", 系统默认程序) that
-shows the effective default app; it is filled in `OnInit` and refreshed whenever
-the page is shown (`CSystemPage::OnSetActive`), so it follows changes made outside
-of 7-Zip.
+The "system default app" column uses the Windows shell association query, so
+it includes both `UserChoice` and the normal association fallback. It refreshes
+when this tab is selected and when the options window regains the foreground.
 
-Double clicking a row opens the Windows settings for the default apps
-(`ms-settings:defaultapps`). That is the workflow Windows asks for, because an
-application cannot change the default app of an extension:
+Double clicking a row opens the app's Windows Default Apps settings page. On
+older Windows without that settings URI, it falls back to `SHOpenWithDialog`.
+The operation does not delete `UserChoice`, create sample archives or launch an
+archiver. Cancelling the Windows UI leaves the existing association intact.
+The explicit right-click reset command remains available as a separate action.
 
-* `SHOpenWithDialog` only answers "go to Settings > Apps > Default apps" on
-  Windows 11 build 26200 - measured with a bare extension **and** with a real file
-  of that type (a temporary empty file was tried as well);
-* the `UserChoice` value is protected by a hash and is only written when the user
-  picks the program in a Windows UI;
-* this fork has no entry in `HKLM\SOFTWARE\RegisteredApplications`, which
-  `IApplicationAssociationRegistrationUI::LaunchAdvancedAssociationUI` would need
-  to open the app's own page; adding one is an installer task.
+`register-app-capabilities.ps1` registers dotted extension names (`.zip`, `.7z`)
+and removes matching undotted entries left by previous versions.
 
-Measured example on Windows 11 26200: `.rar` had the classic ProgID
-`7-Zip-Zstandard.rar` (both in HKLM and HKCU) while `UserChoice` was `WinRAR` -
-i.e. double clicking opened WinRAR while the page showed "7-Zip ZS". With the new
-column the row shows `WinRAR 压缩文件`, which is the truth. Note that clicking a
-cell of such an extension writes the classic ProgID only, so Windows may keep
-ignoring it - set the default in Windows settings in that case.
+## File manager builds and menu changes
+
+Both `CPP/7zip/UI/FileManager` (used by CI) and `CPP/7zip/Bundles/Fm` include
+`FMBuild.mak`. It supplies the WinRT compilation rule and property-page header
+dependencies. Build with the Windows SDK C++/WinRT headers installed. The optional
+`Z7_NO_MODERN_SHELL_INTEGRATION=1` selects a build without package management;
+the modern menu choices are disabled in that build. Use a separate output folder
+or a clean build when changing this flag.
+
+Menu mode changes validate the package before changing registrations, install a
+replacement before removing an existing menu, and restore completed steps if a
+later operation fails. A failed rollback is reported separately. Failed Apply
+keeps the options dialog open. The internal `-ShellMenu=state:0` through
+`-ShellMenu=state:3` helper preserves native/alternate DLL registration separately
+when restoring an earlier state.
+
+Administrative commands must be the sole argument and match a complete option.
+A filename containing `-ShellMenu=unregister` is treated as a filename.
+`configure-shell-menu.ps1` preserves `-InstallDir` across elevation and passes it
+to the package builder.
 
 ## Notes and pitfalls
 

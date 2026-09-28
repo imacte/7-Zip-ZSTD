@@ -117,11 +117,9 @@ class CSystemPage: public NWindows::NControl::CPropertyPage
   void ChangeState(unsigned group, const CUIntVector &indices);
   void ChangeState(unsigned group);
   void UpdateSystemDefaults();
-  /* removes the sample files that the picker needs (see OpenDefaultAppDialog) */
-  void RemoveSampleFiles();
   /* places the two "+" buttons above the column they act on */
   void Position_MenuButtons();
-  /* shows the Windows "open with" dialog for one row (double click) */
+  /* opens Windows default app settings (double click) */
   void OpenDefaultAppDialog(unsigned listIndex);
   /* deletes the UserChoice value of one row, so the classic ProgID of this
      program becomes effective again (right click menu) */
@@ -137,7 +135,6 @@ public:
   virtual bool OnInit() Z7_override;
   virtual void OnNotifyHelp() Z7_override;
   virtual bool OnNotify(UINT controlID, LPNMHDR lParam) Z7_override;
-  virtual bool OnDestroy() Z7_override;
   virtual bool OnTimer(WPARAM timerID, LPARAM lParam) Z7_override;
   virtual bool OnSize(WPARAM wParam, int xSize, int ySize) Z7_override;
   virtual LONG OnSetActive() Z7_override;

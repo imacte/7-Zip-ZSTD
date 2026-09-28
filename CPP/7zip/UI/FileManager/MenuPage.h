@@ -63,7 +63,7 @@ private:
   enum_MenuMode Get_Checked_MenuMode() const;
   void Set_MenuMode_Controls(enum_MenuMode mode);
   void Update_MenuMode_Controls();
-  void Apply_MenuMode(enum_MenuMode mode);
+  bool Apply_MenuMode(enum_MenuMode mode);
 
   #ifndef UNDER_CE
   CShellDll _dlls[2];
