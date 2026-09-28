@@ -21,6 +21,7 @@
 #include "LangUtils.h"
 #include "MenuPage.h"
 #include "MenuPageRes.h"
+#include "ShellIntegrationModern.h"
 
 #ifdef ZIP7_DARKMODE
 #include "../../../../DarkMode/lib/include/Darkmodelib.h"
@@ -93,6 +94,34 @@ static void LoadLang_Spec(UString &s, UInt32 id, const char *eng)
   if (s.IsEmpty())
     s = eng;
   s.RemoveChar(L'&');
+}
+
+
+/* The texts of the new mode controls. A language file may provide them under
+   the same ids; the built-in fallback is Chinese (written with \u escapes so
+   that this source file stays pure ASCII - MSVC reads it as codepage 936 and
+   -WX turns warning C4819 into an error otherwise). */
+static void Set_ModeControl_Text(HWND hwnd, unsigned id, const wchar_t *fallback)
+{
+  UString s;
+  LangString(id, s);
+  if (s.IsEmpty())
+    s = fallback;
+  ::SetDlgItemTextW(hwnd, id, s.Ptr());
+}
+
+static void Set_ModeControls_Text(HWND hwnd)
+{
+  Set_ModeControl_Text(hwnd, IDT_SYSTEM_MENU_MODE,
+      L"\u53F3\u952E\u83DC\u5355\u96C6\u6210\uFF1A");   // "Context menu integration:"
+  Set_ModeControl_Text(hwnd, IDX_SYSTEM_MENU_CLASSIC,
+      L"\u7ECF\u5178\u83DC\u5355\uFF08\u201C\u663E\u793A\u66F4\u591A\u9009\u9879\u201D\uFF09");
+  Set_ModeControl_Text(hwnd, IDX_SYSTEM_MENU_MODERN,
+      L"Windows 11 \u65B0\u83DC\u5355\uFF08\u7A00\u758F\u5305\uFF09");
+  Set_ModeControl_Text(hwnd, IDX_SYSTEM_MENU_BOTH,
+      L"\u4E24\u8005\u90FD\u6CE8\u518C\uFF08\u6587\u4EF6\u4E0A\u4F1A\u91CD\u590D\uFF09");
+  Set_ModeControl_Text(hwnd, IDX_SYSTEM_MENU_NONE,
+      L"\u90FD\u4E0D\u6CE8\u518C");
 }
 
 
@@ -185,6 +214,9 @@ bool CMenuPage::OnInit()
 
   #endif
 
+
+  Set_ModeControls_Text(*this);
+  Update_MenuMode_Controls();
 
   CContextMenuInfo ci;
   ci.Load();
@@ -303,10 +335,143 @@ static void ShowMenuErrorMessage(const wchar_t *m, HWND hwnd)
 #endif
 
 
+CMenuPage::enum_MenuMode CMenuPage::Get_Saved_MenuMode() const
+{
+  bool classicFiles = false;
+  #ifndef UNDER_CE
+  if (!_dlls[0].Path.IsEmpty())
+    classicFiles = CheckContextMenuHandler(fs2us(_dlls[0].Path), _dlls[0].wow);
+  #endif
+
+  const bool modern = NShellIntegrationModern::Is_Installed();
+
+  if (modern)
+    return classicFiles ? kMenuMode_Both : kMenuMode_Modern;
+  return classicFiles ? kMenuMode_Classic : kMenuMode_None;
+}
+
+
+CMenuPage::enum_MenuMode CMenuPage::Get_Checked_MenuMode() const
+{
+  if (IsButtonCheckedBool(IDX_SYSTEM_MENU_MODERN)) return kMenuMode_Modern;
+  if (IsButtonCheckedBool(IDX_SYSTEM_MENU_BOTH))   return kMenuMode_Both;
+  if (IsButtonCheckedBool(IDX_SYSTEM_MENU_NONE))   return kMenuMode_None;
+  return kMenuMode_Classic;
+}
+
+
+void CMenuPage::Set_MenuMode_Controls(enum_MenuMode mode)
+{
+  unsigned id = IDX_SYSTEM_MENU_CLASSIC;
+  switch (mode)
+  {
+    case kMenuMode_Classic: id = IDX_SYSTEM_MENU_CLASSIC; break;
+    case kMenuMode_Modern:  id = IDX_SYSTEM_MENU_MODERN; break;
+    case kMenuMode_Both:    id = IDX_SYSTEM_MENU_BOTH; break;
+    case kMenuMode_None:    id = IDX_SYSTEM_MENU_NONE; break;
+  }
+  ::CheckRadioButton(*this, IDX_SYSTEM_MENU_CLASSIC, IDX_SYSTEM_MENU_NONE, (int)id);
+}
+
+
+void CMenuPage::Update_MenuMode_Controls()
+{
+  Set_MenuMode_Controls(Get_Saved_MenuMode());
+}
+
+
+void CMenuPage::Apply_MenuMode(enum_MenuMode mode)
+{
+  #ifndef UNDER_CE
+  const bool wantClassic = (mode == kMenuMode_Classic || mode == kMenuMode_Both);
+  const bool wantModern  = (mode == kMenuMode_Modern  || mode == kMenuMode_Both);
+  UString error;
+
+  // 1) the machine-wide classic registration (the "*" root, as the checkbox does)
+  if (!_dlls[0].Path.IsEmpty())
+  {
+    const UString path = fs2us(_dlls[0].Path);
+    if (CheckContextMenuHandler(path, _dlls[0].wow) != wantClassic)
+    {
+      const LONG res = SetContextMenuHandler(wantClassic, path, _dlls[0].wow);
+      if (res != ERROR_SUCCESS)
+        ShowMenuErrorMessage(NError::MyFormatMessage(res), *this);
+    }
+  }
+
+  if (wantModern)
+  {
+    // The shell lists the commands of a sparse package in the classic menu for
+    // files but not for directories, so Folder/Directory are registered per user
+    // (HKCU\Software\Classes - no administrator rights needed).
+    if (NShellIntegrationModern::Set_FolderRegistration_PerUser(true, error) != S_OK)
+      ShowMenuErrorMessage(error, *this);
+
+    if (!NShellIntegrationModern::Is_Installed())
+    {
+      const UString msixPath = NShellIntegrationModern::Get_DefaultMsixPath();
+      if (msixPath.IsEmpty())
+      {
+        UString m = L"Package file not found:\n";
+        m += L"SevenZipZS.ShellExtension_x64.msix\n\n";
+        m += L"Run Package\\build-shell-package.ps1 (as administrator) once.";
+        ShowMenuErrorMessage(m, *this);
+      }
+      else
+      {
+        const UString dir = fs2us(NDLL::GetModuleDirPrefix());
+        if (NShellIntegrationModern::Install(msixPath, dir, error) != S_OK)
+        {
+          if (error.IsEmpty())
+            error = L"AddPackage failed";
+          ShowMenuErrorMessage(error, *this);
+        }
+      }
+    }
+  }
+  else
+  {
+    if (NShellIntegrationModern::Is_Installed())
+    {
+      if (NShellIntegrationModern::Remove(error) != S_OK)
+      {
+        if (error.IsEmpty())
+          error = L"RemovePackage failed";
+        ShowMenuErrorMessage(error, *this);
+      }
+    }
+    NShellIntegrationModern::Set_FolderRegistration_PerUser(false, error);
+  }
+  #endif
+
+  // reflect what really is registered now
+  Update_MenuMode_Controls();
+
+  #ifndef UNDER_CE
+  for (unsigned d = 0; d < 2; d++)
+  {
+    CShellDll &dll = _dlls[d];
+    if (!dll.Path.IsEmpty())
+    {
+      dll.prevValue = CheckContextMenuHandler(fs2us(dll.Path), dll.wow);
+      CheckButton(dll.ctrl, dll.prevValue);
+      dll.wasChanged = false;
+    }
+  }
+  #endif
+}
+
+
 LONG CMenuPage::OnApply()
 {
   #ifndef UNDER_CE
-  
+
+  if (_menuMode_Changed)
+  {
+    Apply_MenuMode(Get_Checked_MenuMode());
+    _menuMode_Changed = false;
+  }
+
   for (unsigned d = 2; d != 0;)
   {
     d--;
@@ -392,6 +557,13 @@ bool CMenuPage::OnButtonClicked(unsigned buttonID, HWND buttonHWND)
     case IDX_SYSTEM_ICON_IN_MENU: _menuIcons_Changed = true; break;
     case IDX_EXTRACT_ELIM_DUP: _elimDup_Changed = true; break;
     // case IDX_EXTRACT_WRITE_ZONE: _writeZone_Changed = true; break;
+
+    case IDX_SYSTEM_MENU_CLASSIC:
+    case IDX_SYSTEM_MENU_MODERN:
+    case IDX_SYSTEM_MENU_BOTH:
+    case IDX_SYSTEM_MENU_NONE:
+      _menuMode_Changed = true;
+      break;
       
     default:
       return CPropertyPage::OnButtonClicked(buttonID, buttonHWND);

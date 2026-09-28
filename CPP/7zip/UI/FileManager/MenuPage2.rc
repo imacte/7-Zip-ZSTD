@@ -1,21 +1,27 @@
 #include "../GUI/ExtractDialogRes.h"
 
-#define y 96
+#define y 158
 
 #define zoneX 100
 
 CAPTION "7-Zip ZS"
 BEGIN
-  MY_CONTROL_CHECKBOX ( "Integrate 7-Zip ZS to shell context menu", IDX_SYSTEM_INTEGRATE_TO_MENU, m, m, xc)
-  MY_CONTROL_CHECKBOX ( "(32-bit)", IDX_SYSTEM_INTEGRATE_TO_MENU_2, m, m + 14, xc)
-  MY_CONTROL_CHECKBOX ( "Cascaded context menu", IDX_SYSTEM_CASCADED_MENU, m, m + 28, xc)
-  MY_CONTROL_CHECKBOX ( "Icons in context menu", IDX_SYSTEM_ICON_IN_MENU, m, m + 42, xc)
-  MY_CONTROL_CHECKBOX ( "Eliminate duplication of root folder", IDX_EXTRACT_ELIM_DUP, m, m + 56, xc)
+  LTEXT    "Context menu integration:", IDT_SYSTEM_MENU_MODE, m, m - 2, xc, 8
+  MY_CONTROL_AUTORADIOBUTTON_GROUP ( "Classic menu (Show more options)", IDX_SYSTEM_MENU_CLASSIC, m, m + 10, xc)
+  MY_CONTROL_AUTORADIOBUTTON ( "Windows 11 menu (sparse package)", IDX_SYSTEM_MENU_MODERN, m, m + 22, xc)
+  MY_CONTROL_AUTORADIOBUTTON ( "Both (7-Zip ZS twice for files)", IDX_SYSTEM_MENU_BOTH, m, m + 34, xc)
+  MY_CONTROL_AUTORADIOBUTTON ( "Neither", IDX_SYSTEM_MENU_NONE, m, m + 46, xc)
 
-  LTEXT    "Propagate Zone.Id stream:", IDT_SYSTEM_ZONE, m, m + 70, xc - zoneX, 8
-  COMBOBOX  IDC_SYSTEM_ZONE, m + xc - zoneX, m + 70 - 2, zoneX, 50, MY_COMBO
+  MY_CONTROL_CHECKBOX ( "Integrate 7-Zip ZS to shell context menu", IDX_SYSTEM_INTEGRATE_TO_MENU, m, m + 62, xc)
+  MY_CONTROL_CHECKBOX ( "(32-bit)", IDX_SYSTEM_INTEGRATE_TO_MENU_2, m, m + 76, xc)
+  MY_CONTROL_CHECKBOX ( "Cascaded context menu", IDX_SYSTEM_CASCADED_MENU, m, m + 90, xc)
+  MY_CONTROL_CHECKBOX ( "Icons in context menu", IDX_SYSTEM_ICON_IN_MENU, m, m + 104, xc)
+  MY_CONTROL_CHECKBOX ( "Eliminate duplication of root folder", IDX_EXTRACT_ELIM_DUP, m, m + 118, xc)
 
-  LTEXT    "Context menu items:", IDT_SYSTEM_CONTEXT_MENU_ITEMS, m, m + 84, xc, 8
+  LTEXT    "Propagate Zone.Id stream:", IDT_SYSTEM_ZONE, m, m + 132, xc - zoneX, 8
+  COMBOBOX  IDC_SYSTEM_ZONE, m + xc - zoneX, m + 130, zoneX, 50, MY_COMBO
+
+  LTEXT    "Context menu items:", IDT_SYSTEM_CONTEXT_MENU_ITEMS, m, m + 146, xc, 8
   CONTROL  "List", IDL_SYSTEM_OPTIONS, "SysListView32",
            LVS_REPORT | LVS_SINGLESEL | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,
            m, m + y, xc, yc - y

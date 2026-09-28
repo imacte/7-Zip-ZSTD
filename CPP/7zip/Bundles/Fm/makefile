@@ -83,3 +83,32 @@ GUI_OBJS = \
 
 
 !include "../../7zip.mak"
+
+# - 7-Zip ZS -
+#
+# The options page ("7-Zip ZS") registers the sparse package of the Windows 11
+# context menu through the PackageManager API. ShellIntegrationModern.cpp is the
+# only C++/WinRT translation unit, so it gets its own compile flags: C++17 (which
+# C++/WinRT requires) and the cppwinrt include directory of the Windows SDK (the
+# projections ship with the SDK, no NuGet package is needed). The WinRT API
+# umbrella library is linked in addition.
+#
+# Everything else of the project stays on its own settings.
+LIBS = $(LIBS) windowsapp.lib
+
+# The C++/WinRT headers ship with the Windows SDK. nmake does not see the
+# WindowsSdkDir environment variable that vcvars64 sets in every setup, so the
+# path is written by cmd.exe and then included. It can also be given directly:
+#   nmake PLATFORM=x64 CPPWINRT_INCLUDE=C:\...\Include\<ver>\cppwinrt
+!IFNDEF CPPWINRT_INCLUDE
+!IF [cmd /c "echo CPPWINRT_INCLUDE=%WindowsSdkDir%Include\%WindowsSDKVersion%cppwinrt> cppwinrt_path.mak"]
+!ENDIF
+!INCLUDE cppwinrt_path.mak
+!ENDIF
+
+# (no -Yu/-Fp here: the precompiled header is built with the project standard and
+#  MSVC rejects /std:c++17 together with a PCH of another standard, so this file
+#  includes StdAfx.h as a normal header)
+$O\ShellIntegrationModern.obj: ..\..\UI\FileManager\ShellIntegrationModern.cpp
+	$(CC) $(CFLAGS_O1) -DZ7_ENABLE_MODERN_SHELL_INTEGRATION -std:c++17 -W3 -EHsc -I"$(CPPWINRT_INCLUDE)" ..\..\UI\FileManager\ShellIntegrationModern.cpp
+

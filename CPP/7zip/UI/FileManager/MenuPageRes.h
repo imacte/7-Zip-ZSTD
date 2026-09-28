@@ -6,6 +6,13 @@
 #define IDT_SYSTEM_CONTEXT_MENU_ITEMS   2303
 #define IDX_SYSTEM_ICON_IN_MENU         2304
 
+// context menu integration mode (radio buttons)
+#define IDT_SYSTEM_MENU_MODE            2305
+#define IDX_SYSTEM_MENU_CLASSIC         2306
+#define IDX_SYSTEM_MENU_MODERN          2307
+#define IDX_SYSTEM_MENU_BOTH            2308
+#define IDX_SYSTEM_MENU_NONE            2309
+
 #define IDX_SYSTEM_INTEGRATE_TO_MENU_2  2310
 
 #define IDT_SYSTEM_ZONE                 3440

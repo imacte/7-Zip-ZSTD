@@ -140,4 +140,19 @@ if (Test-Path $assetsSrc)
   Info ("OK     Assets\  -> {0} ({1} file(s))" -f $assetsDst, (Get-ChildItem $assetsDst -Filter *.png | Measure-Object).Count)
 }
 
+# The options page ("7-Zip ZS") registers the sparse package of the Windows 11
+# context menu itself, so the .msix has to be next to the binaries; the program
+# directory is where it looks for SevenZipZS.ShellExtension*.msix.
+$msix = Get-ChildItem (Join-Path $PSScriptRoot 'Output\*.msix') -ErrorAction SilentlyContinue |
+  Sort-Object LastWriteTime -Descending | Select-Object -First 1
+if ($msix)
+{
+  Copy-Item $msix.FullName (Join-Path $InstallDir $msix.Name) -Force
+  Info "OK     $($msix.Name) -> $InstallDir  (used by the options page)"
+}
+else
+{
+  Info 'WARN   no .msix in Package\Output - run build-shell-package.ps1, otherwise the options page cannot install the Windows 11 menu'
+}
+
 Write-Host 'Done.' -ForegroundColor Green

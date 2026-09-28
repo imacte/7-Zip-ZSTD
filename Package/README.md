@@ -144,6 +144,45 @@ out / sign in) before the packaged command is listed again. Measured with the
 probe: `7-Zip entries in the classic menu: 0` for ~20 seconds after
 `explorer.exe` was restarted, `1` afterwards.
 
+## Switching from the program: Options -> 7-Zip ZS
+
+The options page has a "Context menu integration" group (右键菜单集成) with four
+radio buttons - the same modes as `configure-shell-menu.ps1`:
+
+```text
+( ) 经典菜单（“显示更多选项”）       classic registration for *, Folder, Directory
+(o) Windows 11 新菜单（稀疏包）      sparse package + per-user Folder/Directory
+( ) 两者都注册（文件上会重复）        both
+( ) 都不注册                        neither
+```
+
+The page shows the **real** state (derived from the registry and from
+`PackageManager`) and "Apply" performs the change:
+
+* the classic part uses the same machine-wide registration as the checkbox
+  "Integrate 7-Zip ZS to shell context menu" below it, so it needs administrator
+  rights - like that checkbox, the change is refused (and reverted in the UI)
+  when 7zFM.exe does not run elevated;
+* the modern part registers the sparse package through the WinRT
+  `PackageManager` API (per user, no UAC) and adds per-user classic keys for
+  `Folder`/`Directory` in `HKCU\Software\Classes` (the shell lists the commands
+  of a package in the classic menu for files, but not for directories).
+
+The package file `SevenZipZS.ShellExtension*.msix` has to be next to the binaries
+(`install-into-7zipzs.ps1` copies it there) and its signing certificate has to be
+trusted (`build-shell-package.ps1` does that once, with administrator rights).
+
+Implementation notes: `ShellIntegrationModern.cpp` is the only C++/WinRT
+translation unit - compiled with `/std:c++17`, with the `cppwinrt` include
+directory of the Windows SDK and **without** the precompiled header (MSVC rejects
+a PCH built with another language standard), and it links `windowsapp.lib`
+through `#pragma comment`. nmake does not see the `WindowsSdkDir` environment
+variable that vcvars64 sets here, so `CPP/7zip/Bundles/Fm/makefile` has cmd.exe
+write `cppwinrt_path.mak` and includes it (override with
+`nmake PLATFORM=x64 CPPWINRT_INCLUDE=...`). `IAsyncOperation::get()` must not be
+called on the STA thread of the options page, so install/remove run on a
+short-lived MTA thread.
+
 ## Choosing the menus: configure-shell-menu.ps1
 
 ```powershell

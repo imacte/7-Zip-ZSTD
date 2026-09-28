@@ -27,6 +27,7 @@ class CMenuPage: public NWindows::NControl::CPropertyPage
   bool _elimDup_Changed;
   bool _writeZone_Changed;
   bool _flags_Changed;
+  bool _menuMode_Changed;
 
   void Clear_MenuChanged()
   {
@@ -35,8 +36,31 @@ class CMenuPage: public NWindows::NControl::CPropertyPage
     _elimDup_Changed = false;
     _writeZone_Changed = false;
     _flags_Changed = false;
+    _menuMode_Changed = false;
   }
-  
+
+public:
+  /* Which context menu(s) 7-Zip ZS is registered in:
+       Classic - machine-wide classic registration (*, Folder, Directory)
+       Modern  - sparse package for the Windows 11 menu + per-user classic
+                 registration for Folder/Directory
+       Both    - both of them (7-Zip ZS appears twice for files)
+       None    - nowhere */
+  enum enum_MenuMode
+  {
+    kMenuMode_Classic,
+    kMenuMode_Modern,
+    kMenuMode_Both,
+    kMenuMode_None
+  };
+
+private:
+  enum_MenuMode Get_Saved_MenuMode() const;
+  enum_MenuMode Get_Checked_MenuMode() const;
+  void Set_MenuMode_Controls(enum_MenuMode mode);
+  void Update_MenuMode_Controls();
+  void Apply_MenuMode(enum_MenuMode mode);
+
   #ifndef UNDER_CE
   CShellDll _dlls[2];
   #endif

@@ -28,6 +28,7 @@ FM_OBJS = \
   $O\LangUtils.obj \
   $O\MemDialog.obj \
   $O\MenuPage.obj \
+  $O\ShellIntegrationModern.obj \
   $O\MyLoadMenu.obj \
   $O\OpenCallback.obj \
   $O\OptionsDialog.obj \
