@@ -8,7 +8,8 @@ FM_PAGE_HEADERS = \
   ../../UI/FileManager/SettingsPage.h \
   ../../UI/FileManager/LangPage.h \
   ../../UI/FileManager/ShellIntegrationModern.h \
-  ../../UI/FileManager/ShellMenuTransaction.h
+  ../../UI/FileManager/ShellMenuTransaction.h \
+  ../../UI/FileManager/AssocCommand.h
 
 $O\OptionsDialog.obj $O\SystemPage.obj $O\MenuPage.obj $O\FoldersPage.obj \
 $O\EditPage.obj $O\SettingsPage.obj $O\LangPage.obj $O\FM.obj: \

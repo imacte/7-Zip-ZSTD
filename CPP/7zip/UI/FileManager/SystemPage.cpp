@@ -27,6 +27,7 @@
 #include "PropertyNameRes.h"
 #include "ShellIntegrationModern.h"
 #include "SystemPage.h"
+#include "AssocCommand.h"
 #include "SystemPageRes.h"
 
 using namespace NWindows;
@@ -600,41 +601,50 @@ static void Apply_AssocOne(bool add, const UString &ext, const CExtDatabase &ext
 }
 
 
+struct CAssocAction
+{
+  UString Ext;
+  bool Add;
+};
+
+struct CAssocCommandCollector
+{
+  const CExtDatabase &Database;
+  CObjectVector<CAssocAction> Actions;
+  CAssocCommandCollector(const CExtDatabase &db): Database(db) {}
+  bool operator()(const wchar_t *start, unsigned length, bool add)
+  {
+    UString ext;
+    ext.SetFrom(start, length);
+    FOR_VECTOR (i, Database.Exts)
+    {
+      if (Database.Exts[i].Ext.IsEqualTo_NoCase(ext)
+          && !Database.Exts[i].Plugins.IsEmpty())
+      {
+        CAssocAction action;
+        action.Ext = ext;
+        action.Add = add;
+        Actions.Add(action);
+        return true;
+      }
+    }
+    return false;
+  }
+};
+
 int ApplyAssocAll_FromCommandLine(const wchar_t *spec)
 {
-  if (!spec)
-    return 1;
-  if (wcsncmp(spec, L"-AssocAll=", 10) == 0)
-    spec += 10;
-
   CExtDatabase extDB;
   extDB.Read();
+  CAssocCommandCollector collector(extDB);
+  if (!ParseAssocCommand(spec, collector)) return 1;
   const UString command = GetProgramCommand();
-
   LONG res = ERROR_SUCCESS;
-  bool add = false;
-  UString cur;
-
-  for (;;)
+  FOR_VECTOR (i, collector.Actions)
   {
-    const wchar_t c = *spec;
-    if (c == 0 || c == L'+' || c == L'-' || c == L',')
-    {
-      if (!cur.IsEmpty())
-      {
-        Apply_AssocOne(add, cur, extDB, command, res);
-        cur.Empty();
-      }
-      if (c == 0)
-        break;
-      if (c != L',')
-        add = (c == L'+');
-    }
-    else
-      cur += c;
-    spec++;
+    const CAssocAction &action = collector.Actions[i];
+    Apply_AssocOne(action.Add, action.Ext, extDB, command, res);
   }
-
   return res == ERROR_SUCCESS ? 0 : 1;
 }
 
