@@ -306,17 +306,21 @@ bool CSystemPage::OnInit()
 }
 
 
-/* Opens the Windows picker "which app should open .xxx files" for one file type.
+/* Opens the Windows picker "select an app to open .xxx files" for one file type.
 
    That picker is the only way an application can get the effective default app
    changed on Windows 10/11: the user's choice makes Windows write the protected
-   UserChoice value itself. It is shown by SHOpenWithDialog, but Windows answers
-   "go to Settings > Apps > Default apps" when
-     * a bare extension (".rar") is passed, or
-     * a file with the FILE_ATTRIBUTE_TEMPORARY attribute is passed,
-   so a normal (empty) sample file of that type is created in %TEMP% and removed
-   afterwards. If that is not possible, or if the API is unavailable, the general
-   settings page is opened instead. */
+   UserChoice value itself.
+
+   It is started through the shell verb "openas" on a sample file: measured on
+   Windows 11 build 26200 SHOpenWithDialog only answers "go to Settings > Apps >
+   Default apps" when a program calls it (with a bare extension, with a file
+   carrying FILE_ATTRIBUTE_TEMPORARY and with a normal file), while the "openas"
+   verb shows the real picker with the "always" button.
+
+   The sample file is a normal (empty) file in %TEMP%\7zipzs-setdefault\ - it is
+   kept, because the user may choose "just once", which starts the selected
+   program with that file. */
 void CSystemPage::OpenDefaultAppDialog(unsigned listIndex)
 {
   const unsigned realIndex = GetRealIndex(listIndex);
@@ -324,10 +328,6 @@ void CSystemPage::OpenDefaultAppDialog(unsigned listIndex)
     return;
 
   UString fileName;
-
-  /* a normal file of that type: a bare extension or a file with the temporary
-     attribute makes the shell refuse to offer the "always use this app" option */
-  FString tempFile;
   {
     wchar_t buf[MAX_PATH + 1];
     const DWORD n = ::GetTempPathW(MAX_PATH, buf);
@@ -345,7 +345,6 @@ void CSystemPage::OpenDefaultAppDialog(unsigned listIndex)
       if (h != INVALID_HANDLE_VALUE)
       {
         ::CloseHandle(h);
-        tempFile = dir;
         fileName = fs2us(dir);
       }
     }
@@ -353,30 +352,16 @@ void CSystemPage::OpenDefaultAppDialog(unsigned listIndex)
 
   if (!fileName.IsEmpty())
   {
-    /* SHOpenWithDialog is declared for NTDDI_VISTA and up only (this project
-       targets an older version), so it is resolved dynamically; the structure
-       matches OPENASINFO of the Windows SDK. */
-    struct COpenAsInfo
+    SHELLEXECUTEINFOW sei;
+    ZeroMemory(&sei, sizeof(sei));
+    sei.cbSize = sizeof(sei);
+    sei.fMask = SEE_MASK_FLAG_NO_UI;
+    sei.lpVerb = L"openas";
+    sei.lpFile = fileName.Ptr();
+    sei.nShow = SW_SHOWNORMAL;
+
+    if (::ShellExecuteExW(&sei))
     {
-      LPCWSTR pcszFile;
-      LPCWSTR pcszClass;
-      int oaifInFlags;
-    };
-    typedef HRESULT (WINAPI *Func_SHOpenWithDialog)(HWND, const COpenAsInfo *);
-
-    const HMODULE hShell = ::GetModuleHandleW(L"shell32.dll");
-    const Func_SHOpenWithDialog func = hShell ?
-        (Func_SHOpenWithDialog)(void *)::GetProcAddress(hShell, "SHOpenWithDialog") : NULL;
-
-    if (func)
-    {
-      COpenAsInfo info;
-      info.pcszFile = fileName.Ptr();
-      info.pcszClass = NULL;
-      info.oaifInFlags = OAIF_ALLOW_REGISTRATION | OAIF_REGISTER_EXT;
-      func(*this, &info);
-
-      ::DeleteFileW(tempFile);
       UpdateSystemDefaults();
       return;
     }
