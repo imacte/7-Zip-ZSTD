@@ -44,6 +44,7 @@
 #ifndef UNDER_CE
 #include "../Explorer/RegistryContextMenu.h"
 #endif
+#include "ShellIntegrationModern.h"
 
 using namespace NWindows;
 using namespace NFile;
@@ -800,7 +801,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /* hPrevInstance */,
      without opening a window. The options page ("7-Zip ZS") starts this with
      "runas" when 7zFM.exe itself does not have administrator rights, so the user
      only has to confirm the UAC prompt instead of restarting the program as
-     administrator. */
+     administrator.
+
+     -ShellMenu=modern-on / modern-off additionally register or unregister the
+     sparse package of the Windows 11 context menu (per user, no administrator
+     rights needed). */
   #ifndef UNDER_CE
   {
     const wchar_t *cmd = ::GetCommandLineW();
@@ -808,14 +813,39 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /* hPrevInstance */,
     {
       const wchar_t *k_Reg = L"-ShellMenu=register";
       const wchar_t *k_Unreg = L"-ShellMenu=unregister";
-      const wchar_t *p = wcsstr(cmd, k_Reg);
-      const bool found = (p != NULL);
-      if (!found)
-        p = wcsstr(cmd, k_Unreg);
-      if (p)
+      const wchar_t *k_ModernOn = L"-ShellMenu=modern-on";
+      const wchar_t *k_ModernOff = L"-ShellMenu=modern-off";
+
+      if (const wchar_t *p = wcsstr(cmd, k_Reg))
       {
-        const LONG res = SetContextMenuHandler_All(found);
+        const LONG res = SetContextMenuHandler_All(true);
         return res == ERROR_SUCCESS ? 0 : 1;
+      }
+      if (wcsstr(cmd, k_Unreg))
+      {
+        const LONG res = SetContextMenuHandler_All(false);
+        return res == ERROR_SUCCESS ? 0 : 1;
+      }
+      if (wcsstr(cmd, k_ModernOn) || wcsstr(cmd, k_ModernOff))
+      {
+        const bool enable = (wcsstr(cmd, k_ModernOn) != NULL);
+        UString error;
+        HRESULT hr = S_OK;
+        if (enable)
+        {
+          const UString msix = NShellIntegrationModern::Get_DefaultMsixPath();
+          if (msix.IsEmpty())
+            hr = HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND);
+          else
+          {
+            const UString dir = fs2us(NDLL::GetModuleDirPrefix());
+            hr = NShellIntegrationModern::Install(msix, dir, error);
+          }
+        }
+        else
+          hr = NShellIntegrationModern::Remove(error);
+
+        return hr == S_OK ? 0 : 1;
       }
     }
   }

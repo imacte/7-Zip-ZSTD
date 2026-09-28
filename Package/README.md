@@ -253,6 +253,25 @@ Notes:
 
 ## Notes and pitfalls
 
+* **A classic registration has two parts.** Besides the shellex keys there is the
+  COM registration (`HKCR\CLSID\{23170F69-20BB-278A-1000-000100020000}` with
+  `InprocServer32` = `<install dir>\7-zip.dll`). The program's own unregister path
+  (the checkbox off, or `-ShellMenu=unregister`) deletes the COM part but leaves
+  the shellex keys behind - without the COM part the shell cannot load the
+  extension, so the classic menu shows nothing even though the shellex keys are
+  there. `configure-shell-menu.ps1` now writes **and** removes both, and
+  `verify-shell-package.ps1` / the probe show it immediately
+  (`CoCreateInstance(IID_IContextMenu)` must succeed).
+* `7zFM.exe -ShellMenu=register|unregister` changes the machine-wide classic
+  registration (needs administrator rights, no window is opened) and exits with
+  0/1. `-ShellMenu=modern-on|modern-off` registers or unregisters the sparse
+  package (per user, no administrator rights). The options page uses the
+  "register" pair through `runas`, i.e. one UAC prompt.
+* `IAsyncOperation::get()` of C++/WinRT must not run on the STA thread of the
+  options page and the worker thread must not ask for another apartment type, so
+  `ShellIntegrationModern.cpp` resolves the package full name on the caller's
+  thread and only performs the asynchronous call on a short-lived MTA thread.
+
 * **A running COM surrogate keeps the old DLL.** The packaged COM server is
   loaded by `dllhost.exe`, and such a surrogate can stay alive for a long time.
   Replacing `7-zip.dll` and restarting File Explorer is then not enough: the

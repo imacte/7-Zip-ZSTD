@@ -36,6 +36,8 @@ param(
   [string]$PackageName = 'SevenZipZS.ShellExtension',
   [string]$BackupDir,
   [string]$LogFile,
+  # the program directory - used for the COM registration of the shell extension
+  [string]$InstallDir = 'D:\Program Files\7-Zip-Zstandard',
   [switch]$Status
 )
 
@@ -123,6 +125,18 @@ function Remove-LegacyRegistration()
     & reg.exe delete "$key" /f | Out-Null
     if (Test-LegacyKey $root) { Info "FAILED  remove $key" } else { Info "removed $key   (backup: $(Split-Path $backup -Leaf))" }
   }
+
+  # The COM registration of the shell extension. The program's own unregister
+  # path ("Integrate 7-Zip ZS to shell context menu" off, or ... ) removes it, and
+  # an extension without it cannot be loaded (the classic menu then stays empty).
+  # In the Modern mode the sparse package provides the CLSID, so removing the
+  # classic one is correct here as well.
+  $clsidKey = "HKCR\CLSID\$Clsid"
+  & reg.exe export "$clsidKey" (Join-Path $BackupDir 'legacy-clsid.reg') /y 2>$null | Out-Null
+  & reg.exe delete "$clsidKey" /f 2>$null | Out-Null
+  if (Test-Path -LiteralPath "Registry::HKEY_CLASSES_ROOT\CLSID\$Clsid")
+  { Info "WARN   could not remove HKCR\CLSID\$Clsid" }
+  else { Info "removed HKCR\CLSID\$Clsid" }
 }
 
 function Add-LegacyRegistration([switch]$OnlyFolders)
@@ -167,6 +181,24 @@ function Add-LegacyRegistration([switch]$OnlyFolders)
     Set-ItemProperty -LiteralPath $approved -Name $Clsid -Value $ShellExtName -ErrorAction SilentlyContinue
     Info "approved entry set to '$ShellExtName'"
   }
+
+  # The COM registration of the shell extension. The 7-Zip installer writes it as
+  # well, but the program's own unregister path deletes it - and without it the
+  # shell cannot load the DLL, so the classic menu stays empty even though the
+  # shellex keys above exist.
+  $dllPath = Join-Path $InstallDir '7-zip.dll'
+  if (-not (Test-Path $dllPath))
+  {
+    Info "WARN   $dllPath not found - the COM registration was not written"
+    return
+  }
+  $clsidPredicate = "HKCR\CLSID\$Clsid"
+  & reg.exe add "$clsidPredicate" /ve /t REG_SZ /d $ShellExtName /f | Out-Null
+  & reg.exe add "$clsidPredicate\InprocServer32" /ve /t REG_SZ /d "$dllPath" /f | Out-Null
+  & reg.exe add "$clsidPredicate\InprocServer32" /v ThreadingModel /t REG_SZ /d Apartment /f | Out-Null
+  $val = (Get-Item -LiteralPath "Registry::HKEY_CLASSES_ROOT\CLSID\$Clsid\InprocServer32" -ErrorAction SilentlyContinue).GetValue('')
+  if ($val -like '*7-zip.dll') { Info "COM registration: HKCR\CLSID\$Clsid -> $val" }
+  else { Info "FAILED  COM registration (value: '$val')" }
 }
 
 function Install-Package([bool]$enable)

@@ -99,6 +99,7 @@ struct CThreadOp
   enum_Type Type;
   UString MsixPath;
   UString ExternalDir;
+  UString FullName;      // for kRemove: filled by the caller, see below
   UString Error;
   HRESULT Hr;
   CThreadOp(): Type(kInstall), Hr(E_FAIL) {}
@@ -152,15 +153,17 @@ static DWORD WINAPI Op_Thread(LPVOID param)
     }
     else
     {
-      UString fullName;
-      if (!Is_Installed(&fullName))
+      /* op.FullName was resolved by Remove() on the caller's thread: calling
+         Is_Installed() here would ask for a single-threaded apartment on a
+         multi-threaded one (RPC_E_CHANGED_MODE). */
+      if (op.FullName.IsEmpty())
       {
         op.Hr = S_OK;   // nothing to do
       }
       else
       {
         winrt::Windows::Management::Deployment::DeploymentResult result =
-            pm.RemovePackageAsync(fullName.Ptr(),
+            pm.RemovePackageAsync(op.FullName.Ptr(),
                 winrt::Windows::Management::Deployment::RemovalOptions::None).get();
         if (result.ExtendedErrorCode())
         {
@@ -230,8 +233,16 @@ HRESULT Install(const UString &msixPath, const UString &externalDir, UString &er
 
 HRESULT Remove(UString &errorText)
 {
+  errorText.Empty();
+
+  // resolved here (single-threaded apartment of the caller), see CThreadOp
+  UString fullName;
+  if (!Is_Installed(&fullName))
+    return S_OK;   // nothing to remove
+
   CThreadOp op;
   op.Type = CThreadOp::kRemove;
+  op.FullName = fullName;
   const HRESULT hr = Run_Op(op);
   errorText = op.Error;
   return hr;
