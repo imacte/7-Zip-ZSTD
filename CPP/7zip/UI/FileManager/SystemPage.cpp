@@ -166,8 +166,10 @@ bool CSystemPage::OnInit()
   LangSetDlgItems(*this, kLangIDs, Z7_ARRAY_SIZE(kLangIDs));
 #endif
 
-  _listView.Attach(GetItem(IDL_SYSTEM_ASSOCIATE));
-  _listView.SetUnicodeFormat();
+  _listView.Attach(GetItem(IDL_SYSTEM_ASSOCIATE));  _listView.SetUnicodeFormat();
+
+  /* leftovers of an earlier session (the samples are used by the picker) */
+  RemoveSampleFiles();
   DWORD newFlags = LVS_EX_FULLROWSELECT;
   _listView.SetExtendedListViewStyle(newFlags, newFlags);
 
@@ -458,6 +460,44 @@ void CSystemPage::ResetSystemDefault(unsigned listIndex)
   #endif
 
   UpdateSystemDefaults();
+}
+
+
+/* Removes the sample files that the picker needs (see OpenDefaultAppDialog).
+
+   They are only there to make Windows show the "select an app" picker for a file
+   type, and the shell starts the chosen program with them once - so they are
+   deleted when the options page is closed (and leftovers are removed whenever the
+   page is opened). */
+void CSystemPage::RemoveSampleFiles()
+{
+  wchar_t buf[MAX_PATH + 1];
+  const DWORD n = ::GetTempPathW(MAX_PATH, buf);
+  if (n == 0 || n > MAX_PATH)
+    return;
+
+  FString dir = buf;
+  dir += "7zipzs-setdefault";
+  FString mask = dir;
+  mask.Add_PathSepar();
+  mask += "sample.*";
+
+  WIN32_FIND_DATAW fd;
+  const HANDLE h = ::FindFirstFileW(mask, &fd);
+  if (h == INVALID_HANDLE_VALUE)
+    return;
+
+  for (;;)
+  {
+    FString path = dir;
+    path.Add_PathSepar();
+    path += fd.cFileName;
+    ::DeleteFileW(path);
+    if (!::FindNextFileW(h, &fd))
+      break;
+  }
+  ::FindClose(h);
+  ::RemoveDirectoryW(dir);
 }
 
 
@@ -771,6 +811,14 @@ LONG CSystemPage::OnApply()
 void CSystemPage::OnNotifyHelp()
 {
   ShowHelpWindow(kSystemTopic);
+}
+
+
+bool CSystemPage::OnDestroy()
+{
+  /* the picker used its sample file already, so it is not needed any more */
+  RemoveSampleFiles();
+  return false;
 }
 
 
