@@ -28,6 +28,10 @@ class CMenuPage: public NWindows::NControl::CPropertyPage
   bool _writeZone_Changed;
   bool _flags_Changed;
   bool _menuMode_Changed;
+  /* height of the two classic checkboxes (in pixels) and how far the controls
+     below are moved up at the moment */
+  int _rowShift;
+  int _currentShift;
 
   void Clear_MenuChanged()
   {

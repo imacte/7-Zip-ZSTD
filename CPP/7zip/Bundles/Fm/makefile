@@ -84,6 +84,20 @@ GUI_OBJS = \
 
 !include "../../7zip.mak"
 
+# OptionsDialog allocates the property pages on its stack. Rebuild it when a
+# page layout changes, or stale objects can corrupt neighboring page objects.
+$O\OptionsDialog.obj: ../../UI/FileManager/OptionsDialog.cpp \
+  ../../UI/FileManager/SystemPage.h \
+  ../../UI/FileManager/MenuPage.h \
+  ../../UI/FileManager/FoldersPage.h \
+  ../../UI/FileManager/EditPage.h \
+  ../../UI/FileManager/SettingsPage.h \
+  ../../UI/FileManager/LangPage.h
+	$(CC) $(CFLAGS_O1) -Yu"StdAfx.h" -Fp$O/a.pch ../../UI/FileManager/OptionsDialog.cpp
+
+$O\MenuPage.obj: ../../UI/FileManager/MenuPage.cpp ../../UI/FileManager/MenuPage.h
+	$(CC) $(CFLAGS_O1) -Yu"StdAfx.h" -Fp$O/a.pch ../../UI/FileManager/MenuPage.cpp
+
 # - 7-Zip ZS -
 #
 # The options page ("7-Zip ZS") registers the sparse package of the Windows 11

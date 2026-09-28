@@ -215,6 +215,17 @@ bool CMenuPage::OnInit()
   #endif
 
 
+  /* measure (with everything still visible) how much room the two classic
+     checkboxes take, so the controls below can be moved up when they are hidden */
+  {
+    _rowShift = 0;
+    _currentShift = 0;
+    RECT r1, r2;
+    if (::GetWindowRect(GetItem(IDX_SYSTEM_INTEGRATE_TO_MENU), &r1)
+        && ::GetWindowRect(GetItem(IDX_SYSTEM_CASCADED_MENU), &r2))
+      _rowShift = r2.top - r1.top;
+  }
+
   Set_ModeControls_Text(*this);
   Update_MenuMode_Controls();
 
@@ -335,6 +346,32 @@ static void ShowMenuErrorMessage(const wchar_t *m, HWND hwnd)
 #endif
 
 
+/* Controls below the two classic checkboxes; they move up when the checkboxes are
+   hidden, so that no empty space is left in the page. */
+static const unsigned k_MenuLayoutIDs[] =
+{
+  IDX_SYSTEM_CASCADED_MENU,
+  IDX_SYSTEM_ICON_IN_MENU,
+  IDX_EXTRACT_ELIM_DUP,
+  IDT_SYSTEM_ZONE,
+  IDC_SYSTEM_ZONE,
+  IDT_SYSTEM_CONTEXT_MENU_ITEMS,
+  IDL_SYSTEM_OPTIONS
+};
+
+static void Move_Control_By(HWND parent, HWND h, int dy, int extraHeight)
+{
+  RECT r;
+  ::GetWindowRect(h, &r);
+  POINT pts[2] = { { r.left, r.top }, { r.right, r.bottom } };
+  ::MapWindowPoints(NULL, parent, pts, 2);
+
+  ::SetWindowPos(h, NULL, pts[0].x, pts[0].y + dy,
+      pts[1].x - pts[0].x, pts[1].y - pts[0].y + extraHeight,
+      SWP_NOZORDER | SWP_NOACTIVATE);
+}
+
+
 CMenuPage::enum_MenuMode CMenuPage::Get_Saved_MenuMode() const
 {
   bool classicFiles = false;
@@ -376,10 +413,25 @@ void CMenuPage::Set_MenuMode_Controls(enum_MenuMode mode)
      (HKEY_LOCAL_MACHINE, including the 32-bit DLL). The Windows 11 menu does not
      use it - it needs the sparse package - and an active classic registration
      next to the package would list 7-Zip ZS twice in the classic menu, so they
-     are hidden unless a mode uses the classic registration. */
+     are hidden unless a mode uses the classic registration. The controls below
+     move up when they are hidden, so no empty space is left. */
   const bool classic = (mode == kMenuMode_Classic || mode == kMenuMode_Both);
   ShowItem_Bool(IDX_SYSTEM_INTEGRATE_TO_MENU, classic);
   ShowItem_Bool(IDX_SYSTEM_INTEGRATE_TO_MENU_2, classic);
+
+  const int shift = classic ? 0 : _rowShift;      // rows hidden -> move up
+  const int dy = _currentShift - shift;
+  if (dy != 0)
+  {
+    const unsigned last = Z7_ARRAY_SIZE(k_MenuLayoutIDs) - 1;
+    for (unsigned i = 0; i < Z7_ARRAY_SIZE(k_MenuLayoutIDs); i++)
+    {
+      /* the list at the end grows, so that its bottom edge stays where it is */
+      const int extra = (i == last) ? (shift - _currentShift) : 0;
+      Move_Control_By(*this, GetItem(k_MenuLayoutIDs[i]), dy, extra);
+    }
+    _currentShift = shift;
+  }
 }
 
 
