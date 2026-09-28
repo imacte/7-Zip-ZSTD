@@ -155,4 +155,15 @@ else
   Info 'WARN   no .msix in Package\Output - run build-shell-package.ps1, otherwise the options page cannot install the Windows 11 menu'
 }
 
+# The options page ("System" tab) can open the app's own page in the Windows
+# "Default apps" settings - that needs the HKLM\SOFTWARE\RegisteredApplications
+# entry, which is written here (we are already elevated).
+$capScript = Join-Path $PSScriptRoot 'register-app-capabilities.ps1'
+if (Test-Path $capScript)
+{
+  Write-Host '  registering the application for the "Default apps" settings ...'
+  & $capScript
+}
+else { Info 'WARN   register-app-capabilities.ps1 not found' }
+
 Write-Host 'Done.' -ForegroundColor Green
