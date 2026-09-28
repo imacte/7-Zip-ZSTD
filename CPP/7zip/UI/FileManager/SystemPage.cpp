@@ -316,6 +316,34 @@ void CSystemPage::OpenDefaultAppDialog(unsigned listIndex)
   UString fileName ('.');
   fileName += _extDB.Exts[realIndex].Ext;
 
+  /* Windows 11 refuses to change the association for a bare extension (it shows
+     "go to Settings > Apps > Default apps" instead), so a temporary empty file
+     of that type is passed: the dialog then offers "always use this app to open
+     .xxx files" and Windows writes the association itself. */
+  FString tempFile;
+  {
+    wchar_t buf[MAX_PATH + 1];
+    const DWORD n = ::GetTempPathW(MAX_PATH, buf);
+    if (n > 0 && n <= MAX_PATH)
+    {
+      FString dir = buf;
+      dir += "7zipzs-setdefault";
+      ::CreateDirectoryW(dir, NULL);
+      dir.Add_PathSepar();
+      dir += "sample.";
+      dir += us2fs(_extDB.Exts[realIndex].Ext);
+
+      const HANDLE h = ::CreateFileW(dir, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS,
+          FILE_ATTRIBUTE_TEMPORARY, NULL);
+      if (h != INVALID_HANDLE_VALUE)
+      {
+        ::CloseHandle(h);
+        tempFile = dir;
+        fileName = fs2us(dir);
+      }
+    }
+  }
+
   /* SHOpenWithDialog is declared for NTDDI_VISTA and up only (this project
      targets an older version), so it is resolved dynamically. The structure
      matches OPENASINFO of the Windows SDK. */
@@ -343,6 +371,9 @@ void CSystemPage::OpenDefaultAppDialog(unsigned listIndex)
   info.pcszClass = NULL;
   info.oaifInFlags = OAIF_ALLOW_REGISTRATION | OAIF_REGISTER_EXT;
   func(*this, &info);
+
+  if (!tempFile.IsEmpty())
+    ::DeleteFileW(tempFile);
 
   UpdateSystemDefaults();
 }

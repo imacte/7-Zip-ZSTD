@@ -299,6 +299,13 @@ Windows writes the `UserChoice` itself. The API is guarded by `NTDDI_VISTA` in t
 SDK and this project targets an older version, so it is resolved with
 `GetProcAddress("shell32.dll", "SHOpenWithDialog")`.
 
+Windows 11 refuses that dialog for a **bare extension** (it only shows "go to
+Settings > Apps > Default apps"), so a temporary empty file of that type is
+created in `%TEMP%\7zipzs-setdefault\`, passed to the dialog and deleted
+afterwards. Measured: with `.rar` as the argument only that message box appears,
+with a real `sample.rar` the Windows 11 picker (`Xaml_WindowedPopupClass`) opens,
+which offers "always use this app" and therefore really changes the association.
+
 Measured example on Windows 11 26200: `.rar` had the classic ProgID
 `7-Zip-Zstandard.rar` (both in HKLM and HKCU) while `UserChoice` was `WinRAR` -
 i.e. double clicking opened WinRAR while the page showed "7-Zip ZS". With the new
