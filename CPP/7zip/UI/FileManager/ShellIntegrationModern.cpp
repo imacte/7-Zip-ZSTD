@@ -8,6 +8,8 @@
 #include "../../../Windows/ErrorMsg.h"
 #include "../../../Windows/FileFind.h"
 
+#include <shellapi.h>
+
 #ifdef Z7_ENABLE_MODERN_SHELL_INTEGRATION
 
 // C++/WinRT (the projections ship with the Windows SDK, no NuGet package needed).
@@ -317,6 +319,70 @@ HRESULT Set_FolderRegistration_PerUser(bool enable, UString &errorText)
     {
       errorText = NError::MyFormatMessage(res);
       return HRESULT_FROM_WIN32(res);
+    }
+  }
+  return S_OK;
+}
+
+
+// ------------------------------------------------------- elevation helper ----
+
+bool Is_Process_Elevated()
+{
+  HANDLE token = NULL;
+  if (!::OpenProcessToken(::GetCurrentProcess(), TOKEN_QUERY, &token))
+    return false;
+  TOKEN_ELEVATION info;
+  info.TokenIsElevated = 0;
+  DWORD size = 0;
+  const BOOL ok = ::GetTokenInformation(token, TokenElevation, &info, sizeof(info), &size);
+  ::CloseHandle(token);
+  return ok && info.TokenIsElevated != 0;
+}
+
+
+HRESULT Run_Elevated_ShellRegistration(bool enable, UString &errorText)
+{
+  errorText.Empty();
+
+  const FString dir = NDLL::GetModuleDirPrefix();
+  FString exe = dir;
+  exe += L"7zFM.exe";
+  if (!NWindows::NFile::NFind::DoesFileExist_Raw(exe))
+  {
+    errorText = L"7zFM.exe was not found next to the program";
+    return HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND);
+  }
+
+  SHELLEXECUTEINFOW sei;
+  ZeroMemory(&sei, sizeof(sei));
+  sei.cbSize = sizeof(sei);
+  sei.fMask = SEE_MASK_NOCLOSEPROCESS | SEE_MASK_NOASYNC;
+  sei.lpVerb = L"runas";                      // one UAC prompt
+  sei.lpFile = exe.Ptr();
+  sei.lpParameters = (enable ? L"-ShellMenu=register" : L"-ShellMenu=unregister");
+  sei.nShow = SW_HIDE;                        // the helper does not open a window
+
+  if (!::ShellExecuteExW(&sei))
+  {
+    const DWORD err = ::GetLastError();
+    if (err == ERROR_CANCELLED)
+      errorText = L"the UAC prompt was cancelled";
+    else
+      errorText = NError::MyFormatMessage(err);
+    return HRESULT_FROM_WIN32(err);
+  }
+
+  if (sei.hProcess)
+  {
+    ::WaitForSingleObject(sei.hProcess, 120000);
+    DWORD code = 1;
+    ::GetExitCodeProcess(sei.hProcess, &code);
+    ::CloseHandle(sei.hProcess);
+    if (code != 0)
+    {
+      errorText = L"the elevated registration failed";
+      return E_FAIL;
     }
   }
   return S_OK;

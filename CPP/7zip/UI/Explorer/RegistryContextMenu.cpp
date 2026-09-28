@@ -4,6 +4,8 @@
 
 #include "../../../Common/StringConvert.h"
 
+#include "../../../Windows/DLL.h"
+#include "../../../Windows/FileFind.h"
 #include "../../../Windows/Registry.h"
 
 #include "RegistryContextMenu.h"
@@ -220,6 +222,47 @@ LONG SetContextMenuHandler(bool setMode, const UString &path, UInt32 wow)
   }
 
   return res;
+}
+
+
+LONG SetContextMenuHandler_All(bool setMode)
+{
+  const FString prefix = NDLL::GetModuleDirPrefix();
+  LONG lastRes = ERROR_SUCCESS;
+  bool found = false;
+
+  for (unsigned d = 0; d < 2; d++)
+  {
+    FString path = prefix;
+    path += (d == 0 ? "7-zip.dll" :
+        #ifdef _WIN64
+          "7-zip32.dll"
+        #else
+          "7-zip64.dll"
+        #endif
+        );
+    if (!NFile::NFind::DoesFileExist_Raw(path))
+      continue;
+    found = true;
+
+    UInt32 wow = 0;
+    if (d == 1)
+      wow =
+          #ifdef _WIN64
+            KEY_WOW64_32KEY
+          #else
+            KEY_WOW64_64KEY
+          #endif
+          ;
+
+    const LONG res = SetContextMenuHandler(setMode, fs2us(path), wow);
+    if (res != ERROR_SUCCESS)
+      lastRes = res;
+  }
+
+  if (!found)
+    return ERROR_FILE_NOT_FOUND;
+  return lastRes;
 }
 
 #endif

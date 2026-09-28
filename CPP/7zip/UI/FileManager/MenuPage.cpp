@@ -393,7 +393,43 @@ void CMenuPage::Apply_MenuMode(enum_MenuMode mode)
     const UString path = fs2us(_dlls[0].Path);
     if (CheckContextMenuHandler(path, _dlls[0].wow) != wantClassic)
     {
-      const LONG res = SetContextMenuHandler(wantClassic, path, _dlls[0].wow);
+      LONG res = ERROR_SUCCESS;
+      if (NShellIntegrationModern::Is_Process_Elevated())
+      {
+        for (unsigned d = 0; d < 2; d++)
+        {
+          CShellDll &dll = _dlls[d];
+          if (dll.Path.IsEmpty())
+            continue;
+          const LONG r = SetContextMenuHandler(wantClassic, fs2us(dll.Path), dll.wow);
+          if (r != ERROR_SUCCESS)
+            res = r;
+        }
+      }
+      else
+      {
+        /* The machine-wide keys need administrator rights. Instead of asking the
+           user to restart 7-Zip as administrator, the change is done by
+           "7zFM.exe -ShellMenu=..." started with "runas" - one UAC prompt. */
+        const UString msg =
+            L"\u4FEE\u6539\u7ECF\u5178\u53F3\u952E\u83DC\u5355\u7684\u6CE8\u518C\u9700\u8981\u7BA1\u7406\u5458\u6743\u9650\uFF0C\u662F\u5426\u7EE7\u7EED\uFF1F\n"
+            L"\uFF08\u4F1A\u5F39\u51FA UAC \u63D0\u793A\uFF09";
+        if (::MessageBoxW(*this, msg.Ptr(), L"7-Zip ZS", MB_ICONQUESTION | MB_YESNO) != IDYES)
+          res = ERROR_ACCESS_DENIED;
+        else
+        {
+          UString err;
+          const HRESULT hr = NShellIntegrationModern::Run_Elevated_ShellRegistration(wantClassic, err);
+          if (hr != S_OK)
+          {
+            if (err.IsEmpty())
+              err = L"the elevated registration failed";
+            ShowMenuErrorMessage(err, *this);
+            res = ERROR_SUCCESS;   // already reported
+          }
+        }
+      }
+
       if (res != ERROR_SUCCESS)
         ShowMenuErrorMessage(NError::MyFormatMessage(res), *this);
     }

@@ -41,6 +41,10 @@
 #include "StringUtils.h"
 #include "ViewSettings.h"
 
+#ifndef UNDER_CE
+#include "../Explorer/RegistryContextMenu.h"
+#endif
+
 using namespace NWindows;
 using namespace NFile;
 using namespace NFind;
@@ -791,6 +795,31 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /* hPrevInstance */,
     /* lpCmdLine */, int nCmdShow)
 {
   g_hInstance = hInstance;
+
+  /* 7-Zip ZS: change the machine-wide shell context menu registration and exit
+     without opening a window. The options page ("7-Zip ZS") starts this with
+     "runas" when 7zFM.exe itself does not have administrator rights, so the user
+     only has to confirm the UAC prompt instead of restarting the program as
+     administrator. */
+  #ifndef UNDER_CE
+  {
+    const wchar_t *cmd = ::GetCommandLineW();
+    if (cmd)
+    {
+      const wchar_t *k_Reg = L"-ShellMenu=register";
+      const wchar_t *k_Unreg = L"-ShellMenu=unregister";
+      const wchar_t *p = wcsstr(cmd, k_Reg);
+      const bool found = (p != NULL);
+      if (!found)
+        p = wcsstr(cmd, k_Unreg);
+      if (p)
+      {
+        const LONG res = SetContextMenuHandler_All(found);
+        return res == ERROR_SUCCESS ? 0 : 1;
+      }
+    }
+  }
+  #endif
 
   try
   {

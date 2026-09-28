@@ -160,9 +160,11 @@ The page shows the **real** state (derived from the registry and from
 `PackageManager`) and "Apply" performs the change:
 
 * the classic part uses the same machine-wide registration as the checkbox
-  "Integrate 7-Zip ZS to shell context menu" below it, so it needs administrator
-  rights - like that checkbox, the change is refused (and reverted in the UI)
-  when 7zFM.exe does not run elevated;
+  "Integrate 7-Zip ZS to shell context menu" below it. When 7zFM.exe does not run
+  elevated, the page asks once and then starts
+  `7zFM.exe -ShellMenu=register|unregister` with `runas`, i.e. **one UAC prompt
+  instead of "restart 7-Zip as administrator"**; the helper does the registry
+  work and exits without opening a window (its exit code is checked);
 * the modern part registers the sparse package through the WinRT
   `PackageManager` API (per user, no UAC) and adds per-user classic keys for
   `Folder`/`Directory` in `HKCU\Software\Classes` (the shell lists the commands

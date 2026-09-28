@@ -39,6 +39,16 @@ namespace NShellIntegrationModern {
 
   // the CLSID of the shell extension of this fork
   const wchar_t *Get_Clsid();
+
+  // ------------------------------------------------------- elevation helper --
+  // true if this process already runs with administrator rights
+  bool Is_Process_Elevated();
+
+  /* Starts "7zFM.exe -ShellMenu=register|unregister" elevated (one UAC prompt)
+     so that the machine-wide classic registration can be changed without
+     restarting 7-Zip as administrator. errorText gets a message when the user
+     cancels the prompt or the helper fails. */
+  HRESULT Run_Elevated_ShellRegistration(bool enable, UString &errorText);
 }
 
 #endif
