@@ -277,7 +277,74 @@ bool CSystemPage::OnInit()
 
   UpdateSystemDefaults();
 
+  /* 7-Zip ZS: the dialog grows with the DPI scaling while the list columns keep
+     their pixel widths, so the buttons are placed above the column they act on
+     (in the template they have fixed coordinates). */
+  {
+    RECT rList;
+    ::GetWindowRect(HWND(_listView), &rList);
+    POINT pList = { rList.left, rList.top };
+    ::ScreenToClient(*this, &pList);
+
+    int x = pList.x;
+    for (unsigned g = 0; g < NUM_EXT_GROUPS; g++)
+    {
+      const HWND h = GetItem(g == 0 ? IDB_SYSTEM_CURRENT : IDB_SYSTEM_ALL);
+      RECT rb;
+      ::GetWindowRect(h, &rb);
+      const int w = (int)::SendMessage(HWND(_listView), LVM_GETCOLUMNWIDTH, (WPARAM)(g + 1), 0);
+      ::SetWindowPos(h, NULL, x, pList.y - (rb.bottom - rb.top) - 2, w, rb.bottom - rb.top,
+          SWP_NOZORDER | SWP_NOACTIVATE);
+      x += w + 4;
+    }
+  }
+
   return CPropertyPage::OnInit();
+}
+
+
+/* Shows the Windows dialog for "open with" for one extension. The effective
+   default app of Windows 10+ (UserChoice) is protected by a hash and cannot be
+   written by an application, but this dialog writes it when the user picks a
+   program and marks it as the default. */
+void CSystemPage::OpenDefaultAppDialog(unsigned listIndex)
+{
+  const unsigned realIndex = GetRealIndex(listIndex);
+  if (realIndex >= _extDB.Exts.Size())
+    return;
+
+  UString fileName ('.');
+  fileName += _extDB.Exts[realIndex].Ext;
+
+  /* SHOpenWithDialog is declared for NTDDI_VISTA and up only (this project
+     targets an older version), so it is resolved dynamically. The structure
+     matches OPENASINFO of the Windows SDK. */
+  struct COpenAsInfo
+  {
+    LPCWSTR pcszFile;
+    LPCWSTR pcszClass;
+    int oaifInFlags;
+  };
+  typedef HRESULT (WINAPI *Func_SHOpenWithDialog)(HWND, const COpenAsInfo *);
+
+  const HMODULE hShell = ::GetModuleHandleW(L"shell32.dll");
+  const Func_SHOpenWithDialog func = hShell ?
+      (Func_SHOpenWithDialog)(void *)::GetProcAddress(hShell, "SHOpenWithDialog") : NULL;
+
+  if (!func)
+  {
+    UString m (L"\u65E0\u6CD5\u6253\u5F00\u7CFB\u7EDF\u7684\u201C\u6253\u5F00\u65B9\u5F0F\u201D\u5BF9\u8BDD\u6846");
+    MessageBoxW(*this, m.Ptr(), L"7-Zip ZS", MB_ICONERROR);
+    return;
+  }
+
+  COpenAsInfo info;
+  info.pcszFile = fileName.Ptr();
+  info.pcszClass = NULL;
+  info.oaifInFlags = OAIF_ALLOW_REGISTRATION | OAIF_REGISTER_EXT;
+  func(*this, &info);
+
+  UpdateSystemDefaults();
 }
 
 
@@ -583,6 +650,17 @@ bool CSystemPage::OnNotify(UINT controlID, LPNMHDR lParam)
       case NM_RETURN:
       {
         ChangeState(0);
+        return true;
+      }
+
+      case NM_DBLCLK:
+      {
+        /* 7-Zip ZS: double click sets the effective default app of Windows 10+
+           (the Windows "open with" dialog, which writes the protected
+           UserChoice) */
+        NMITEMACTIVATE *item = (NMITEMACTIVATE *)lParam;
+        if (item->iItem >= 0)
+          OpenDefaultAppDialog((unsigned)item->iItem);
         return true;
       }
 

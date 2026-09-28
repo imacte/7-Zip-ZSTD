@@ -292,6 +292,13 @@ shows the effective default app; it is filled in `OnInit` and refreshed whenever
 the page is shown (`CSystemPage::OnSetActive`), so it follows changes made outside
 of 7-Zip.
 
+To change it from the page, **double click a row**: that opens the Windows dialog
+for "open with" (`SHOpenWithDialog` with `OAIF_ALLOW_REGISTRATION |
+OAIF_REGISTER_EXT`); if 7-Zip ZS is picked there and marked as the default,
+Windows writes the `UserChoice` itself. The API is guarded by `NTDDI_VISTA` in the
+SDK and this project targets an older version, so it is resolved with
+`GetProcAddress("shell32.dll", "SHOpenWithDialog")`.
+
 Measured example on Windows 11 26200: `.rar` had the classic ProgID
 `7-Zip-Zstandard.rar` (both in HKLM and HKCU) while `UserChoice` was `WinRAR` -
 i.e. double clicking opened WinRAR while the page showed "7-Zip ZS". With the new

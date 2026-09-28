@@ -114,6 +114,8 @@ class CSystemPage: public NWindows::NControl::CPropertyPage
   void ChangeState(unsigned group, const CUIntVector &indices);
   void ChangeState(unsigned group);
   void UpdateSystemDefaults();
+  /* shows the Windows "open with" dialog for one row (double click) */
+  void OpenDefaultAppDialog(unsigned listIndex);
 
   bool OnListKeyDown(LPNMLVKEYDOWN keyDownInfo);
   
