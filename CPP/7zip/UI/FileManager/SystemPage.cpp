@@ -344,6 +344,18 @@ void CSystemPage::OpenDefaultAppDialog(unsigned listIndex)
           FILE_ATTRIBUTE_NORMAL, NULL);
       if (h != INVALID_HANDLE_VALUE)
       {
+        /* The picker starts the selected program with this file right away (that
+           is how "open with" works - the "always" button only adds the
+           registration), so the sample is written as a minimal valid *empty ZIP*
+           archive: every archiver opens it without an error message, unlike an
+           empty file. */
+        static const Byte k_EmptyZip[22] =
+        {
+          0x50, 0x4B, 0x05, 0x06,   // "PK\5\6" - end of central directory
+          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        };
+        DWORD written = 0;
+        ::WriteFile(h, k_EmptyZip, (DWORD)sizeof(k_EmptyZip), &written, NULL);
         ::CloseHandle(h);
         fileName = fs2us(dir);
       }
