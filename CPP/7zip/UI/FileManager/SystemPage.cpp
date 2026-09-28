@@ -371,6 +371,40 @@ void CSystemPage::OpenDefaultAppDialog(unsigned listIndex)
 }
 
 
+/* Deletes the "UserChoice" value of one file type.
+
+   Windows 10/11 ignores the classic ProgID as soon as a UserChoice exists, and
+   an application cannot write that value (it is protected by a hash). Removing it
+   is the way to make the classic association of this program effective again;
+   Windows then falls back to the ProgID that the page below writes. */
+void CSystemPage::ResetSystemDefault(unsigned listIndex)
+{
+  const unsigned realIndex = GetRealIndex(listIndex);
+  if (realIndex >= _extDB.Exts.Size())
+    return;
+
+  UString keyName = L"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.";
+  keyName += _extDB.Exts[realIndex].Ext;
+  keyName += L"\\UserChoice";
+
+  const LONG res = ::RegDeleteKeyW(HKEY_CURRENT_USER, keyName.Ptr());
+  if (res != ERROR_SUCCESS && res != ERROR_FILE_NOT_FOUND)
+  {
+    UString m (L"\u65E0\u6CD5\u5220\u9664 UserChoice\uFF1A");   // "cannot delete UserChoice:"
+    m.Add_LF();
+    m += NError::MyFormatMessage(res);
+    MessageBoxW(*this, m.Ptr(), L"7-Zip ZS", MB_ICONERROR);
+    return;
+  }
+
+  #ifndef UNDER_CE
+  SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL);
+  #endif
+
+  UpdateSystemDefaults();
+}
+
+
 /* Reads the effective default app (Windows 10+ "UserChoice") of every extension
    and shows it in the last column. An application cannot write that value - it
    is protected by a hash, only the user can change it (Windows settings, "open
@@ -684,6 +718,32 @@ bool CSystemPage::OnNotify(UINT controlID, LPNMHDR lParam)
         NMITEMACTIVATE *item = (NMITEMACTIVATE *)lParam;
         if (item->iItem >= 0)
           OpenDefaultAppDialog((unsigned)item->iItem);
+        return true;
+      }
+
+      case NM_RCLICK:
+      {
+        /* 7-Zip ZS: right click offers to remove the UserChoice value, which is
+           the only way back to the classic association (an application cannot
+           write UserChoice itself) */
+        NMITEMACTIVATE *item = (NMITEMACTIVATE *)lParam;
+        if (item->iItem < 0)
+          return true;
+
+        HMENU menu = ::CreatePopupMenu();
+        if (!menu)
+          return true;
+        UString text (L"\u91CD\u7F6E\u7CFB\u7EDF\u9ED8\u8BA4\uFF08\u5220\u9664 UserChoice\uFF09");
+        ::AppendMenuW(menu, MF_STRING, 1, text.Ptr());
+
+        POINT pt;
+        ::GetCursorPos(&pt);
+        const int cmd = (int)::TrackPopupMenu(menu, TPM_RETURNCMD | TPM_RIGHTBUTTON,
+            pt.x, pt.y, 0, *this, NULL);
+        ::DestroyMenu(menu);
+
+        if (cmd == 1)
+          ResetSystemDefault((unsigned)item->iItem);
         return true;
       }
 

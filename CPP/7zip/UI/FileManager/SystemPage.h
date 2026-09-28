@@ -116,6 +116,9 @@ class CSystemPage: public NWindows::NControl::CPropertyPage
   void UpdateSystemDefaults();
   /* shows the Windows "open with" dialog for one row (double click) */
   void OpenDefaultAppDialog(unsigned listIndex);
+  /* deletes the UserChoice value of one row, so the classic ProgID of this
+     program becomes effective again (right click menu) */
+  void ResetSystemDefault(unsigned listIndex);
 
   bool OnListKeyDown(LPNMLVKEYDOWN keyDownInfo);
   
