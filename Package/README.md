@@ -292,19 +292,18 @@ shows the effective default app; it is filled in `OnInit` and refreshed whenever
 the page is shown (`CSystemPage::OnSetActive`), so it follows changes made outside
 of 7-Zip.
 
-To change it from the page, **double click a row**: that opens the Windows dialog
-for "open with" (`SHOpenWithDialog` with `OAIF_ALLOW_REGISTRATION |
-OAIF_REGISTER_EXT`); if 7-Zip ZS is picked there and marked as the default,
-Windows writes the `UserChoice` itself. The API is guarded by `NTDDI_VISTA` in the
-SDK and this project targets an older version, so it is resolved with
-`GetProcAddress("shell32.dll", "SHOpenWithDialog")`.
+Double clicking a row opens the Windows settings for the default apps
+(`ms-settings:defaultapps`). That is the workflow Windows asks for, because an
+application cannot change the default app of an extension:
 
-Windows 11 refuses that dialog for a **bare extension** (it only shows "go to
-Settings > Apps > Default apps"), so a temporary empty file of that type is
-created in `%TEMP%\7zipzs-setdefault\`, passed to the dialog and deleted
-afterwards. Measured: with `.rar` as the argument only that message box appears,
-with a real `sample.rar` the Windows 11 picker (`Xaml_WindowedPopupClass`) opens,
-which offers "always use this app" and therefore really changes the association.
+* `SHOpenWithDialog` only answers "go to Settings > Apps > Default apps" on
+  Windows 11 build 26200 - measured with a bare extension **and** with a real file
+  of that type (a temporary empty file was tried as well);
+* the `UserChoice` value is protected by a hash and is only written when the user
+  picks the program in a Windows UI;
+* this fork has no entry in `HKLM\SOFTWARE\RegisteredApplications`, which
+  `IApplicationAssociationRegistrationUI::LaunchAdvancedAssociationUI` would need
+  to open the app's own page; adding one is an installer task.
 
 Measured example on Windows 11 26200: `.rar` had the classic ProgID
 `7-Zip-Zstandard.rar` (both in HKLM and HKCU) while `UserChoice` was `WinRAR` -

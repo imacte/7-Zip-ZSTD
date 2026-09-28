@@ -17,6 +17,8 @@
 #include "../../../Windows/ErrorMsg.h"
 #include "../../../Windows/Registry.h"
 
+#include <shellapi.h>
+
 #include "HelpUtils.h"
 #include "IFolder.h"
 #include "LangUtils.h"
@@ -303,79 +305,21 @@ bool CSystemPage::OnInit()
 }
 
 
-/* Shows the Windows dialog for "open with" for one extension. The effective
-   default app of Windows 10+ (UserChoice) is protected by a hash and cannot be
-   written by an application, but this dialog writes it when the user picks a
-   program and marks it as the default. */
+/* Opens the Windows settings for the default apps.
+
+   Windows 11 does not let an application change the default app of an extension:
+   SHOpenWithDialog only answers "go to Settings > Apps > Default apps" (measured
+   on build 26200 with a bare extension and with a real file of that type), the
+   UserChoice value itself is protected by a hash, and this fork has no entry in
+   HKLM\SOFTWARE\RegisteredApplications that IApplicationAssociationRegistrationUI
+   needs. So the settings page is opened - the workflow that Windows asks for. */
 void CSystemPage::OpenDefaultAppDialog(unsigned listIndex)
 {
   const unsigned realIndex = GetRealIndex(listIndex);
   if (realIndex >= _extDB.Exts.Size())
     return;
 
-  UString fileName ('.');
-  fileName += _extDB.Exts[realIndex].Ext;
-
-  /* Windows 11 refuses to change the association for a bare extension (it shows
-     "go to Settings > Apps > Default apps" instead), so a temporary empty file
-     of that type is passed: the dialog then offers "always use this app to open
-     .xxx files" and Windows writes the association itself. */
-  FString tempFile;
-  {
-    wchar_t buf[MAX_PATH + 1];
-    const DWORD n = ::GetTempPathW(MAX_PATH, buf);
-    if (n > 0 && n <= MAX_PATH)
-    {
-      FString dir = buf;
-      dir += "7zipzs-setdefault";
-      ::CreateDirectoryW(dir, NULL);
-      dir.Add_PathSepar();
-      dir += "sample.";
-      dir += us2fs(_extDB.Exts[realIndex].Ext);
-
-      const HANDLE h = ::CreateFileW(dir, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS,
-          FILE_ATTRIBUTE_TEMPORARY, NULL);
-      if (h != INVALID_HANDLE_VALUE)
-      {
-        ::CloseHandle(h);
-        tempFile = dir;
-        fileName = fs2us(dir);
-      }
-    }
-  }
-
-  /* SHOpenWithDialog is declared for NTDDI_VISTA and up only (this project
-     targets an older version), so it is resolved dynamically. The structure
-     matches OPENASINFO of the Windows SDK. */
-  struct COpenAsInfo
-  {
-    LPCWSTR pcszFile;
-    LPCWSTR pcszClass;
-    int oaifInFlags;
-  };
-  typedef HRESULT (WINAPI *Func_SHOpenWithDialog)(HWND, const COpenAsInfo *);
-
-  const HMODULE hShell = ::GetModuleHandleW(L"shell32.dll");
-  const Func_SHOpenWithDialog func = hShell ?
-      (Func_SHOpenWithDialog)(void *)::GetProcAddress(hShell, "SHOpenWithDialog") : NULL;
-
-  if (!func)
-  {
-    UString m (L"\u65E0\u6CD5\u6253\u5F00\u7CFB\u7EDF\u7684\u201C\u6253\u5F00\u65B9\u5F0F\u201D\u5BF9\u8BDD\u6846");
-    MessageBoxW(*this, m.Ptr(), L"7-Zip ZS", MB_ICONERROR);
-    return;
-  }
-
-  COpenAsInfo info;
-  info.pcszFile = fileName.Ptr();
-  info.pcszClass = NULL;
-  info.oaifInFlags = OAIF_ALLOW_REGISTRATION | OAIF_REGISTER_EXT;
-  func(*this, &info);
-
-  if (!tempFile.IsEmpty())
-    ::DeleteFileW(tempFile);
-
-  UpdateSystemDefaults();
+  ::ShellExecuteW(*this, L"open", L"ms-settings:defaultapps", NULL, NULL, SW_SHOWNORMAL);
 }
 
 
