@@ -278,6 +278,27 @@ Command line summary (all without a window):
 7zFM.exe -AssocAll=-rar            remove those associations (needs admin)
 ```
 
+## The System page and the Windows 10+ "default app"
+
+The system page reads and writes the classic ProgID (`HKCR\.rar` and so on).
+Windows 10/11 ignores that value as soon as a per-user `UserChoice` exists
+(`HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.<ext>\UserChoice`),
+and that value cannot be written by an application - it is protected by a hash,
+only the user can change it (Windows settings, "open with", or the other
+program's own dialog).
+
+The page therefore got an extra column ("system default app", 系统默认程序) that
+shows the effective default app; it is filled in `OnInit` and refreshed whenever
+the page is shown (`CSystemPage::OnSetActive`), so it follows changes made outside
+of 7-Zip.
+
+Measured example on Windows 11 26200: `.rar` had the classic ProgID
+`7-Zip-Zstandard.rar` (both in HKLM and HKCU) while `UserChoice` was `WinRAR` -
+i.e. double clicking opened WinRAR while the page showed "7-Zip ZS". With the new
+column the row shows `WinRAR 压缩文件`, which is the truth. Note that clicking a
+cell of such an extension writes the classic ProgID only, so Windows may keep
+ignoring it - set the default in Windows settings in that case.
+
 ## Notes and pitfalls
 
 * **A classic registration has two parts.** Besides the shellex keys there is the

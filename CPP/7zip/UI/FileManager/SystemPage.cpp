@@ -15,6 +15,7 @@
 
 #include "../../../Windows/DLL.h"
 #include "../../../Windows/ErrorMsg.h"
+#include "../../../Windows/Registry.h"
 
 #include "HelpUtils.h"
 #include "IFolder.h"
@@ -220,6 +221,17 @@ bool CSystemPage::OnInit()
     ci.iSubItem = 2;
     _listView.InsertColumn(2, &ci);
   }
+
+  {
+    /* 7-Zip ZS: the effective default app of Windows 10+ (UserChoice) is shown
+       in an extra column, because the columns above only hold the classic ProgID
+       which Windows ignores as soon as a UserChoice exists. */
+    UString t (L"\u7CFB\u7EDF\u9ED8\u8BA4\u7A0B\u5E8F");   // "system default app"
+    ci.pszText = t.Ptr_non_const();
+    ci.iSubItem = 3;
+    ci.cx = 140;
+    _listView.InsertColumn(3, &ci);
+  }
   #endif
 
   _extDB.Read();
@@ -263,7 +275,69 @@ bool CSystemPage::OnInit()
   if (_listView.GetItemCount() > 0)
     _listView.SetItemState(0, LVIS_FOCUSED, LVIS_FOCUSED);
 
+  UpdateSystemDefaults();
+
   return CPropertyPage::OnInit();
+}
+
+
+/* Reads the effective default app (Windows 10+ "UserChoice") of every extension
+   and shows it in the last column. An application cannot write that value - it
+   is protected by a hash, only the user can change it (Windows settings, "open
+   with") - so this column exists to show what really happens on a double click
+   instead of showing the classic ProgID only. */
+void CSystemPage::UpdateSystemDefaults()
+{
+  const unsigned kColumn = 1 + NUM_EXT_GROUPS;
+
+  FOR_VECTOR (i, _items)
+  {
+    CAssoc &assoc = _items[i];
+    assoc.SystemDefault.Empty();
+
+    UString keyName = L"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.";
+    keyName += _extDB.Exts[i].Ext;
+    keyName += L"\\UserChoice";
+
+    NRegistry::CKey key;
+    if (key.Open(HKEY_CURRENT_USER, keyName, KEY_READ) == ERROR_SUCCESS)
+    {
+      UString progId;
+      if (key.QueryValue(L"ProgId", progId) == ERROR_SUCCESS && !progId.IsEmpty())
+      {
+        UString command;
+        {
+          NRegistry::CKey keyCmd;
+          if (keyCmd.Open(HKEY_CLASSES_ROOT, progId + UString(L"\\shell\\open\\command"), KEY_READ) == ERROR_SUCCESS)
+            keyCmd.QueryValue(NULL, command);
+        }
+
+        if (command.Find(L"7zFM.exe") >= 0)
+          assoc.SystemDefault = L"7-Zip ZS";
+        else
+        {
+          UString title;
+          {
+            NRegistry::CKey keyTitle;
+            if (keyTitle.Open(HKEY_CLASSES_ROOT, progId, KEY_READ) == ERROR_SUCCESS)
+              keyTitle.QueryValue(NULL, title);
+          }
+          assoc.SystemDefault = title.IsEmpty() ? progId : title;
+        }
+      }
+    }
+
+    _listView.SetSubItem(i, kColumn, assoc.SystemDefault);
+  }
+}
+
+
+LONG CSystemPage::OnSetActive()
+{
+  /* the default app can be changed outside of 7-Zip (Windows settings or another
+     archiver), so the column is refreshed whenever this page is shown */
+  UpdateSystemDefaults();
+  return false;   // false = OK
 }
 
 

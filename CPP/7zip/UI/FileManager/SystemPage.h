@@ -57,6 +57,11 @@ struct CAssoc
   CModifiedExtInfo Pair[2];
   int SevenZipImageIndex;
 
+  /* The effective default app of Windows 10+ (UserChoice). It overrides the
+     classic ProgID that this page reads and writes, and an application cannot
+     change it (it is protected by a hash) - so it is shown in its own column. */
+  UString SystemDefault;
+
   int GetIconIndex() const
   {
     for (unsigned i = 0; i < 2; i++)
@@ -108,6 +113,7 @@ class CSystemPage: public NWindows::NControl::CPropertyPage
   void RefreshListItem(unsigned group, unsigned listIndex);
   void ChangeState(unsigned group, const CUIntVector &indices);
   void ChangeState(unsigned group);
+  void UpdateSystemDefaults();
 
   bool OnListKeyDown(LPNMLVKEYDOWN keyDownInfo);
   
@@ -119,6 +125,7 @@ public:
   virtual bool OnInit() Z7_override;
   virtual void OnNotifyHelp() Z7_override;
   virtual bool OnNotify(UINT controlID, LPNMHDR lParam) Z7_override;
+  virtual LONG OnSetActive() Z7_override;
   virtual LONG OnApply() Z7_override;
   virtual bool OnButtonClicked(unsigned buttonID, HWND buttonHWND) Z7_override;
 };
