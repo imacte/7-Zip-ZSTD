@@ -798,6 +798,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /* hPrevInstance */,
 {
   g_hInstance = hInstance;
 
+  /* 7-Zip ZS: the "System" options page creates a sample file in
+     %TEMP%\7zipzs-setdefault\ so that Windows shows its "select an app to open
+     this file" picker for a file type. That picker starts the selected program
+     with the sample afterwards (the "always" button only adds the registration),
+     which would only open an empty archive window - so the program exits silently
+     for that file and the user sees just the picker. */
+  {
+    const wchar_t *cmd = ::GetCommandLineW();
+    if (cmd && wcsstr(cmd, L"\\7zipzs-setdefault\\"))
+      return 0;
+  }
+
   /* 7-Zip ZS: change the machine-wide shell context menu registration and exit
      without opening a window. The options page ("7-Zip ZS") starts this with
      "runas" when 7zFM.exe itself does not have administrator rights, so the user
