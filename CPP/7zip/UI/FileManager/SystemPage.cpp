@@ -327,6 +327,12 @@ void CSystemPage::OpenDefaultAppDialog(unsigned listIndex)
   if (realIndex >= _extDB.Exts.Size())
     return;
 
+  /* Windows shows the picker only for a file type that has no default yet: if a
+     UserChoice exists (the type is assigned to some program), the shell opens the
+     settings page instead. So the choice of that type is removed first - the
+     picker writes a new one, which is exactly the "set default" step. */
+  ResetSystemDefault(listIndex);
+
   UString fileName;
   {
     wchar_t buf[MAX_PATH + 1];
