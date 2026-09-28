@@ -280,35 +280,45 @@ bool CSystemPage::OnInit()
 
   UpdateSystemDefaults();
 
-  /* 7-Zip ZS: the dialog grows with the DPI scaling while the list columns keep
-     their pixel widths, so the buttons are placed above the column they act on
-     (in the template they have fixed coordinates). */
-  {
-    RECT rList;
-    ::GetWindowRect(HWND(_listView), &rList);
-    POINT pList = { rList.left, rList.top };
-    ::ScreenToClient(*this, &pList);
-
-    int x = pList.x;
-    for (unsigned g = 0; g < NUM_EXT_GROUPS; g++)
-    {
-      const HWND h = GetItem(g == 0 ? IDB_SYSTEM_CURRENT : IDB_SYSTEM_ALL);
-      RECT rb;
-      ::GetWindowRect(h, &rb);
-
-      /* skip the columns in front of this one (the file type column and, for the
-         second button, the current user column), then use the width of the column
-         this button belongs to */
-      x += (int)::SendMessage(HWND(_listView), LVM_GETCOLUMNWIDTH, (WPARAM)g, 0);
-      const int w = (int)::SendMessage(HWND(_listView), LVM_GETCOLUMNWIDTH, (WPARAM)(g + 1), 0);
-
-      ::SetWindowPos(h, NULL, x, pList.y - (rb.bottom - rb.top) - 2, w, rb.bottom - rb.top,
-          SWP_NOZORDER | SWP_NOACTIVATE);
-      x += w;
-    }
-  }
+  /* the list columns are not touched here: they keep the widths from OnInit()
+     (80/152/152/140 pixels). The "+" buttons are placed above the column they act
+     on - which has to happen after the property sheet has laid the page out (it
+     scales the controls after OnInit()), so it runs from a timer and on resize. */
+  Position_MenuButtons();
 
   return CPropertyPage::OnInit();
+}
+
+
+/* Places the two "+" buttons above the column they act on.
+
+   The columns keep their widths from OnInit() (80/152/152/140 pixels) - only the
+   buttons are moved here. That has to happen after the property sheet has laid
+   the page out (it scales the controls after OnInit()), which is why this runs
+   from a timer a few times and whenever the page is resized. */
+void CSystemPage::Position_MenuButtons()
+{
+  RECT rList;
+  ::GetWindowRect(HWND(_listView), &rList);
+  POINT pList = { rList.left, rList.top };
+  ::ScreenToClient(*this, &pList);
+
+  int x = pList.x;
+  for (unsigned g = 0; g < NUM_EXT_GROUPS; g++)
+  {
+    const HWND h = GetItem(g == 0 ? IDB_SYSTEM_CURRENT : IDB_SYSTEM_ALL);
+    RECT rb;
+    ::GetWindowRect(h, &rb);
+
+    /* the columns in front of this one are accumulated here (the file type column
+       for the first button, plus the current user column for the second), then
+       the width of the column this button belongs to is used */
+    x += (int)::SendMessage(HWND(_listView), LVM_GETCOLUMNWIDTH, (WPARAM)g, 0);
+    const int w = (int)::SendMessage(HWND(_listView), LVM_GETCOLUMNWIDTH, (WPARAM)(g + 1), 0);
+
+    ::SetWindowPos(h, NULL, x, pList.y - (rb.bottom - rb.top) - 2, w, rb.bottom - rb.top,
+        SWP_NOZORDER | SWP_NOACTIVATE);
+  }
 }
 
 
@@ -505,9 +515,35 @@ void CSystemPage::UpdateSystemDefaults()
 LONG CSystemPage::OnSetActive()
 {
   /* the default app can be changed outside of 7-Zip (Windows settings or another
-     archiver), so the column is refreshed whenever this page is shown */
+     archiver), so the column is refreshed whenever this page is shown; a timer is
+     started as well, because the property sheet lays the page out after OnInit()
+     (see OnTimer) */
+  _alignTicks = 0;
+  if (!::SetTimer(*this, 1, 250, NULL))
+    Position_MenuButtons();
   UpdateSystemDefaults();
   return false;   // false = OK
+}
+
+
+bool CSystemPage::OnTimer(WPARAM timerID, LPARAM /* lParam */)
+{
+  if (timerID != 1)
+    return false;
+
+  /* place the buttons after the property sheet has laid the page out */
+  Position_MenuButtons();
+
+  if (++_alignTicks >= 4)
+    ::KillTimer(*this, 1);
+  return true;
+}
+
+
+bool CSystemPage::OnSize(WPARAM /* wParam */, int /* xSize */, int /* ySize */)
+{
+  Position_MenuButtons();
+  return false;
 }
 
 

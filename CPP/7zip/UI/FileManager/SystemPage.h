@@ -94,6 +94,9 @@ class CSystemPage: public NWindows::NControl::CPropertyPage
   NWindows::NControl::CListView _listView;
 
   bool _needSave;
+  /* the property sheet lays the page out after OnInit(), so the buttons are
+     placed above their columns a few times by a timer */
+  unsigned _alignTicks;
 
   HKEY GetHKey(unsigned
       #if NUM_EXT_GROUPS != 1
@@ -114,6 +117,8 @@ class CSystemPage: public NWindows::NControl::CPropertyPage
   void ChangeState(unsigned group, const CUIntVector &indices);
   void ChangeState(unsigned group);
   void UpdateSystemDefaults();
+  /* places the two "+" buttons above the column they act on */
+  void Position_MenuButtons();
   /* shows the Windows "open with" dialog for one row (double click) */
   void OpenDefaultAppDialog(unsigned listIndex);
   /* deletes the UserChoice value of one row, so the classic ProgID of this
@@ -125,11 +130,13 @@ class CSystemPage: public NWindows::NControl::CPropertyPage
 public:
   bool WasChanged;
   
-  CSystemPage(): WasChanged(false) {}
+  CSystemPage(): WasChanged(false), _needSave(false), _alignTicks(0) {}
 
   virtual bool OnInit() Z7_override;
   virtual void OnNotifyHelp() Z7_override;
   virtual bool OnNotify(UINT controlID, LPNMHDR lParam) Z7_override;
+  virtual bool OnTimer(WPARAM timerID, LPARAM lParam) Z7_override;
+  virtual bool OnSize(WPARAM wParam, int xSize, int ySize) Z7_override;
   virtual LONG OnSetActive() Z7_override;
   virtual LONG OnApply() Z7_override;
   virtual bool OnButtonClicked(unsigned buttonID, HWND buttonHWND) Z7_override;
