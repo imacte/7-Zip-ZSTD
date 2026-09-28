@@ -25,9 +25,22 @@ $O\RegistryContextMenu.obj: ../../UI/Explorer/RegistryContextMenu.cpp ../../UI/E
 LIBS = $(LIBS) windowsapp.lib
 
 !IFNDEF CPPWINRT_INCLUDE
-!IF [cmd /c "echo CPPWINRT_INCLUDE=%WindowsSdkDir%Include\%WindowsSDKVersion%cppwinrt> cppwinrt_path.mak"]
+!IFDEF WINDOWSSDKDIR
+!IFDEF WINDOWSSDKVERSION
+CPPWINRT_INCLUDE=$(WINDOWSSDKDIR)Include\$(WINDOWSSDKVERSION)cppwinrt
 !ENDIF
+!ENDIF
+!ENDIF
+!IFNDEF CPPWINRT_INCLUDE
+!IF EXIST(cppwinrt_path.mak)
 !INCLUDE cppwinrt_path.mak
+!ENDIF
+!ENDIF
+!IFNDEF CPPWINRT_INCLUDE
+!ERROR Initialize the Visual Studio developer command prompt or set CPPWINRT_INCLUDE.
+!ENDIF
+!IF !EXIST("$(CPPWINRT_INCLUDE)\winrt\base.h")
+!ERROR Invalid CPPWINRT_INCLUDE: expected winrt\base.h. Initialize the Windows SDK environment.
 !ENDIF
 
 !IF "$(ZIP7_DARKMODE)" == "1"

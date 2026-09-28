@@ -178,12 +178,27 @@ Implementation notes: `ShellIntegrationModern.cpp` is the only C++/WinRT
 translation unit - compiled with `/std:c++17`, with the `cppwinrt` include
 directory of the Windows SDK and **without** the precompiled header (MSVC rejects
 a PCH built with another language standard), and it links `windowsapp.lib`
-through `#pragma comment`. nmake does not see the `WindowsSdkDir` environment
-variable that vcvars64 sets here, so `CPP/7zip/Bundles/Fm/makefile` has cmd.exe
-write `cppwinrt_path.mak` and includes it (override with
-`nmake PLATFORM=x64 CPPWINRT_INCLUDE=...`). `IAsyncOperation::get()` must not be
-called on the STA thread of the options page, so install/remove run on a
-short-lived MTA thread.
+through `#pragma comment`. Shared `FMBuild.mak` reads nmake's uppercase SDK
+macros from the Visual Studio developer environment. An explicit
+`CPPWINRT_INCLUDE` takes precedence; an existing `cppwinrt_path.mak` is used
+only when the SDK environment is absent. The header path is validated and no
+cache file is generated or overwritten. Missing SDK configuration fails with
+an actionable error. Install/remove run on a short-lived MTA thread because
+`IAsyncOperation::get()` cannot run on the options page's STA thread.
+The UI pumps messages while waiting for installation or an elevated helper;
+the options window stays disabled until the transaction and any rollback finish.
+This prevents another Apply or Close from racing registry writes.
+
+Mode selection and explicit DLL checkbox edits are applied in one transaction.
+Enabling a classic menu also repairs incomplete handler and Approved entries.
+Failures keep the page open and retain the pending choices.
+
+Run `powershell -File tests/run-options-tests.ps1` in a Visual Studio developer
+prompt for transaction, command parsing, responsive wait and SDK configuration
+regressions. CI runs these tests and builds both File Manager entry points
+(the standalone bundle is checked on x64, with and without dark mode).
+`tests/smoke-options.ps1 -Exe <path-to-7zFM.exe>` exercises the actual options
+window on an interactive desktop; it cancels changes.
 
 ## Choosing the menus: configure-shell-menu.ps1
 
