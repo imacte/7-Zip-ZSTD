@@ -20,6 +20,7 @@
 #include "IFolder.h"
 #include "LangUtils.h"
 #include "PropertyNameRes.h"
+#include "ShellIntegrationModern.h"
 #include "SystemPage.h"
 #include "SystemPageRes.h"
 
@@ -275,13 +276,152 @@ static UString GetProgramCommand()
 }
 
 
+/* Applies one entry of "-AssocAll=..." to HKEY_LOCAL_MACHINE (the "all users"
+   group of the system page). */
+static void Apply_AssocOne(bool add, const UString &ext, const CExtDatabase &extDB, const UString &command, LONG &res)
+{
+  if (add)
+  {
+    const CExtPlugins *found = NULL;
+    FOR_VECTOR (i, extDB.Exts)
+    {
+      if (extDB.Exts[i].Ext.IsEqualTo_NoCase(ext))
+      {
+        found = &extDB.Exts[i];
+        break;
+      }
+    }
+    if (!found || found->Plugins.IsEmpty())
+      return;
+
+    UString title = found->Ext;
+    title += " Archive";
+    const CPluginToIcon &plug = found->Plugins[0];
+    const LONG r = NRegistryAssoc::AddShellExtensionInfo(HKEY_LOCAL_MACHINE, ext,
+        title, command, plug.IconPath, plug.IconIndex);
+    if (r != ERROR_SUCCESS)
+      res = r;
+  }
+  else
+  {
+    const LONG r = NRegistryAssoc::DeleteShellExtensionInfo(HKEY_LOCAL_MACHINE, ext);
+    if (r != ERROR_SUCCESS)
+      res = r;
+  }
+}
+
+
+int ApplyAssocAll_FromCommandLine(const wchar_t *spec)
+{
+  if (!spec)
+    return 1;
+  if (wcsncmp(spec, L"-AssocAll=", 10) == 0)
+    spec += 10;
+
+  CExtDatabase extDB;
+  extDB.Read();
+  const UString command = GetProgramCommand();
+
+  LONG res = ERROR_SUCCESS;
+  bool add = false;
+  UString cur;
+
+  for (;;)
+  {
+    const wchar_t c = *spec;
+    if (c == 0 || c == L'+' || c == L'-' || c == L',')
+    {
+      if (!cur.IsEmpty())
+      {
+        Apply_AssocOne(add, cur, extDB, command, res);
+        cur.Empty();
+      }
+      if (c == 0)
+        break;
+      if (c != L',')
+        add = (c == L'+');
+    }
+    else
+      cur += c;
+    spec++;
+  }
+
+  return res == ERROR_SUCCESS ? 0 : 1;
+}
+
+
 LONG CSystemPage::OnApply()
 {
   if (!_needSave)
     return PSNRET_NOERROR;
 
   const UString command = GetProgramCommand();
-  
+
+  /* The "all users" group (group 1) writes to HKEY_LOCAL_MACHINE and therefore
+     needs administrator rights. Those changes are collected and given to an
+     elevated copy of this program: one UAC prompt, the program itself does not
+     have to be restarted as administrator. */
+  UString assocAdd, assocDel;
+  bool allUsersDone = false;
+  if (!NShellIntegrationModern::Is_Process_Elevated())
+  {
+    FOR_VECTOR (listIndex, _extDB.Exts)
+    {
+      const unsigned realIndex = GetRealIndex(listIndex);
+      const CModifiedExtInfo &mi = _items[realIndex].Pair[1];
+      if (mi.OldState == mi.State)
+        continue;
+      const UString &ext = _extDB.Exts[realIndex].Ext;
+      if (mi.State == kExtState_7Zip)
+      {
+        if (!assocAdd.IsEmpty())
+          assocAdd.Add_Char(',');
+        assocAdd += ext;
+      }
+      else if (mi.State == kExtState_Clear)
+      {
+        if (!assocDel.IsEmpty())
+          assocDel.Add_Char(',');
+        assocDel += ext;
+      }
+    }
+
+    if (!assocAdd.IsEmpty() || !assocDel.IsEmpty())
+    {
+      UString spec (L"-AssocAll=");
+      if (!assocAdd.IsEmpty())
+      {
+        spec.Add_Char('+');
+        spec += assocAdd;
+      }
+      if (!assocDel.IsEmpty())
+      {
+        spec.Add_Char('-');
+        spec += assocDel;
+      }
+
+      UString error;
+      if (NShellIntegrationModern::Run_Elevated_Self(spec, error) == S_OK)
+        allUsersDone = true;
+      else
+      {
+        if (error.IsEmpty())
+          error = L"the elevated operation failed";
+        MessageBoxW(*this, error.Ptr(), L"7-Zip ZS", MB_ICONERROR);
+      }
+    }
+  }
+
+  if (allUsersDone)
+  {
+    // the elevated copy has done the group-1 part already
+    FOR_VECTOR (listIndex, _extDB.Exts)
+    {
+      CModifiedExtInfo &mi = _items[GetRealIndex(listIndex)].Pair[1];
+      mi.OldState = mi.State;
+    }
+  }
+
   LONG res = 0;
 
   FOR_VECTOR (listIndex, _extDB.Exts)

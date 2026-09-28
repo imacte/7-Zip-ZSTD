@@ -352,7 +352,7 @@ bool Is_Process_Elevated()
 }
 
 
-HRESULT Run_Elevated_ShellRegistration(bool enable, UString &errorText)
+HRESULT Run_Elevated_Self(const UString &args, UString &errorText)
 {
   errorText.Empty();
 
@@ -371,7 +371,7 @@ HRESULT Run_Elevated_ShellRegistration(bool enable, UString &errorText)
   sei.fMask = SEE_MASK_NOCLOSEPROCESS | SEE_MASK_NOASYNC;
   sei.lpVerb = L"runas";                      // one UAC prompt
   sei.lpFile = exe.Ptr();
-  sei.lpParameters = (enable ? L"-ShellMenu=register" : L"-ShellMenu=unregister");
+  sei.lpParameters = args.Ptr();
   sei.nShow = SW_HIDE;                        // the helper does not open a window
 
   if (!::ShellExecuteExW(&sei))
@@ -392,11 +392,17 @@ HRESULT Run_Elevated_ShellRegistration(bool enable, UString &errorText)
     ::CloseHandle(sei.hProcess);
     if (code != 0)
     {
-      errorText = L"the elevated registration failed";
+      errorText = L"the elevated operation failed";
       return E_FAIL;
     }
   }
   return S_OK;
+}
+
+
+HRESULT Run_Elevated_ShellRegistration(bool enable, UString &errorText)
+{
+  return Run_Elevated_Self(enable ? UString(L"-ShellMenu=register") : UString(L"-ShellMenu=unregister"), errorText);
 }
 
 }

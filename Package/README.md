@@ -251,6 +251,33 @@ Notes:
   `Test-Path HKCR\*\shellex\...` enumerates the whole `HKEY_CLASSES_ROOT` tree
   and looks like a hang. Always use `-LiteralPath` for those paths.
 
+## Elevation: everything that needs administrator rights asks for it
+
+Both options pages that write machine-wide keys now use one UAC prompt instead of
+telling the user to restart 7-Zip as administrator (there is no extra
+confirmation box - the UAC prompt is the confirmation):
+
+| page | operation | elevated call |
+|---|---|---|
+| 7-Zip ZS | classic context menu registration on/off | `7zFM.exe -ShellMenu=register\|unregister` |
+| System | "all users" column / right "+" (file type associations) | `7zFM.exe -AssocAll=+ext1,ext2-ext3` |
+
+`ShellIntegrationModern::Run_Elevated_Self()` starts the same executable with the
+`runas` verb (`SW_HIDE`, `SEE_MASK_NOCLOSEPROCESS`), waits for it and checks its
+exit code; the helper does its work in `WinMain` **before any window is created**
+and exits. Errors and a cancelled prompt are reported in a message box.
+
+Command line summary (all without a window):
+
+```text
+7zFM.exe -ShellMenu=register       register the classic context menu (needs admin)
+7zFM.exe -ShellMenu=unregister     remove it (needs admin)
+7zFM.exe -ShellMenu=modern-on      register the sparse package (per user)
+7zFM.exe -ShellMenu=modern-off     remove it (per user)
+7zFM.exe -AssocAll=+7z,zip         associate file types for all users (needs admin)
+7zFM.exe -AssocAll=-rar            remove those associations (needs admin)
+```
+
 ## Notes and pitfalls
 
 * **A classic registration has two parts.** Besides the shellex keys there is the

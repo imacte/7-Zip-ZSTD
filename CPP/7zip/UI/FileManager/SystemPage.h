@@ -123,4 +123,10 @@ public:
   virtual bool OnButtonClicked(unsigned buttonID, HWND buttonHWND) Z7_override;
 };
 
+/* Applies "-AssocAll=+ext1,ext2-ext3" to HKEY_LOCAL_MACHINE and returns 0 on
+   success. Used by "7zFM.exe <spec>", which the system page starts elevated when
+   the "all users" column has to be changed (one UAC prompt instead of "run 7-Zip
+   as administrator"). */
+int ApplyAssocAll_FromCommandLine(const wchar_t *spec);
+
 #endif

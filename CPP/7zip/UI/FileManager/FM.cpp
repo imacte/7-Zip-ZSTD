@@ -39,6 +39,7 @@
 #include "Panel.h"
 #include "RegistryUtils.h"
 #include "StringUtils.h"
+#include "SystemPage.h"
 #include "ViewSettings.h"
 
 #ifndef UNDER_CE
@@ -827,8 +828,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /* hPrevInstance */,
         return res == ERROR_SUCCESS ? 0 : 1;
       }
       if (wcsstr(cmd, k_ModernOn) || wcsstr(cmd, k_ModernOff))
-      {
-        const bool enable = (wcsstr(cmd, k_ModernOn) != NULL);
+      {        const bool enable = (wcsstr(cmd, k_ModernOn) != NULL);
         UString error;
         HRESULT hr = S_OK;
         if (enable)
@@ -847,6 +847,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE /* hPrevInstance */,
 
         return hr == S_OK ? 0 : 1;
       }
+
+      /* the "all users" column of the system page (file type associations in
+         HKEY_LOCAL_MACHINE): "-AssocAll=+ext1,ext2-ext3" */
+      if (const wchar_t *p = wcsstr(cmd, L"-AssocAll="))
+        return ApplyAssocAll_FromCommandLine(p) == 0 ? 0 : 1;
     }
   }
   #endif
