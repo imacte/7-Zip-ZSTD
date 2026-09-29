@@ -1152,7 +1152,8 @@ size_t LZ5F_decompress(LZ5F_decompressionContext_t decompressionContext,
 
         /* case dstage_decodeCBlockSize: */   /* no more direct access, to prevent scan-build warning */
             {
-                size_t nextCBlockSize = LZ5F_readLE32(selectedIn) & 0x7FFFFFFFU;
+                U32 const blockHeader = LZ5F_readLE32(selectedIn);
+                size_t nextCBlockSize = blockHeader & 0x7FFFFFFFU;
                 if (nextCBlockSize==0)   /* frameEnd signal, no more CBlock */
                 {
                     dctxPtr->dStage = dstage_getSuffix;
@@ -1160,7 +1161,7 @@ size_t LZ5F_decompress(LZ5F_decompressionContext_t decompressionContext,
                 }
                 if (nextCBlockSize > dctxPtr->maxBlockSize) return (size_t)-LZ5F_ERROR_GENERIC; /* invalid cBlockSize */
                 dctxPtr->tmpInTarget = nextCBlockSize;
-                if (LZ5F_readLE32(selectedIn) & LZ5F_BLOCKUNCOMPRESSED_FLAG)
+                if (blockHeader & LZ5F_BLOCKUNCOMPRESSED_FLAG)
                 {
                     dctxPtr->dStage = dstage_copyDirect;
                     break;
