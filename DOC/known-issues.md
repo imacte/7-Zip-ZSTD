@@ -31,5 +31,6 @@ unchanged. Native x64 and ARM64 `/O1` and `/Od` tests pass with this change.
 
 `tests/lz-frame.c` covers both codecs' original payloads, small stored blocks,
 compressed blocks, fragmented input/output, and rejection of corrupted content checksums.
-`tests/run-lz-frame-tests.ps1` runs it in the Windows CI matrix with `/O1` and `/Od`
-so the non-LTCG optimization path remains covered on all three architectures.
+`tests/run-lz-frame-tests.ps1` runs it in the Windows CI matrix with `/O1`,
+the codecs' `/O2 /Ob3` flags, and `/Od`, so non-LTCG optimization remains covered
+on all three architectures.

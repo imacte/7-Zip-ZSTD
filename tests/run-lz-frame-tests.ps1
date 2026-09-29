@@ -1,5 +1,5 @@
-# Run from a Visual Studio developer prompt; exercise the non-LTCG /O1 path
-# used by ARM64 as well as an unoptimized control build on every Windows arch.
+# Run from a Visual Studio developer prompt. Cover non-LTCG optimization,
+# including the codecs' /O2 /Ob3 flags, and an unoptimized control build.
 $ErrorActionPreference = 'Stop'
 $dir = Join-Path $env:TEMP ('7zip-lz-frame-tests-' + [guid]::NewGuid().ToString('N'))
 $root = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
@@ -18,9 +18,11 @@ try {
     $sources = ($common + $codecs[$codec]) | ForEach-Object { Join-Path $root $_ }
     $defines = @()
     if ($codec -eq 'lizard') { $defines = @('/DTEST_LIZARD') }
-    foreach ($optimization in @('/O1', '/Od')) {
+    foreach ($optimization in @('/O1', '/O2', '/Od')) {
       Write-Host "$codec frame tests ($optimization)"
-      & cl /nologo $optimization /Gy /Gw /GS- /MT $defines "/I$root/C/$codec" "/Fo$dir\" "/Fe$dir/lz-frame.exe" $sources
+      $optimizationFlags = @($optimization)
+      if ($optimization -eq '/O2') { $optimizationFlags += '/Ob3' }
+      & cl /nologo $optimizationFlags /Gy /Gw /GS- /MT $defines "/I$root/C/$codec" "/Fo$dir\" "/Fe$dir/lz-frame.exe" $sources
       if ($LASTEXITCODE -ne 0) { throw "$codec compilation failed: $optimization" }
       & "$dir/lz-frame.exe"
       if ($LASTEXITCODE -ne 0) { throw "$codec frame tests failed: $optimization" }
