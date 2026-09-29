@@ -14,7 +14,7 @@
 #ifdef Z7_ENABLE_MODERN_SHELL_INTEGRATION
 
 // C++/WinRT (the projections ship with the Windows SDK, no NuGet package needed).
-// This file is the only one that is compiled with /std:c++17.
+// C++20 selects standard coroutines instead of MSVC's retired experimental ones.
 #include <winrt/base.h>
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.Foundation.Collections.h>

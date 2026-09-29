@@ -175,7 +175,7 @@ The package file `SevenZipZS.ShellExtension*.msix` has to be next to the binarie
 trusted (`build-shell-package.ps1` does that once, with administrator rights).
 
 Implementation notes: `ShellIntegrationModern.cpp` is the only C++/WinRT
-translation unit - compiled with `/std:c++17`, with the `cppwinrt` include
+translation unit - compiled with `/std:c++20`, with the `cppwinrt` include
 directory of the Windows SDK and **without** the precompiled header (MSVC rejects
 a PCH built with another language standard), and it links `windowsapp.lib`
 through `#pragma comment`. Shared `FMBuild.mak` reads nmake's uppercase SDK

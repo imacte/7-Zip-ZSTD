@@ -47,7 +47,8 @@ CPPWINRT_INCLUDE=$(WINDOWSSDKDIR)Include\$(WINDOWSSDKVERSION)cppwinrt
 # Dark mode already selects C++20. Avoid conflicting /std flags under /WX.
 FM_WINRT_STANDARD =
 !ELSE
-FM_WINRT_STANDARD = -std:c++17
+# Recent MSVC rejects the experimental coroutine headers used in C++17 mode.
+FM_WINRT_STANDARD = -std:c++20
 !ENDIF
 
 # WinRT uses its own language standard, so it cannot share the program's PCH.
