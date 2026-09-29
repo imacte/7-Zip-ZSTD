@@ -1,0 +1,29 @@
+{
+  "problemMatcher": [
+    {
+      "owner": "msvc-source",
+      "pattern": [
+        {
+          "regexp": "^\\s*(.+?)\\((\\d+)(?:,(\\d+))?\\)\\s*:\\s*(?:fatal )?(error|warning)\\s+(\\w+)\\s*:\\s*(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "code": 5,
+          "message": 6
+        }
+      ]
+    },
+    {
+      "owner": "msvc-build",
+      "pattern": [
+        {
+          "regexp": "^\\s*(?:NMAKE|LINK|cl|.+?\\.(?:obj|exe|dll))\\s*:\\s*(?:fatal )?(error|warning)\\s+(\\w+)\\s*:\\s*(.*)$",
+          "severity": 1,
+          "code": 2,
+          "message": 3
+        }
+      ]
+    }
+  ]
+}

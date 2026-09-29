@@ -55,6 +55,7 @@ jobs:
   windows:
 
     strategy:
+      fail-fast: false
       matrix:
         arch: [ x64, x86, arm64 ]
         darkmode: [darkmode, '']
@@ -79,6 +80,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+
+      - name: Report compiler diagnostics
+        shell: cmd
+        run: echo ::add-matcher::.github/msvc-problem-matcher.json
 
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v3 # nosonar
