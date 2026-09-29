@@ -146,11 +146,11 @@ jobs:
           REM Will be by the do-release action
           copy %WDIR%\.github\workflows\do-release.cmd %WDIR%\build\do-release.cmd
 
-      - name: LZ5 frame regression tests
+      - name: LZ5 and Lizard frame regression tests
         shell: cmd
         run: |
           call "%VCVARSALL_PATH%" ${{ matrix.arch }}
-          powershell -NoProfile -ExecutionPolicy Bypass -File tests\run-lz5-tests.ps1
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\run-lz-frame-tests.ps1
           if errorlevel 1 exit /b 1
 
       - name: Options regression tests

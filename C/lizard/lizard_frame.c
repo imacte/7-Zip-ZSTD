@@ -1064,14 +1064,16 @@ size_t LizardF_decompress(LizardF_decompressionContext_t decompressionContext,
             }
 
         /* case dstage_decodeCBlockSize: */   /* no more direct access, to prevent scan-build warning */
-            {   size_t const nextCBlockSize = LizardF_readLE32(selectedIn) & 0x7FFFFFFFU;
+            {   /* Preserve the stored-block flag across MSVC 2026 /O1 optimization. */
+                U32 const blockHeader = LizardF_readLE32(selectedIn);
+                size_t const nextCBlockSize = blockHeader & 0x7FFFFFFFU;
                 if (nextCBlockSize==0) {  /* frameEnd signal, no more CBlock */
                     dctxPtr->dStage = dstage_getSuffix;
                     break;
                 }
                 if (nextCBlockSize > dctxPtr->maxBlockSize) return (size_t)-LizardF_ERROR_GENERIC;   /* invalid cBlockSize */
                 dctxPtr->tmpInTarget = nextCBlockSize;
-                if (LizardF_readLE32(selectedIn) & LIZARDF_BLOCKUNCOMPRESSED_FLAG) {
+                if (blockHeader & LIZARDF_BLOCKUNCOMPRESSED_FLAG) {
                     dctxPtr->dStage = dstage_copyDirect;
                     break;
                 }

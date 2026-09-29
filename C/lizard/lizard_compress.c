@@ -485,8 +485,10 @@ FORCE_INLINE int Lizard_compress_generic (
 
     (void)dictSize;
     LIZARD_LOG_COMPRESS("Lizard_compress_generic source=%p inputSize=%d dest=%p maxOutputSize=%d cLevel=%d dictBase=%p dictSize=%d\n", source, inputSize, dest, maxOutputSize, ctx->compressionLevel, ctx->dictBase, (int)dictSize); 
+    /* A one-byte frame block is attempted with zero compression capacity. */
+    if (maxOutputSize < 1) return 0;
     *op++ = (BYTE)ctx->compressionLevel;
-    maxOutputSize--; // can be lower than 0
+    maxOutputSize--;
     ctx->end += inputSize;
     ctx->srcBase = ctx->off24pos = ip;
     ctx->destBase = (BYTE*)dest;
