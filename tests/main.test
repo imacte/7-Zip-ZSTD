@@ -40,7 +40,9 @@ foreach t {{-t7z -m0=zstd:x1} {-tzstd -mx1} {-tzip -mx1}} {
 test main--compress[lindex $t 0]-no-file {error, compress no such file} -constraints winOnly -body {
 	set tmpfn [file join [temporaryDirectory] 7z-test-no-such-file-xxx.txt]
 	7z a {*}$t -sae -- {\\.\NUL} $tmpfn
-} -returnCodes error -match glob -result "*Scan WARNINGS for files and folders:*The system cannot find the file specified.*"
+# note: the per-file text is a system message (localized by the OS language), so match
+# 7-Zip's own (stable) scan summary and the reported path instead:
+} -returnCodes error -match glob -result "*Scan WARNINGS for files and folders:*7z-test-no-such-file-xxx.txt*Scan WARNINGS: 1*"
 }
 
 # (windows only) this file shall be present and open for writing by svchost WpnUserService (but protect the tests by constraint):
@@ -50,13 +52,27 @@ testConstraint lckd_test_file [expr {
 	[info exists ::env(LOCALAPPDATA)] &&
 	[file exists [set lckd_test_file [file join $::env(LOCALAPPDATA) {Microsoft\Windows\Notifications\wpndatabase.db-wal}]]]
 }]
+
+# The file must be open for writing by another process for these tests to be meaningful,
+# but whether the notification service of that session keeps it open differs between
+# Windows editions (server vs client, e.g. on windows-11-arm runners), so probe the
+# actual behaviour with 7z rather than assuming it (otherwise they fail without a lock):
+set lckd_probe {}
+if {[testConstraint lckd_test_file]} {
+	catch {7z a -t7z -sae -- {\\.\NUL} $lckd_test_file} lckd_probe
+}
+testConstraint lckd_file_locked [string match {*WARNING: Cannot open 1 file*} $lckd_probe]
+
 foreach t {{-t7z -m0=zstd:x1} {-tzstd -mx1} {-tzip -mx1}} {
-test main--compress[lindex $t 0]-lckd-no-ssw {error, compress file open for writing without -ssw option} -constraints lckd_test_file -body {
+test main--compress[lindex $t 0]-lckd-no-ssw {error, compress file open for writing without -ssw option} -constraints lckd_file_locked -body {
 	variable lckd_test_file
 	# attempt to compress (without -ssw) file opened for write by other process shall generate an error:
 	7z a {*}$t -sae -- {\\.\NUL} $lckd_test_file
-} -returnCodes error -match glob -result "*WARNING: The process cannot access the file because it is being used by another process.*"
-test main--compress[lindex $t 0]-lckd-w-ssw {no error, compress file open for writing with -ssw option} -constraints lckd_test_file -body {
+# note: the reason text of the failed open is a system message (localized by the OS
+# language), and single-file containers report it as a fatal error instead of the
+# "Cannot open" summary, so match 7-Zip's own (stable) warning prefix and the path:
+} -returnCodes error -match glob -result "*WARNING:*[file tail $lckd_test_file]*"
+test main--compress[lindex $t 0]-lckd-w-ssw {no error, compress file open for writing with -ssw option} -constraints lckd_file_locked -body {
 	variable lckd_test_file
 	# attempt to compress (without -ssw) file opened for write by other process shall generate an error:
 	7z a {*}$t -ssw -sae -- {\\.\NUL} $lckd_test_file

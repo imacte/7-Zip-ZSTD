@@ -171,7 +171,12 @@ jobs:
           set OUTDIR=build\bin-%PLATFORM%
           if "${{matrix.darkmode}}" == "" set OUTDIR=%OUTDIR%-ndm
           set Z7_PATH=%OUTDIR%\7z.exe
-          tclsh tests\7z-test.tcl -verbose tsem
+          set TCLTEST_LOG=%TEMP%\7z-test-%PLATFORM%-${{matrix.darkmode}}.log
+          tclsh tests\7z-test.tcl -verbose tsem > "%TCLTEST_LOG%" 2>&1
+          set RC=%errorlevel%
+          type "%TCLTEST_LOG%"
+          powershell -NoProfile -ExecutionPolicy Bypass -File tests\publish-test-failures.ps1 -LogPath "%TCLTEST_LOG%"
+          exit /b %RC%
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v6
