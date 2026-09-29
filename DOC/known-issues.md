@@ -1,38 +1,26 @@
 # Known issues
 
-## LZ5 does not round-trip on Windows ARM64
+## Fixed: LZ5 stored-block decoding with MSVC 2026 optimization
 
-Reported 2026-09-29 (CI run 36522834035, job `windows (arm64)`), still open.
+Reported and fixed 2026-09-29. The original Windows ARM64 failures were in
+CI run 36522834035 and remained reproducible in run 36524356816.
 
-The LZ5 codec of the Windows ARM64 build is not usable: an archive written with
-`-tlz5` or `-m0=lz5` is reported as damaged when it is read back by the same
-binary. Avoid LZ5 on Windows ARM64 until this is fixed.
+Small LZ5 archives written with `-tlz5` or `-m0=lz5` failed to read back:
+`main--pipe-a-to-e`, `main--pipe-a-to-e-mx0`, and `main--compress-mx0`
+reported `Data Error` or `The data is invalid`.
 
-Symptoms (from the tcl suite on `windows-11-arm`):
+The frame decoder read the block header twice, first masking out the stored-block
+flag to obtain the size, then reading the flag again. MSVC 2026 with `/O1`
+miscompiled this path: valid stored (uncompressed) blocks entered the compressed
+block decoder. This also reproduces in a standalone x64 build without LTCG;
+the `/Od` control builds pass on both x64 and ARM64. It is not a checksum mismatch
+or a stdin/threading defect.
 
-* `7z a -tlz5 -mx3 -si -so | 7z e -tlz5 -si -so` → `ERROR: Data Error`
-* `7z a -t7z -m0=lz5:x0 -sitest.txt -- test.lz5.7z .` followed by `7z t` →
-  `Archives with Errors: 1 ... ERROR: The data is invalid.` (checksum mismatch)
-* Failing cases: `main--pipe-a-to-e`, `main--pipe-a-to-e-mx0`,
-  `main--compress-mx0`; the remaining 42 tests pass with the same binary.
+`C/lz5/lz5frame.c` now reads the block header once and derives both the size and
+stored-block flag from that value. The archive format and checksum checks are
+unchanged. Native x64 and ARM64 `/O1` and `/Od` tests pass with this change.
 
-What is known about the scope:
-
-* Windows ARM64 only. Linux ARM64 and Windows x86/x64 pass the same tests.
-* The payload is small and arrives via stdin in all three failing cases; the
-  larger file based `-m0=lz5:x0` case passes.
-* The compressed size equals the x64 result (an `lz5.7z` of 203 bytes, i.e. 122
-  header bytes plus an 81 byte frame for the 42 byte test string), so decoding or
-  frame verification looks more likely than the encoder.
-
-Not reproducible on x86/x64 so far: plain `char` and `/J` (the ARM64 default),
-1 and 4 threads, codec levels 1 and 3, the exact `CFLAGS_O1` of the makefiles
-(`/O1 /Gy /GR- /Gw /GS-`), `/O2 /GL`, and an AddressSanitizer build of
-`C/lz5` plus `C/zstdmt/lz5-mt_*` all round-trip correctly.
-
-The failures are visible without the authenticated job log: the `Test` steps
-publish failing tcltest cases as check annotations, see
-`tests/publish-test-failures.ps1`.
-
-Next step: collect codec diagnostics on an ARM64 host (or from the arm64 CI job)
-to attribute the defect to encoding, decoding or frame verification.
+`tests/lz5-frame.c` covers the original payload, small stored blocks, compressed
+blocks, fragmented input/output, and rejection of corrupted content checksums.
+`tests/run-lz5-tests.ps1` runs it in the Windows CI matrix with `/O1` and `/Od`
+so the non-LTCG optimization path remains covered on all three architectures.

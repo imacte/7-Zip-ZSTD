@@ -1152,6 +1152,8 @@ size_t LZ5F_decompress(LZ5F_decompressionContext_t decompressionContext,
 
         /* case dstage_decodeCBlockSize: */   /* no more direct access, to prevent scan-build warning */
             {
+                /* Keep the stored-block flag from the same read as the size.
+                 * MSVC 2026 /O1 can lose it when the header is read again. */
                 U32 const blockHeader = LZ5F_readLE32(selectedIn);
                 size_t nextCBlockSize = blockHeader & 0x7FFFFFFFU;
                 if (nextCBlockSize==0)   /* frameEnd signal, no more CBlock */
