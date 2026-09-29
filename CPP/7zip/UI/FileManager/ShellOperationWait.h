@@ -5,6 +5,21 @@
 #include <windows.h>
 #include <commctrl.h>
 
+// The non-dark x86 build uses the shared Windows 2000 SDK target, which hides
+// these declarations in recent SDKs. They are exported by comctl32 5.8+ and
+// available on the XP minimum used by the x86 File Manager release build.
+// Keep the declarations local instead of changing the project's SDK target
+// (and the structure layouts used by its precompiled headers).
+#if defined(NTDDI_VERSION) && NTDDI_VERSION < NTDDI_WINXP
+extern "C" {
+typedef LRESULT (CALLBACK *Z7_SUBCLASSPROC)(HWND, UINT, WPARAM, LPARAM,
+    UINT_PTR, DWORD_PTR);
+BOOL WINAPI SetWindowSubclass(HWND, Z7_SUBCLASSPROC, UINT_PTR, DWORD_PTR);
+BOOL WINAPI RemoveWindowSubclass(HWND, Z7_SUBCLASSPROC, UINT_PTR);
+LRESULT WINAPI DefSubclassProc(HWND, UINT, WPARAM, LPARAM);
+}
+#endif
+
 // Prevent Apply/Cancel/Close reentry while pumping messages during a registry
 // transaction. The owner stays alive until the helper and any rollback finish.
 class CShellOperationGuard

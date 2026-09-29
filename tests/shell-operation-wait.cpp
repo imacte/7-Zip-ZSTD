@@ -1,3 +1,4 @@
+#include "../CPP/7zip/UI/FileManager/StdAfx.h"
 #include <cassert>
 #include <cstdio>
 #include "../CPP/7zip/UI/FileManager/ShellOperationWait.h"
