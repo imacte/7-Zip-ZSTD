@@ -97,32 +97,13 @@ Info "makeappx    : $makeappx"
 
 # ------------------------------------------------------------------- assets ---
 Step "Preparing the package assets"
-if (-not (Test-Path $assetsDir)) { New-Item -ItemType Directory -Path $assetsDir | Out-Null }
-Add-Type -AssemblyName System.Drawing
-
-function New-Logo([string]$path, [int]$size)
+foreach ($name in @('StoreLogo.png', 'Square44x44Logo.png', 'Square150x150Logo.png'))
 {
-  if (Test-Path $path) { return }
-  $bmp = New-Object System.Drawing.Bitmap($size, $size)
-  $g = [System.Drawing.Graphics]::FromImage($bmp)
-  $g.SmoothingMode = 'AntiAlias'
-  $g.TextRenderingHint = 'AntiAliasGridFit'
-  $g.Clear([System.Drawing.Color]::FromArgb(255, 24, 34, 48))
-  $fontSize = [Math]::Max(8, [int]($size * 0.42))
-  $font = New-Object System.Drawing.Font('Segoe UI', $fontSize, [System.Drawing.FontStyle]::Bold, [System.Drawing.GraphicsUnit]::Pixel)
-  $brush = [System.Drawing.Brushes]::White
-  $fmt = New-Object System.Drawing.StringFormat
-  $fmt.Alignment = 'Center'; $fmt.LineAlignment = 'Center'
-  $rect = New-Object System.Drawing.RectangleF(0, 0, $size, $size)
-  $g.DrawString('7z', $font, $brush, $rect, $fmt)
-  $g.Dispose()
-  $bmp.Save($path, [System.Drawing.Imaging.ImageFormat]::Png)
-  $bmp.Dispose()
+  if (-not (Test-Path -LiteralPath (Join-Path $assetsDir $name)))
+  {
+    Fail "missing icon asset: $name. Restore Package/Assets or run npm ci and npm run build in design/icons."
+  }
 }
-
-New-Logo (Join-Path $assetsDir 'StoreLogo.png') 50
-New-Logo (Join-Path $assetsDir 'Square44x44Logo.png') 44
-New-Logo (Join-Path $assetsDir 'Square150x150Logo.png') 150
 Get-ChildItem $assetsDir -Filter *.png | ForEach-Object { Info ("asset       : {0} ({1} bytes)" -f $_.Name, $_.Length) }
 
 # --------------------------------------------------------------- certificate ---

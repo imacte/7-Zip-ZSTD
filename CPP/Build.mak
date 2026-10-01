@@ -254,8 +254,8 @@ $(LIBS)
 <<
 
 !IFNDEF NO_DEFAULT_RES
-$O\resource.res: $(*B).rc
-	rc $(RFLAGS) -fo$@ $**
+$O\resource.res: $(*B).rc $(RESOURCE_IMAGE_DEPS)
+	rc $(RFLAGS) -fo$@ $(*B).rc
 !ENDIF
 $O\StdAfx.obj: $(*B).cpp
 	$(COMPL_PCH)

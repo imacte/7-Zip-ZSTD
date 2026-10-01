@@ -657,7 +657,8 @@ Z7_COMWF_B CZipContextMenu::QueryContextMenu(HMENU hMenu, UINT indexMenu,
   {
     ODS("### 45")
     if (!_bitmap)
-      _bitmap = ::LoadBitmap(g_hInstance, MAKEINTRESOURCE(IDB_MENU_LOGO));
+      _bitmap = (HBITMAP)::LoadImage(g_hInstance,
+          MAKEINTRESOURCE(IDB_MENU_LOGO), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
     bitmap = _bitmap;
   }
 

@@ -84,4 +84,6 @@ GUI_OBJS = \
 
 !include "../../7zip.mak"
 
+$O\resource.res: ArchiveIcons.rc
+
 !include "../../UI/FileManager/FMBuild.mak"

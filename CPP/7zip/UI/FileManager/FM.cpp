@@ -1205,6 +1205,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
       return 0;
     */
       
+    // Recreate alpha glyphs with the new system/theme foreground color.
+    case WM_SYSCOLORCHANGE:
+    case WM_THEMECHANGED:
+      if (g_App._toolBar)
+      {
+        g_App.ReloadToolbars();
+        g_App.MoveSubWindows();
+      }
+      break;
+
     /*
     case WM_SETTINGCHANGE:
       break;

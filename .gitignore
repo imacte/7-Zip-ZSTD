@@ -20,3 +20,5 @@ CPP/7zip/UI/FileManager/cppwinrt_path.mak
 
 # Local File Manager build logs
 /CPP/7zip/Bundles/Fm/build_fm*.log
+/CPP/7zip/Bundles/Fm/x64-icons/
+/CPP/7zip/Bundles/Fm/x64-icons-build.log

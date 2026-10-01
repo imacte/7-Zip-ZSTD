@@ -3,4 +3,4 @@
 
 MY_VERSION_INFO_DLL("7-Zip Brotli Plugin v1.2.0", "Brotli")
 
-101  ICON  "../../Archive/Icons/7z.ico"
+101  ICON  "../../Archive/Icons/br.ico"

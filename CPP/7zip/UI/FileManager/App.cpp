@@ -284,13 +284,39 @@ static void AddButton(
     but.iString = (INT_PTR)(LPCWSTR)s;
 
   but.iBitmap = imageList.GetImageCount();
-  HBITMAP b = ::LoadBitmap(g_hInstance,
+  HBITMAP b = (HBITMAP)::LoadImage(g_hInstance,
       large ?
       MAKEINTRESOURCE(butInfo.BitmapResID):
-      MAKEINTRESOURCE(butInfo.Bitmap2ResID));
+      MAKEINTRESOURCE(butInfo.Bitmap2ResID),
+      IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
   if (b)
   {
-    imageList.AddMasked(b, RGB(255, 0, 255));
+    BITMAP bitmap;
+    if (::GetObject(b, sizeof(bitmap), &bitmap) == sizeof(bitmap)
+        && bitmap.bmBits && bitmap.bmBitsPixel == 32)
+    {
+      // The Fluent glyph resources have an alpha channel. Tint the coverage
+      // with the current text color and keep RGB premultiplied for ImageList.
+      COLORREF color = ::GetSysColor(COLOR_BTNTEXT);
+#ifdef ZIP7_DARKMODE
+      if (dmlib::isEnabled())
+        color = dmlib::getTextColor();
+#endif
+      for (LONG y = 0; y < bitmap.bmHeight; y++)
+      {
+        Byte *pixel = (Byte *)bitmap.bmBits + y * bitmap.bmWidthBytes;
+        for (LONG x = 0; x < bitmap.bmWidth; x++, pixel += 4)
+        {
+          const unsigned alpha = pixel[3];
+          pixel[0] = (Byte)((GetBValue(color) * alpha + 127) / 255);
+          pixel[1] = (Byte)((GetGValue(color) * alpha + 127) / 255);
+          pixel[2] = (Byte)((GetRValue(color) * alpha + 127) / 255);
+        }
+      }
+      imageList.Add(b);
+    }
+    else
+      imageList.AddMasked(b, RGB(255, 0, 255));
     ::DeleteObject(b);
   }
   #ifdef _UNICODE

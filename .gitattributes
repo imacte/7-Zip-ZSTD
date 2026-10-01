@@ -6,6 +6,9 @@
 *.ico binary
 *.bmp binary
 
+# Generated resource text is checked byte-for-byte by design/icons/build.mjs.
+CPP/7zip/Bundles/Fm/ArchiveIcons.rc text eol=lf
+
 # Visual Studio
 *.dsp text eol=crlf
 *.dsw text eol=crlf

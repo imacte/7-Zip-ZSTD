@@ -1,4 +1,5 @@
 PROG = 7zS2.sfx
+RESOURCE_IMAGE_DEPS = setup.ico
 MY_FIXED = 1
 
 CFLAGS = $(CFLAGS) \

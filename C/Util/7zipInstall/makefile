@@ -1,4 +1,5 @@
 PROG = 7zipInstall.exe
+RESOURCE_IMAGE_DEPS = 7zip.ico
 MY_FIXED = 1
 
 !IFDEF Z7_64BIT_INSTALLER

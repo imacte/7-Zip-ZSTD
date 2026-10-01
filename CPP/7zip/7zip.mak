@@ -43,6 +43,17 @@ OBJS = \
 !include "../../../../DarkMode/7zRes/7zDarkObj.mak"
 !ENDIF
 
+# Image edits must invalidate resources even when the .rc text is unchanged.
+RESOURCE_IMAGE_DEPS = \
+  ../../Archive/Icons/*.ico \
+  ../../UI/FileManager/*.ico \
+  ../../UI/FileManager/*.bmp \
+  ../../UI/GUI/FM.ico \
+  ../../UI/Explorer/MenuLogo.bmp \
+  ../../Bundles/SFXCon/7z.ico \
+  ../../Bundles/SFXWin/7z.ico \
+  ../../Bundles/SFXSetup/setup.ico
+
 !include "../../../Build.mak"
 
 # MAK_SINGLE_FILE = 1

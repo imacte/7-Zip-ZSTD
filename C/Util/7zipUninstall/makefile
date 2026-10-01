@@ -1,4 +1,5 @@
 PROG = 7zipUninstall.exe
+RESOURCE_IMAGE_DEPS = 7zipUninstall.ico
 MY_FIXED = 1
 
 !IFDEF Z7_64BIT_INSTALLER
