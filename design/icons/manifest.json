@@ -15,239 +15,273 @@
     {
       "name": "7z",
       "label": "7Z",
-      "color": "#087bd9",
+      "color": "#8ED7F5",
       "source": "archive/7z",
+      "smallSource": "archive/7z-small",
       "target": "CPP/7zip/Archive/Icons/7z.ico"
     },
     {
       "name": "zip",
       "label": "ZIP",
-      "color": "#b87808",
+      "color": "#FFE386",
       "source": "archive/zip",
+      "smallSource": "archive/zip-small",
       "target": "CPP/7zip/Archive/Icons/zip.ico"
     },
     {
       "name": "rar",
       "label": "RAR",
-      "color": "#8253cd",
+      "color": "#C348A2",
       "source": "archive/rar",
+      "smallSource": "archive/rar-small",
       "target": "CPP/7zip/Archive/Icons/rar.ico"
     },
     {
       "name": "tar",
       "label": "TAR",
-      "color": "#187f80",
+      "color": "#529fa0",
       "source": "archive/tar",
+      "smallSource": "archive/tar-small",
       "target": "CPP/7zip/Archive/Icons/tar.ico"
     },
     {
       "name": "gz",
       "label": "GZ",
-      "color": "#27934e",
+      "color": "#5dae7a",
       "source": "archive/gz",
+      "smallSource": "archive/gz-small",
       "target": "CPP/7zip/Archive/Icons/gz.ico"
     },
     {
       "name": "xz",
       "label": "XZ",
-      "color": "#515bd1",
+      "color": "#7d84dd",
       "source": "archive/xz",
+      "smallSource": "archive/xz-small",
       "target": "CPP/7zip/Archive/Icons/xz.ico"
     },
     {
       "name": "zst",
       "label": "ZST",
-      "color": "#ce4c55",
+      "color": "#da7980",
       "source": "archive/zst",
+      "smallSource": "archive/zst-small",
       "target": "CPP/7zip/Archive/Icons/zst.ico"
     },
     {
       "name": "zstd",
       "label": "ZSTD",
-      "color": "#b93d56",
+      "color": "#cb6e80",
       "source": "archive/zstd",
+      "smallSource": "archive/zstd-small",
       "target": "CPP/7zip/Archive/Icons/zstd.ico"
     },
     {
       "name": "bz2",
       "label": "BZ2",
-      "color": "#168b9c",
+      "color": "#50a8b5",
       "source": "archive/bz2",
+      "smallSource": "archive/bz2-small",
       "target": "CPP/7zip/Archive/Icons/bz2.ico"
     },
     {
       "name": "br",
       "label": "BR",
-      "color": "#ae4a91",
+      "color": "#c277ad",
       "source": "archive/br",
+      "smallSource": "archive/br-small",
       "target": "CPP/7zip/Archive/Icons/br.ico"
     },
     {
       "name": "lz4",
       "label": "LZ4",
-      "color": "#2774b4",
+      "color": "#5d97c7",
       "source": "archive/lz4",
+      "smallSource": "archive/lz4-small",
       "target": "CPP/7zip/Archive/Icons/lz4.ico"
     },
     {
       "name": "lz5",
       "label": "LZ5",
-      "color": "#4f68a8",
+      "color": "#7b8ebe",
       "source": "archive/lz5",
+      "smallSource": "archive/lz5-small",
       "target": "CPP/7zip/Archive/Icons/lz5.ico"
     },
     {
       "name": "lzma",
       "label": "LZMA",
-      "color": "#6f58b0",
+      "color": "#9382c4",
       "source": "archive/lzma",
+      "smallSource": "archive/lzma-small",
       "target": "CPP/7zip/Archive/Icons/lzma.ico"
     },
     {
       "name": "lzma2",
       "label": "LZMA2",
-      "color": "#9852b0",
+      "color": "#b27dc4",
       "source": "archive/lzma2",
+      "smallSource": "archive/lzma2-small",
       "target": "CPP/7zip/Archive/Icons/lzma2.ico"
     },
     {
       "name": "liz",
       "label": "LIZ",
-      "color": "#498042",
+      "color": "#77a071",
       "source": "archive/liz",
+      "smallSource": "archive/liz-small",
       "target": "CPP/7zip/Archive/Icons/liz.ico"
     },
     {
       "name": "lzh",
       "label": "LZH",
-      "color": "#9a713a",
+      "color": "#b3956b",
       "source": "archive/lzh",
+      "smallSource": "archive/lzh-small",
       "target": "CPP/7zip/Archive/Icons/lzh.ico"
     },
     {
       "name": "lha",
       "label": "LHA",
-      "color": "#a56845",
+      "color": "#bc8e74",
       "source": "archive/lha",
+      "smallSource": "archive/lha-small",
       "target": "CPP/7zip/Archive/Icons/lha.ico"
     },
     {
       "name": "z",
       "label": "Z",
-      "color": "#4b7e94",
+      "color": "#789eaf",
       "source": "archive/z",
+      "smallSource": "archive/z-small",
       "target": "CPP/7zip/Archive/Icons/z.ico"
     },
     {
       "name": "arj",
       "label": "ARJ",
-      "color": "#a85356",
+      "color": "#be7e80",
       "source": "archive/arj",
+      "smallSource": "archive/arj-small",
       "target": "CPP/7zip/Archive/Icons/arj.ico"
     },
     {
       "name": "cab",
       "label": "CAB",
-      "color": "#a47728",
+      "color": "#bb995e",
       "source": "archive/cab",
+      "smallSource": "archive/cab-small",
       "target": "CPP/7zip/Archive/Icons/cab.ico"
     },
     {
       "name": "cpio",
       "label": "CPIO",
-      "color": "#738333",
+      "color": "#96a266",
       "source": "archive/cpio",
+      "smallSource": "archive/cpio-small",
       "target": "CPP/7zip/Archive/Icons/cpio.ico"
     },
     {
       "name": "xar",
       "label": "XAR",
-      "color": "#537562",
+      "color": "#7e9889",
       "source": "archive/xar",
+      "smallSource": "archive/xar-small",
       "target": "CPP/7zip/Archive/Icons/xar.ico"
     },
     {
       "name": "split",
       "label": "001",
-      "color": "#737c8d",
+      "color": "#969daa",
       "source": "archive/split",
+      "smallSource": "archive/split-small",
       "target": "CPP/7zip/Archive/Icons/split.ico"
     },
     {
       "name": "deb",
       "label": "DEB",
-      "color": "#b94363",
+      "color": "#cb728a",
       "source": "archive/deb",
+      "smallSource": "archive/deb-small",
       "target": "CPP/7zip/Archive/Icons/deb.ico"
     },
     {
       "name": "rpm",
       "label": "RPM",
-      "color": "#b15639",
+      "color": "#c5806b",
       "source": "archive/rpm",
+      "smallSource": "archive/rpm-small",
       "target": "CPP/7zip/Archive/Icons/rpm.ico"
     },
     {
       "name": "iso",
       "label": "ISO",
-      "color": "#527b9b",
+      "color": "#C9CDD0",
       "source": "archive/iso",
+      "smallSource": "archive/iso-small",
       "target": "CPP/7zip/Archive/Icons/iso.ico"
     },
     {
       "name": "dmg",
       "label": "DMG",
-      "color": "#6d76a5",
+      "color": "#9298bc",
       "source": "archive/dmg",
+      "smallSource": "archive/dmg-small",
       "target": "CPP/7zip/Archive/Icons/dmg.ico"
     },
     {
       "name": "vhd",
       "label": "VHD",
-      "color": "#326986",
+      "color": "#658fa4",
       "source": "archive/vhd",
+      "smallSource": "archive/vhd-small",
       "target": "CPP/7zip/Archive/Icons/vhd.ico"
     },
     {
       "name": "wim",
       "label": "WIM",
-      "color": "#267f9f",
+      "color": "#C9CDD0",
       "source": "archive/wim",
+      "smallSource": "archive/wim-small",
       "target": "CPP/7zip/Archive/Icons/wim.ico"
     },
     {
       "name": "apfs",
       "label": "APFS",
-      "color": "#6074a0",
+      "color": "#8897b8",
       "source": "archive/apfs",
+      "smallSource": "archive/apfs-small",
       "target": "CPP/7zip/Archive/Icons/apfs.ico"
     },
     {
       "name": "hfs",
       "label": "HFS",
-      "color": "#8a6f94",
+      "color": "#a793af",
       "source": "archive/hfs",
+      "smallSource": "archive/hfs-small",
       "target": "CPP/7zip/Archive/Icons/hfs.ico"
     },
     {
       "name": "ntfs",
       "label": "NTFS",
-      "color": "#526d80",
+      "color": "#7d92a0",
       "source": "archive/ntfs",
+      "smallSource": "archive/ntfs-small",
       "target": "CPP/7zip/Archive/Icons/ntfs.ico"
     },
     {
       "name": "fat",
       "label": "FAT",
-      "color": "#72835e",
+      "color": "#95a286",
       "source": "archive/fat",
+      "smallSource": "archive/fat-small",
       "target": "CPP/7zip/Archive/Icons/fat.ico"
     },
     {
       "name": "sqfs",
       "label": "SQFS",
-      "color": "#537b74",
+      "color": "#7e9c97",
       "source": "archive/sqfs",
+      "smallSource": "archive/sqfs-small",
       "target": "CPP/7zip/Archive/Icons/sqfs.ico"
     }
   ],
@@ -255,6 +289,7 @@
     {
       "name": "app",
       "source": "app/app",
+      "smallSource": "app/app-small",
       "targets": [
         "CPP/7zip/UI/FileManager/FM.ico",
         "CPP/7zip/UI/GUI/FM.ico",
@@ -264,6 +299,7 @@
     {
       "name": "install",
       "source": "app/install",
+      "smallSource": "app/install-small",
       "targets": [
         "C/Util/7zipInstall/7zip.ico",
         "C/Util/SfxSetup/setup.ico",
@@ -273,6 +309,7 @@
     {
       "name": "uninstall",
       "source": "app/uninstall",
+      "smallSource": "app/uninstall-small",
       "targets": [
         "C/Util/7zipUninstall/7zipUninstall.ico"
       ]
@@ -280,6 +317,7 @@
     {
       "name": "sfx",
       "source": "app/sfx",
+      "smallSource": "app/sfx-small",
       "targets": [
         "CPP/7zip/Bundles/SFXWin/7z.ico",
         "CPP/7zip/Bundles/SFXCon/7z.ico"

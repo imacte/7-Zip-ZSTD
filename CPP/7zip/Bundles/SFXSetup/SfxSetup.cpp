@@ -7,6 +7,9 @@
 #include "../../../Common/MyWindows.h"
 #include "../../../Common/MyInitGuid.h"
 
+// The decoder queries ICryptoAuthVerify even in a Z7_NO_CRYPTO build.
+#include "../../IPassword.h"
+
 #include "../../../Common/CommandLineParser.h"
 #include "../../../Common/StringConvert.h"
 #include "../../../Common/TextConfig.h"

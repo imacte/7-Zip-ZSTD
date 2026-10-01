@@ -11,7 +11,7 @@ const check=process.argv.includes('--check');
 const outputs=[];
 const source=name=>fs.readFileSync(path.join(dir,'src',name+'.svg'),'utf8');
 const render=(svg,width)=>new Resvg(svg,{fitTo:{mode:'width',value:width},font:{loadSystemFonts:false}}).render();
-const iconImage=(entry,size)=>render(source(entry.source+(size===16?'-16':'')),size);
+const iconImage=(entry,size)=>render(source(size===16?entry.source+'-16':size<=32&&entry.smallSource?entry.smallSource:entry.source),size);
 function emit(target,data) {
   const dest=path.resolve(root,target);
   if(!dest.startsWith(root+path.sep)) throw new Error('Output outside repository');
@@ -101,7 +101,7 @@ function preview(dark) {
   const bg=dark?'#1c2129':'#f3f6fa',card=dark?'#272e39':'#ffffff',ink=dark?'#edf3fb':'#202b3a',muted=dark?'#a5b4c5':'#637286';
   let b=`<rect width="1440" height="1430" fill="${bg}"/>`;
   const text=(t,x,y,size=16,color=ink)=>`<text x="${x}" y="${y}" font-family="Segoe UI, sans-serif" font-size="${size}" fill="${color}">${t}</text>`;
-  b+=text('7-Zip ZS',48,64,32)+text('Fluent icon family · application / archive / commands',48,96,17,muted);
+  b+=text('7-Zip ZS',48,64,32)+text('Metal zipper + white label · application / archive / commands',48,96,17,muted);
   b+=`<rect x="40" y="122" width="1360" height="210" rx="16" fill="${card}"/>`;
   for(const [i,e] of manifest.applications.entries()) b+=embed(iconImage(e,96),62+i*178,149)+text(['Application','Install / Setup','Uninstall','Self-extracting'][i],62+i*178,278,15,muted);
   b+=text('Actual pixel sizes',820,164,16,muted);
@@ -124,5 +124,23 @@ function preview(dark) {
   return new Resvg(svg,{font:{fontFiles:fs.existsSync('C:/Windows/Fonts/segoeui.ttf')?['C:/Windows/Fonts/segoeui.ttf']:[],loadSystemFonts:true}}).render().asPng();
 }
 // Preview fonts are presentation-only and do not affect checked resource bytes.
-if(!check) for(const theme of ['light','dark']) emit(`design/icons/preview-${theme}.png`,preview(theme==='dark'));
+if(!check) {
+  for(const theme of ['light','dark']) emit(`design/icons/preview-${theme}.png`,preview(theme==='dark'));
+  const cases=[app,...['7z','zip','rar','lzma2','iso'].map(name=>manifest.formats.find(e=>e.name===name))];
+  let body='<rect width="1080" height="770" fill="#f3f6fa"/>';
+  for(const [i,e] of cases.entries()) {
+    const x=12+i*178;
+    body+=`<text x="${x+12}" y="32" font-family="Segoe UI" font-size="17" fill="#263445">${e.label || '7-Zip'}</text>`;
+    for(const [j,size] of [16,24,32].entries()) {
+      const y=48+j*236,im=iconImage(e,size);
+      body+=`<rect x="${x}" y="${y}" width="164" height="225" rx="8" fill="#fff"/><rect x="${x}" y="${y+65}" width="164" height="160" fill="#272e39"/>`;
+      body+=`<text x="${x+8}" y="${y+22}" font-family="Segoe UI" font-size="13" fill="#637286">${size}px / 4x inspection</text>`;
+      body+=embed(im,x+12,y+28);
+      // Nearest-neighbor enlargement shows the pixels of the actual size.
+      body+=`<image x="${x+12}" y="${y+77}" width="${size*4}" height="${size*4}" image-rendering="optimizeSpeed" href="data:image/png;base64,${im.asPng().toString('base64')}"/>`;
+    }
+  }
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="770">${body}</svg>`;
+  emit('design/icons/preview-sizes.png',new Resvg(svg).render().asPng());
+}
 console.log(`${check?'Verified':'Generated'} ${outputs.length} files (${manifest.formats.length} archive formats, ${manifest.applications.reduce((n,e)=>n+e.targets.length,0)} application ICOs, 14 toolbar BMPs, menu BMP, 3 package PNGs, bundled-format mappings).`);
