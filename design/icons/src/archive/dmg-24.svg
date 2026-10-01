@@ -1,30 +1,23 @@
 <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <defs/>
-    <path fill="#41715d" stroke="none" d="M 2 11 L 23 11 L 23 16 L 2 16 Z"/>
-    <path fill="#4f8a72" stroke="none" d="M 1 12 L 20 12 L 20 16 L 1 16 Z"/>
-    <path fill="#7ba795" stroke="none" d="M 2 11 L 20 11 L 20 12 L 2 12 Z"/>
-    <path fill="#e4dcc5" stroke="none" d="M 20 12 L 23 12 L 23 15 L 20 15 Z"/>
-    <path fill="#dec795" stroke="none" d="M 3 13 L 4 13 L 4 15 L 3 15 Z"/>
-    <path fill="#396794" stroke="none" d="M 2 6 L 23 6 L 23 11 L 2 11 Z"/>
-    <path fill="#467eb4" stroke="none" d="M 1 7 L 20 7 L 20 11 L 1 11 Z"/>
-    <path fill="#749ec7" stroke="none" d="M 2 6 L 20 6 L 20 7 L 2 7 Z"/>
-    <path fill="#e4dcc5" stroke="none" d="M 20 7 L 23 7 L 23 10 L 20 10 Z"/>
-    <path fill="#dec795" stroke="none" d="M 3 8 L 4 8 L 4 10 L 3 10 Z"/>
-    <path fill="#686e90" stroke="none" d="M 2 1 L 23 1 L 23 6 L 2 6 Z"/>
-    <path fill="#7f86b0" stroke="none" d="M 1 2 L 20 2 L 20 6 L 1 6 Z"/>
+    <path fill="#41715d" stroke="none" d="M 2 15 L 23 15 L 23 22 L 2 22 Z"/>
+    <path fill="#4f8a72" stroke="none" d="M 1 16 L 20 16 L 20 22 L 1 22 Z"/>
+    <path fill="#7ba795" stroke="none" d="M 2 15 L 20 15 L 20 16 L 2 16 Z"/>
+    <path fill="#e4dcc5" stroke="none" d="M 20 16 L 23 16 L 23 21 L 20 21 Z"/>
+    <path fill="#dec795" stroke="none" d="M 3 17 L 4 17 L 4 21 L 3 21 Z"/>
+    <path fill="#396794" stroke="none" d="M 2 8 L 23 8 L 23 15 L 2 15 Z"/>
+    <path fill="#467eb4" stroke="none" d="M 1 9 L 20 9 L 20 15 L 1 15 Z"/>
+    <path fill="#749ec7" stroke="none" d="M 2 8 L 20 8 L 20 9 L 2 9 Z"/>
+    <path fill="#e4dcc5" stroke="none" d="M 20 9 L 23 9 L 23 14 L 20 14 Z"/>
+    <path fill="#dec795" stroke="none" d="M 3 10 L 4 10 L 4 14 L 3 14 Z"/>
+    <path fill="#686e90" stroke="none" d="M 2 1 L 23 1 L 23 8 L 2 8 Z"/>
+    <path fill="#7f86b0" stroke="none" d="M 1 2 L 20 2 L 20 8 L 1 8 Z"/>
     <path fill="#9fa4c4" stroke="none" d="M 2 1 L 20 1 L 20 2 L 2 2 Z"/>
-    <path fill="#e4dcc5" stroke="none" d="M 20 2 L 23 2 L 23 5 L 20 5 Z"/>
-    <path fill="#dec795" stroke="none" d="M 3 3 L 4 3 L 4 5 L 3 5 Z"/>
-    <path fill="#91603b" stroke="none" d="M 14 1 L 18 1 L 18 16 L 14 16 Z"/>
-    <path fill="#c0996a" stroke="none" d="M 14 1 L 15 1 L 15 16 L 14 16 Z"/>
-    <path fill="#dce3e3" stroke="none" d="M 13 6 L 19 6 L 19 12 L 13 12 Z"/>
-    <path fill="#765335" stroke="none" d="M 14 7 L 18 7 L 18 11 L 14 11 Z"/>
-    <path fill="#edf1ee" stroke="none" d="M 15 7 L 16 7 L 16 11 L 15 11 Z"/>
-    <path fill="#bec2be" stroke="none" d="M 0 14 L 24 14 L 24 24 L 0 24 Z"/>
-    <path fill="#fffdf7" stroke="none" d="M 0 14 L 23 14 L 23 23 L 0 23 Z"/>
-    <g transform="matrix(1 0 0 1 1 13)">
-        <g>
-            <path fill="#28363f" stroke="none" d="M 0.8266814 9.565217 L 0.8266814 2.8676965 L 2.7602751 2.8676965 Q 6.463994 2.8676965 6.463994 6.1323876 Q 6.463994 7.682999 5.4364815 8.624108 Q 4.408967 9.565217 2.6808763 9.565217 L 0.8266814 9.565217 Z M 1.9335936 3.811141 L 1.9335936 8.626443 L 2.8209918 8.626443 Q 3.9932916 8.626443 4.6448283 7.981912 Q 5.2963653 7.337381 5.2963653 6.160411 Q 5.2963653 3.811141 2.8630261 3.811141 L 1.9335936 3.811141 Z M 14.880263 9.565217 L 13.778023 9.565217 L 13.778023 5.230978 Q 13.778023 4.6985393 13.84341 3.927904 L 13.824728 3.927904 Q 13.721976 4.3669324 13.642578 4.5584235 L 11.643597 9.565217 L 10.877632 9.565217 L 8.8739805 4.595788 Q 8.789911 4.3762736 8.696501 3.927904 L 8.677819 3.927904 Q 8.715183 4.3295684 8.715183 5.2403193 L 8.715183 9.565217 L 7.6876698 9.565217 L 7.6876698 2.8676965 L 9.252293 2.8676965 L 11.013077 7.32804 Q 11.21391 7.8417964 11.274625 8.094005 L 11.297979 8.094005 Q 11.470786 7.566236 11.578209 7.3093576 L 13.371686 2.8676965 L 14.880263 2.8676965 L 14.880263 9.565217 Z M 21.755264 9.107507 Q 20.709068 9.677309 19.424675 9.677309 Q 17.939451 9.677309 17.01936 8.752547 Q 16.099268 7.827785 16.099268 6.305197 Q 16.099268 4.749915 17.105764 3.75276 Q 18.11226 2.7556047 19.662872 2.7556047 Q 20.779125 2.7556047 21.54042 3.0825405 L 21.54042 4.226817 Q 20.769785 3.7130604 19.704906 3.7130604 Q 18.635359 3.7130604 17.951128 4.4183083 Q 17.266897 5.123556 17.266897 6.24448 Q 17.266897 7.3980975 17.855383 8.058975 Q 18.443867 8.719853 19.452698 8.719853 Q 20.143936 8.719853 20.64835 8.453634 L 20.64835 6.860988 L 19.237854 6.860988 L 19.237854 5.9268847 L 21.755264 5.9268847 L 21.755264 9.107507 Z"/>
-        </g>
-    </g>
+    <path fill="#e4dcc5" stroke="none" d="M 20 2 L 23 2 L 23 7 L 20 7 Z"/>
+    <path fill="#dec795" stroke="none" d="M 3 3 L 4 3 L 4 7 L 3 7 Z"/>
+    <path fill="#91603b" stroke="none" d="M 14 1 L 18 1 L 18 22 L 14 22 Z"/>
+    <path fill="#c0996a" stroke="none" d="M 14 1 L 15 1 L 15 22 L 14 22 Z"/>
+    <path fill="#dce3e3" stroke="none" d="M 13 8 L 19 8 L 19 14 L 13 14 Z"/>
+    <path fill="#765335" stroke="none" d="M 14 9 L 18 9 L 18 13 L 14 13 Z"/>
+    <path fill="#edf1ee" stroke="none" d="M 15 9 L 16 9 L 16 13 L 15 13 Z"/>
 </svg>

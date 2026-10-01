@@ -2,7 +2,8 @@
 
 Original SVG artwork inspired by [WinRAR's bound-book archive icon](https://www.win-rar.com/):
 three colored volumes with shaded spines, cream pages, a brown leather strap and
-a silver buckle. An ivory plate carries the uppercase format name. Backgrounds
+a silver buckle. Icons have no text or label plates; top-volume colors distinguish
+formats. Format names in preview sheets are captions outside the artwork. Backgrounds
 are transparent. The book geometry is drawn in `stacked-books.mjs`; no downloaded
 WinRAR artwork is embedded. The monochrome
 toolbar inspired by [NanaZip](https://github.com/M2Team/NanaZip) is unchanged.
@@ -52,23 +53,20 @@ The top-volume palette is 7Z `#419BCC`, ZIP `#D5A94B`, RAR `#A457AA`, ISO
 `#96A0AB` and WIM `#8297A4`. Other formats mix the original palette with white at
 an 88:12 ratio. Middle and bottom volumes blend each accent toward blue and green.
 The bootstrap retains original inputs so repeated runs do not lighten again.
-Applications use a purple/blue/green stack, a `7-ZIP` label and their existing
-action badges. Label plate widths are measured from the outlined lettering.
+Applications use a purple/blue/green stack and their existing action badges.
+The generator explicitly disables labels for every format, application and size.
 
 ## Small sizes and Windows integration
 
 ICOs contain 16, 20, 24, 32, 40, 48, 64, 96, 128 and 256 pixel frames. Sizes
 through 48 use straight-alpha DIBs and AND masks; larger frames use PNG to keep
-resource size down. The 16px masters simplify geometry and abbreviate long
-labels: LM=LZMA, L2=LZMA2, ZS=ZSTD, CP=CPIO, AP=APFS, NT=NTFS, SQ=SQFS.
-The 16px application label is `7Z`. Native 16/20/24/32px masters are selected via
-`sizeSources` in the manifest (`-small.svg` is the 32px master). They use whole-pixel
-book covers, dark Segoe UI Semibold labels, simplified pages and a metal buckle.
-`small-icons.mjs` defines native geometry and typography; the bootstrap requires
-`C:/Windows/Fonts/seguisb.ttf` (or `ICON_SMALL_FONT`) and converts lettering to
-font-independent outlines. 20px and above retain full uppercase labels.
-The remaining sizes use the shaded, perspective book masters and full labels. Split
-archives use `001`.
+resource size down. Native 16/20/24/32px masters are selected via `sizeSources`
+in the manifest (`-small.svg` is the 32px master). They use whole-pixel book covers,
+simplified pages and a metal buckle, filling the space formerly reserved for text.
+The remaining sizes use shaded, perspective book masters. `stacked-books.mjs` and
+`small-icons.mjs` retain an optional label parameter for comparison previews;
+production generation passes `false`. The optional labeled comparison uses
+Segoe UI Semibold (`C:/Windows/Fonts/seguisb.ttf`, or `ICON_SMALL_FONT`).
 
 Toolbar BMPs retain the original 48x36 and 24x24 dimensions. They now carry
 premultiplied BGRA, are loaded as DIB sections, and are tinted to the current

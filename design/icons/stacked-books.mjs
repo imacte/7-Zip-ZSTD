@@ -17,7 +17,7 @@ export function fittedLabel(label,fontSize,maxWidth,fontFile) {
   box=measure(fontSize);
   return {box,text:text(fontSize)};
 }
-export function stackedBook(label,color,variant,fontFile) {
+export function stackedBook(label,color,variant,fontFile,showLabel=true) {
   const colors=bookColors(color,variant);
   let b=`<defs>
     <linearGradient id="leather"><stop stop-color="#ba8b58"/><stop offset=".22" stop-color="#986b40"/><stop offset=".8" stop-color="#80522f"/><stop offset="1" stop-color="#684128"/></linearGradient>
@@ -45,10 +45,12 @@ export function stackedBook(label,color,variant,fontFile) {
     <rect x="32" y="29" width="12" height="12" rx="2" fill="url(#buckle)"/>
     <rect x="34.7" y="31.5" width="6.6" height="7" rx=".7" fill="#785132"/>
     <path d="M38 31v8" stroke="#edf1ef" stroke-width="1.5" stroke-linecap="round"/>`;
-  const {box,text}=fittedLabel(label,11.5,37,fontFile),width=box.width+7;
-  b+=`<rect x="4.5" y="49.7" width="${width}" height="13" rx="2" fill="#19232c" opacity=".17"/>
+  if(showLabel) {
+    const {box,text}=fittedLabel(label,11.5,37,fontFile),width=box.width+7;
+    b+=`<rect x="4.5" y="49.7" width="${width}" height="13" rx="2" fill="#19232c" opacity=".17"/>
     <rect x="4" y="49" width="${width}" height="13" rx="2" fill="#fffdf7" stroke="#b6bab5" stroke-width=".65"/>
     <g fill="#28363f" transform="translate(${7.5-box.x} ${49+(13-box.height)/2-box.y})">${text}</g>`;
+  }
   if(variant!=='archive'&&variant!=='app') {
     const badge=variant==='uninstall'?'#c1454b':variant==='sfx'?'#24836b':'#267ec1';
     b+=`<circle cx="53" cy="53" r="10" fill="#fffdf7"/><circle cx="53" cy="53" r="8.5" fill="${badge}"/>`;

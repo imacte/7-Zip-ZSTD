@@ -1,30 +1,23 @@
 <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
     <defs/>
-    <path fill="#416d5f" stroke="none" d="M 2 15 L 31 15 L 31 22 L 2 22 Z"/>
-    <path fill="#4f8574" stroke="none" d="M 1 16 L 28 16 L 28 22 L 1 22 Z"/>
-    <path fill="#7ba497" stroke="none" d="M 2 15 L 28 15 L 28 16 L 2 16 Z"/>
-    <path fill="#e4dcc5" stroke="none" d="M 28 16 L 31 16 L 31 21 L 28 21 Z"/>
-    <path fill="#dec795" stroke="none" d="M 3 17 L 4 17 L 4 21 L 3 21 Z"/>
-    <path fill="#396295" stroke="none" d="M 2 8 L 31 8 L 31 15 L 2 15 Z"/>
-    <path fill="#4678b6" stroke="none" d="M 1 9 L 28 9 L 28 15 L 1 15 Z"/>
-    <path fill="#749ac8" stroke="none" d="M 2 8 L 28 8 L 28 9 L 2 9 Z"/>
-    <path fill="#e4dcc5" stroke="none" d="M 28 9 L 31 9 L 31 14 L 28 14 Z"/>
-    <path fill="#dec795" stroke="none" d="M 3 10 L 4 10 L 4 14 L 3 14 Z"/>
-    <path fill="#695998" stroke="none" d="M 2 1 L 31 1 L 31 8 L 2 8 Z"/>
-    <path fill="#806cb9" stroke="none" d="M 1 2 L 28 2 L 28 8 L 1 8 Z"/>
+    <path fill="#416d5f" stroke="none" d="M 2 21 L 31 21 L 31 31 L 2 31 Z"/>
+    <path fill="#4f8574" stroke="none" d="M 1 22 L 28 22 L 28 31 L 1 31 Z"/>
+    <path fill="#7ba497" stroke="none" d="M 2 21 L 28 21 L 28 22 L 2 22 Z"/>
+    <path fill="#e4dcc5" stroke="none" d="M 28 22 L 31 22 L 31 30 L 28 30 Z"/>
+    <path fill="#dec795" stroke="none" d="M 3 23 L 4 23 L 4 30 L 3 30 Z"/>
+    <path fill="#396295" stroke="none" d="M 2 11 L 31 11 L 31 21 L 2 21 Z"/>
+    <path fill="#4678b6" stroke="none" d="M 1 12 L 28 12 L 28 21 L 1 21 Z"/>
+    <path fill="#749ac8" stroke="none" d="M 2 11 L 28 11 L 28 12 L 2 12 Z"/>
+    <path fill="#e4dcc5" stroke="none" d="M 28 12 L 31 12 L 31 20 L 28 20 Z"/>
+    <path fill="#dec795" stroke="none" d="M 3 13 L 4 13 L 4 20 L 3 20 Z"/>
+    <path fill="#695998" stroke="none" d="M 2 1 L 31 1 L 31 11 L 2 11 Z"/>
+    <path fill="#806cb9" stroke="none" d="M 1 2 L 28 2 L 28 11 L 1 11 Z"/>
     <path fill="#a091cb" stroke="none" d="M 2 1 L 28 1 L 28 2 L 2 2 Z"/>
-    <path fill="#e4dcc5" stroke="none" d="M 28 2 L 31 2 L 31 7 L 28 7 Z"/>
-    <path fill="#dec795" stroke="none" d="M 3 3 L 4 3 L 4 7 L 3 7 Z"/>
-    <path fill="#91603b" stroke="none" d="M 19 1 L 23 1 L 23 22 L 19 22 Z"/>
-    <path fill="#c0996a" stroke="none" d="M 19 1 L 20 1 L 20 22 L 19 22 Z"/>
-    <path fill="#dce3e3" stroke="none" d="M 18 8 L 24 8 L 24 14 L 18 14 Z"/>
-    <path fill="#765335" stroke="none" d="M 19 9 L 23 9 L 23 13 L 19 13 Z"/>
-    <path fill="#edf1ee" stroke="none" d="M 20 9 L 21 9 L 21 13 L 20 13 Z"/>
-    <path fill="#bec2be" stroke="none" d="M 0 21 L 32 21 L 32 32 L 0 32 Z"/>
-    <path fill="#fffdf7" stroke="none" d="M 0 21 L 31 21 L 31 31 L 0 31 Z"/>
-    <g transform="matrix(1 0 0 1 1 19)">
-        <g>
-            <path fill="#28363f" stroke="none" d="M 5.3338623 11.249999 L 0.97229 11.249999 L 0.97229 3.372803 L 2.279663 3.372803 L 2.279663 10.145874 L 5.3338623 10.145874 L 5.3338623 11.249999 Z M 12.167358 3.9440918 L 7.849731 10.145874 L 12.112426 10.145874 L 12.112426 11.249999 L 6.0205073 11.249999 L 6.0205073 10.651245 L 10.354614 4.482422 L 6.355591 4.482422 L 6.355591 3.372803 L 12.167358 3.372803 L 12.167358 3.9440918 Z M 21.8573 11.249999 L 20.560913 11.249999 L 20.560913 6.1523438 Q 20.560913 5.526123 20.637817 4.619751 L 20.615845 4.619751 Q 20.494995 5.1361084 20.401611 5.361328 L 18.050537 11.249999 L 17.149658 11.249999 L 14.793091 5.4052734 Q 14.694215 5.1470947 14.584351 4.619751 L 14.562378 4.619751 Q 14.606323 5.092163 14.606323 6.16333 L 14.606323 11.249999 L 13.397826 11.249999 L 13.397826 3.372803 L 15.238036 3.372803 L 17.30896 8.618774 Q 17.545166 9.223022 17.616577 9.519653 L 17.644043 9.519653 Q 17.84729 8.898926 17.973633 8.596802 L 20.083008 3.372803 L 21.8573 3.372803 L 21.8573 11.249999 Z M 30.267334 11.249999 L 28.833618 11.249999 L 28.125 9.244995 L 25.026854 9.244995 L 24.345703 11.249999 L 22.91748 11.249999 L 25.86731 3.372803 L 27.339476 3.372803 L 30.267334 11.249999 Z M 27.77893 8.179321 L 26.685791 5.0372314 Q 26.636353 4.883423 26.581423 4.5428467 L 26.559446 4.5428467 Q 26.510012 4.855957 26.449585 5.0372314 L 25.367432 8.179321 L 27.77893 8.179321 Z"/>
-        </g>
-    </g>
+    <path fill="#e4dcc5" stroke="none" d="M 28 2 L 31 2 L 31 10 L 28 10 Z"/>
+    <path fill="#dec795" stroke="none" d="M 3 3 L 4 3 L 4 10 L 3 10 Z"/>
+    <path fill="#91603b" stroke="none" d="M 19 1 L 23 1 L 23 31 L 19 31 Z"/>
+    <path fill="#c0996a" stroke="none" d="M 19 1 L 20 1 L 20 31 L 19 31 Z"/>
+    <path fill="#dce3e3" stroke="none" d="M 18 11 L 24 11 L 24 17 L 18 17 Z"/>
+    <path fill="#765335" stroke="none" d="M 19 12 L 23 12 L 23 16 L 19 16 Z"/>
+    <path fill="#edf1ee" stroke="none" d="M 20 12 L 21 12 L 21 16 L 20 16 Z"/>
 </svg>

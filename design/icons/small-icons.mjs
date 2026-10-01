@@ -1,14 +1,14 @@
 // Native 16–32px book stacks: whole-pixel covers, quiet pages, real semibold text.
 import { bookColors, mixColor, fittedLabel } from './stacked-books.mjs';
 
-export function smallIcon(label,color,variant,size,fontFile) {
+export function smallIcon(label,color,variant,size,fontFile,showLabel=true) {
   const short={LZMA:'LM',LZMA2:'L2',ZSTD:'ZS',CPIO:'CP',APFS:'AP',NTFS:'NT',SQFS:'SQ'};
   if(size===16) label=variant==='archive'?(short[label] || label):'7Z';
   const colors=bookColors(color,variant);
   let b='';
   const rect=(x,y,w,h,fill)=>{b+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${fill}"/>`;};
   const left=1,right=size-1,top=1,depth=size>=24?3:2;
-  const rowHeight={16:3,20:4,24:5,32:7}[size];
+  const rowHeight=showLabel?{16:3,20:4,24:5,32:7}[size]:Math.floor((size-2)/3);
   for(let i=2;i>=0;i--) {
     const y=top+i*rowHeight,c=colors[i],front=right-depth;
     rect(left+1,y,right-left-1,rowHeight,mixColor(c,'#000000',.18));
@@ -24,11 +24,13 @@ export function smallIcon(label,color,variant,size,fontFile) {
   rect(beltX-1,buckleY,beltW+2,buckleH,'#dce3e3');
   rect(beltX,buckleY+1,beltW,buckleH-2,'#765335');
   rect(beltX+1,buckleY+1,1,buckleH-2,'#edf1ee');
-  const {box,text}=fittedLabel(label,{16:8,20:9,24:10,32:12}[size],size-2,fontFile);
-  const plateW=Math.min(size,Math.ceil(box.width)+2),plateH=Math.ceil(box.height)+2,plateY=size-plateH;
-  rect(0,plateY,plateW,plateH,'#bec2be');
-  rect(0,plateY,plateW-1,plateH-1,'#fffdf7');
-  b+=`<g fill="#28363f" transform="translate(${1-box.x} ${plateY+1-box.y})">${text}</g>`;
+  if(showLabel) {
+    const {box,text}=fittedLabel(label,{16:8,20:9,24:10,32:12}[size],size-2,fontFile);
+    const plateW=Math.min(size,Math.ceil(box.width)+2),plateH=Math.ceil(box.height)+2,plateY=size-plateH;
+    rect(0,plateY,plateW,plateH,'#bec2be');
+    rect(0,plateY,plateW-1,plateH-1,'#fffdf7');
+    b+=`<g fill="#28363f" transform="translate(${1-box.x} ${plateY+1-box.y})">${text}</g>`;
+  }
   if(variant!=='archive'&&variant!=='app') {
     const r=size===16?3:4,c=size-r;
     b+=`<circle cx="${c}" cy="${c}" r="${r-.5}" fill="${variant==='uninstall'?'#b83a44':variant==='sfx'?'#19755e':'#176fb0'}" stroke="white" stroke-width="1"/>`;

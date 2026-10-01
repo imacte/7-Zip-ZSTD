@@ -1,30 +1,23 @@
 <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <defs/>
-    <path fill="#496c52" stroke="none" d="M 2 11 L 23 11 L 23 16 L 2 16 Z"/>
-    <path fill="#598464" stroke="none" d="M 1 12 L 20 12 L 20 16 L 1 16 Z"/>
-    <path fill="#83a38b" stroke="none" d="M 2 11 L 20 11 L 20 12 L 2 12 Z"/>
-    <path fill="#e4dcc5" stroke="none" d="M 20 12 L 23 12 L 23 15 L 20 15 Z"/>
-    <path fill="#dec795" stroke="none" d="M 3 13 L 4 13 L 4 15 L 3 15 Z"/>
-    <path fill="#436286" stroke="none" d="M 2 6 L 23 6 L 23 11 L 2 11 Z"/>
-    <path fill="#5277a3" stroke="none" d="M 1 7 L 20 7 L 20 11 L 1 11 Z"/>
-    <path fill="#7d99ba" stroke="none" d="M 2 6 L 20 6 L 20 7 L 2 7 Z"/>
-    <path fill="#e4dcc5" stroke="none" d="M 20 7 L 23 7 L 23 10 L 20 10 Z"/>
-    <path fill="#dec795" stroke="none" d="M 3 8 L 4 8 L 4 10 L 3 10 Z"/>
-    <path fill="#925557" stroke="none" d="M 2 1 L 23 1 L 23 6 L 2 6 Z"/>
-    <path fill="#b2686a" stroke="none" d="M 1 2 L 20 2 L 20 6 L 1 6 Z"/>
+    <path fill="#496c52" stroke="none" d="M 2 15 L 23 15 L 23 22 L 2 22 Z"/>
+    <path fill="#598464" stroke="none" d="M 1 16 L 20 16 L 20 22 L 1 22 Z"/>
+    <path fill="#83a38b" stroke="none" d="M 2 15 L 20 15 L 20 16 L 2 16 Z"/>
+    <path fill="#e4dcc5" stroke="none" d="M 20 16 L 23 16 L 23 21 L 20 21 Z"/>
+    <path fill="#dec795" stroke="none" d="M 3 17 L 4 17 L 4 21 L 3 21 Z"/>
+    <path fill="#436286" stroke="none" d="M 2 8 L 23 8 L 23 15 L 2 15 Z"/>
+    <path fill="#5277a3" stroke="none" d="M 1 9 L 20 9 L 20 15 L 1 15 Z"/>
+    <path fill="#7d99ba" stroke="none" d="M 2 8 L 20 8 L 20 9 L 2 9 Z"/>
+    <path fill="#e4dcc5" stroke="none" d="M 20 9 L 23 9 L 23 14 L 20 14 Z"/>
+    <path fill="#dec795" stroke="none" d="M 3 10 L 4 10 L 4 14 L 3 14 Z"/>
+    <path fill="#925557" stroke="none" d="M 2 1 L 23 1 L 23 8 L 2 8 Z"/>
+    <path fill="#b2686a" stroke="none" d="M 1 2 L 20 2 L 20 8 L 1 8 Z"/>
     <path fill="#c58e8f" stroke="none" d="M 2 1 L 20 1 L 20 2 L 2 2 Z"/>
-    <path fill="#e4dcc5" stroke="none" d="M 20 2 L 23 2 L 23 5 L 20 5 Z"/>
-    <path fill="#dec795" stroke="none" d="M 3 3 L 4 3 L 4 5 L 3 5 Z"/>
-    <path fill="#91603b" stroke="none" d="M 14 1 L 18 1 L 18 16 L 14 16 Z"/>
-    <path fill="#c0996a" stroke="none" d="M 14 1 L 15 1 L 15 16 L 14 16 Z"/>
-    <path fill="#dce3e3" stroke="none" d="M 13 6 L 19 6 L 19 12 L 13 12 Z"/>
-    <path fill="#765335" stroke="none" d="M 14 7 L 18 7 L 18 11 L 14 11 Z"/>
-    <path fill="#edf1ee" stroke="none" d="M 15 7 L 16 7 L 16 11 L 15 11 Z"/>
-    <path fill="#bec2be" stroke="none" d="M 0 13 L 19 13 L 19 24 L 0 24 Z"/>
-    <path fill="#fffdf7" stroke="none" d="M 0 13 L 18 13 L 18 23 L 0 23 Z"/>
-    <g transform="matrix(1 0 0 1 1 12)">
-        <g>
-            <path fill="#28363f" stroke="none" d="M 6.6162114 10 L 5.341797 10 L 4.711914 8.217773 L 1.9580078 8.217773 L 1.3525391 10 L 0.08300781 10 L 2.7050781 2.9980466 L 4.013672 2.9980466 L 6.6162114 10 Z M 4.404297 7.2705073 L 3.4326172 4.477539 Q 3.388672 4.3408203 3.3398438 4.038086 L 3.3203127 4.038086 Q 3.276367 4.3164063 3.2226563 4.477539 L 2.2607422 7.2705073 L 4.404297 7.2705073 Z M 12.988281 10 L 11.630859 10 L 10.512695 8.125 Q 10.361328 7.8662114 10.217285 7.6831055 Q 10.073242 7.5 9.924316 7.382813 Q 9.775391 7.265625 9.599609 7.211914 Q 9.423828 7.1582026 9.204102 7.1582026 L 8.735352 7.1582026 L 8.735352 10 L 7.578125 10 L 7.578125 2.9980466 L 9.8828125 2.9980466 Q 10.375977 2.9980466 10.791016 3.1152341 Q 11.206055 3.2324219 11.513672 3.4692383 Q 11.821289 3.7060547 11.994629 4.0600586 Q 12.16797 4.4140625 12.16797 4.8876953 Q 12.16797 5.258789 12.058105 5.568847 Q 11.948242 5.8789063 11.745605 6.1206055 Q 11.542969 6.3623047 11.257325 6.533203 Q 10.97168 6.7041016 10.615234 6.796875 L 10.615234 6.8164063 Q 10.805664 6.9238276 10.947266 7.053222 Q 11.088866 7.182617 11.215821 7.3193355 Q 11.342773 7.456054 11.467286 7.6293945 Q 11.591797 7.802734 11.743164 8.032227 L 12.988281 10 Z M 8.735352 3.9404297 L 8.735352 6.2158203 L 9.702148 6.2158203 Q 9.970703 6.2158203 10.197754 6.132813 Q 10.424805 6.0498047 10.59082 5.8935547 Q 10.756836 5.737305 10.849609 5.512695 Q 10.942384 5.288086 10.942384 5.0097656 Q 10.942384 4.506836 10.625 4.223633 Q 10.307617 3.9404297 9.711914 3.9404297 L 8.735352 3.9404297 Z M 16.362305 7.4902344 Q 16.362305 8.735352 15.74707 9.42627 Q 15.131836 10.1171875 14.106444 10.1171875 Q 13.62793 10.1171875 13.3203125 10.004883 L 13.3203125 8.911133 Q 13.598633 9.1015625 14.038086 9.1015625 Q 15.200196 9.1015625 15.200196 7.3046875 L 15.200196 2.9980466 L 16.362305 2.9980466 L 16.362305 7.4902344 Z"/>
-        </g>
-    </g>
+    <path fill="#e4dcc5" stroke="none" d="M 20 2 L 23 2 L 23 7 L 20 7 Z"/>
+    <path fill="#dec795" stroke="none" d="M 3 3 L 4 3 L 4 7 L 3 7 Z"/>
+    <path fill="#91603b" stroke="none" d="M 14 1 L 18 1 L 18 22 L 14 22 Z"/>
+    <path fill="#c0996a" stroke="none" d="M 14 1 L 15 1 L 15 22 L 14 22 Z"/>
+    <path fill="#dce3e3" stroke="none" d="M 13 8 L 19 8 L 19 14 L 13 14 Z"/>
+    <path fill="#765335" stroke="none" d="M 14 9 L 18 9 L 18 13 L 14 13 Z"/>
+    <path fill="#edf1ee" stroke="none" d="M 15 9 L 16 9 L 16 13 L 15 13 Z"/>
 </svg>

@@ -113,7 +113,7 @@ function preview(dark) {
     const svg=source(e.source).replaceAll('#263445',ink);
     b+=embed(render(svg,28),77+i*186,418)+text(e.name,77+i*186,483,15,muted);
   }
-  b+=text('Archive formats',48,558,22)+text('Color + extension · 16 px optical variant included',820,555,16,muted);
+  b+=text('Archive formats',48,558,22)+text('Color-coded formats · no text on icons',820,555,16,muted);
   for(const [i,e] of manifest.formats.entries()) {
     const x=40+(i%8)*171,y=581+Math.floor(i/8)*162;
     b+=`<rect x="${x}" y="${y}" width="161" height="151" rx="12" fill="${card}"/>`;
@@ -147,7 +147,7 @@ if(!check) {
   const heroes=[app,...['7z','zip','rar','iso'].map(name=>manifest.formats.find(e=>e.name===name))];
   let overview='<rect width="1000" height="580" fill="#f5f2eb"/>';
   overview+='<text x="34" y="48" font-family="Segoe UI" font-size="28" font-weight="600" fill="#28363f">7-ZIP · BOUND BOOKS</text>';
-  overview+='<text x="34" y="77" font-family="Segoe UI" font-size="15" fill="#68737a">Colored volumes / leather strap / silver buckle / uppercase labels</text>';
+  overview+='<text x="34" y="77" font-family="Segoe UI" font-size="15" fill="#68737a">Colored volumes / leather strap / silver buckle / no text</text>';
   heroes.forEach((entry,i)=>{
     const x=34+i*194;
     overview+=embed(iconImage(entry,128),x+21,108);

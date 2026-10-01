@@ -50,11 +50,11 @@ const tools={
   Delete:'<path d="M3 6h18M9 6V4h6v2M5 6l1 14h12l1-14M10 10v6m4-6v6"/>',
   Info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6"/><circle cx="12" cy="7.5" r=".9" fill="#263445" stroke="none"/>'
 };
-const manifest={sizes:[16,20,24,32,40,48,64,96,128,256],formats:[],applications:[],toolbars:[],package:[]};
+const manifest={showLabels:false,sizes:[16,20,24,32,40,48,64,96,128,256],formats:[],applications:[],toolbars:[],package:[]};
 for(const [name,label,color] of formats) {
   const source=`archive/${name}`;
-  write(source,stackedBook(label,color,'archive',smallFontFile));
-  for(const size of [16,20,24,32]) write(source+(size===32?'-small':'-'+size),smallIcon(label,color,'archive',size,smallFontFile));
+  write(source,stackedBook(label,color,'archive',smallFontFile,false));
+  for(const size of [16,20,24,32]) write(source+(size===32?'-small':'-'+size),smallIcon(label,color,'archive',size,smallFontFile,false));
   manifest.formats.push({name,label,color,source,smallSource:source+'-small',sizeSources:{16:source+'-16',20:source+'-20',24:source+'-24',32:source+'-small'},target:`CPP/7zip/Archive/Icons/${name}.ico`});
 }
 const apps=[
@@ -65,8 +65,8 @@ const apps=[
 ];
 for(const [name,targets] of apps) {
   const source=`app/${name}`;
-  write(source,stackedBook('7-ZIP',overrides['7z'],name,smallFontFile));
-  for(const size of [16,20,24,32]) write(source+(size===32?'-small':'-'+size),smallIcon('7-ZIP',overrides['7z'],name,size,smallFontFile));
+  write(source,stackedBook('7-ZIP',overrides['7z'],name,smallFontFile,false));
+  for(const size of [16,20,24,32]) write(source+(size===32?'-small':'-'+size),smallIcon('7-ZIP',overrides['7z'],name,size,smallFontFile,false));
   manifest.applications.push({name,source,smallSource:source+'-small',sizeSources:{16:source+'-16',20:source+'-20',24:source+'-24',32:source+'-small'},targets});
 }
 for(const [name,geometry] of Object.entries(tools)) {
