@@ -1,16 +1,17 @@
 # 7-Zip ZS icon family
 
-Original SVG artwork redrawn from the user's reference screenshot: straight-sided
-colored sleeves, a full-height metallic zipper on the right, and a white label
-projecting from the lower left. Backgrounds are transparent; the screenshot's
-thumbnail frame and wallpaper are not part of the artwork. The monochrome
+Original SVG artwork inspired by [WinRAR's bound-book archive icon](https://www.win-rar.com/):
+three colored volumes with shaded spines, cream pages, a brown leather strap and
+a silver buckle. An ivory plate carries the uppercase format name. Backgrounds
+are transparent. The book geometry is drawn in `stacked-books.mjs`; no downloaded
+WinRAR artwork is embedded. The monochrome
 toolbar inspired by [NanaZip](https://github.com/M2Team/NanaZip) is unchanged.
 The pipeline covers all 61 application-owned image resources:
 34 archive ICOs, 9 application/installer/SFX ICOs, 14 toolbar BMPs, one shell menu
 BMP and three package PNGs. The third-party DarkMode demo icon and Windows-owned
 folder/drive/file icons are outside this set.
 
-See [light preview](preview-light.png), [dark preview](preview-dark.png), and
+See [design overview](preview-books.png), [light preview](preview-light.png), [dark preview](preview-dark.png), and
 [small-size inspection](preview-sizes.png).
 `manifest.json` maps every source to its existing resource path; resource IDs and
 archive index order are preserved. Brotli and Fast-LZMA2 codec resources now use
@@ -47,11 +48,12 @@ normal build. Running it **resets SVG edits and the manifest**. It requires
 Segoe UI Regular (`C:/Windows/Fonts/segoeui.ttf`, or `ICON_FONT`). Preview-only
 captions use system fonts; the icon artwork itself does not.
 
-The fixed palette is 7Z `#8ED7F5`, ZIP `#FFE386`, RAR `#C348A2`, and ISO/WIM
-`#C9CDD0`. Other formats mix the original palette with white at a 75:25 ratio;
-the bootstrap retains the original inputs so repeated runs do not lighten again.
-Applications share the 7Z sleeve with a `7-ZIP` label and their existing action
-badges. Label plate widths are measured from the outlined lettering.
+The top-volume palette is 7Z `#419BCC`, ZIP `#D5A94B`, RAR `#A457AA`, ISO
+`#96A0AB` and WIM `#8297A4`. Other formats mix the original palette with white at
+an 88:12 ratio. Middle and bottom volumes blend each accent toward blue and green.
+The bootstrap retains original inputs so repeated runs do not lighten again.
+Applications use a purple/blue/green stack, a `7-ZIP` label and their existing
+action badges. Label plate widths are measured from the outlined lettering.
 
 ## Small sizes and Windows integration
 
@@ -61,11 +63,11 @@ resource size down. The 16px masters simplify geometry and abbreviate long
 labels: LM=LZMA, L2=LZMA2, ZS=ZSTD, CP=CPIO, AP=APFS, NT=NTFS, SQ=SQFS.
 The 16px application label is `7Z`. Native 16/20/24/32px masters are selected via
 `sizeSources` in the manifest (`-small.svg` is the 32px master). They use whole-pixel
-sleeve geometry, larger dark Segoe UI Semibold labels and a simplified metal track.
+book covers, dark Segoe UI Semibold labels, simplified pages and a metal buckle.
 `small-icons.mjs` defines native geometry and typography; the bootstrap requires
 `C:/Windows/Fonts/seguisb.ttf` (or `ICON_SMALL_FONT`) and converts lettering to
 font-independent outlines. 20px and above retain full uppercase labels.
-The remaining sizes use the unchanged smooth masters and full labels. Split
+The remaining sizes use the shaded, perspective book masters and full labels. Split
 archives use `001`.
 
 Toolbar BMPs retain the original 48x36 and 24x24 dimensions. They now carry

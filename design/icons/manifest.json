@@ -15,7 +15,7 @@
     {
       "name": "7z",
       "label": "7Z",
-      "color": "#8ED7F5",
+      "color": "#419bcc",
       "source": "archive/7z",
       "smallSource": "archive/7z-small",
       "sizeSources": {
@@ -29,7 +29,7 @@
     {
       "name": "zip",
       "label": "ZIP",
-      "color": "#FFE386",
+      "color": "#d5a94b",
       "source": "archive/zip",
       "smallSource": "archive/zip-small",
       "sizeSources": {
@@ -43,7 +43,7 @@
     {
       "name": "rar",
       "label": "RAR",
-      "color": "#C348A2",
+      "color": "#a457aa",
       "source": "archive/rar",
       "smallSource": "archive/rar-small",
       "sizeSources": {
@@ -57,7 +57,7 @@
     {
       "name": "tar",
       "label": "TAR",
-      "color": "#529fa0",
+      "color": "#348e8f",
       "source": "archive/tar",
       "smallSource": "archive/tar-small",
       "sizeSources": {
@@ -71,7 +71,7 @@
     {
       "name": "gz",
       "label": "GZ",
-      "color": "#5dae7a",
+      "color": "#41a063",
       "source": "archive/gz",
       "smallSource": "archive/gz-small",
       "sizeSources": {
@@ -85,7 +85,7 @@
     {
       "name": "xz",
       "label": "XZ",
-      "color": "#7d84dd",
+      "color": "#666fd7",
       "source": "archive/xz",
       "smallSource": "archive/xz-small",
       "sizeSources": {
@@ -99,7 +99,7 @@
     {
       "name": "zst",
       "label": "ZST",
-      "color": "#da7980",
+      "color": "#d46169",
       "source": "archive/zst",
       "smallSource": "archive/zst-small",
       "sizeSources": {
@@ -113,7 +113,7 @@
     {
       "name": "zstd",
       "label": "ZSTD",
-      "color": "#cb6e80",
+      "color": "#c1546a",
       "source": "archive/zstd",
       "smallSource": "archive/zstd-small",
       "sizeSources": {
@@ -127,7 +127,7 @@
     {
       "name": "bz2",
       "label": "BZ2",
-      "color": "#50a8b5",
+      "color": "#3299a8",
       "source": "archive/bz2",
       "smallSource": "archive/bz2-small",
       "sizeSources": {
@@ -141,7 +141,7 @@
     {
       "name": "br",
       "label": "BR",
-      "color": "#c277ad",
+      "color": "#b8609e",
       "source": "archive/br",
       "smallSource": "archive/br-small",
       "sizeSources": {
@@ -155,7 +155,7 @@
     {
       "name": "lz4",
       "label": "LZ4",
-      "color": "#5d97c7",
+      "color": "#4185bd",
       "source": "archive/lz4",
       "smallSource": "archive/lz4-small",
       "sizeSources": {
@@ -169,7 +169,7 @@
     {
       "name": "lz5",
       "label": "LZ5",
-      "color": "#7b8ebe",
+      "color": "#647ab2",
       "source": "archive/lz5",
       "smallSource": "archive/lz5-small",
       "sizeSources": {
@@ -183,7 +183,7 @@
     {
       "name": "lzma",
       "label": "LZMA",
-      "color": "#9382c4",
+      "color": "#806cb9",
       "source": "archive/lzma",
       "smallSource": "archive/lzma-small",
       "sizeSources": {
@@ -197,7 +197,7 @@
     {
       "name": "lzma2",
       "label": "LZMA2",
-      "color": "#b27dc4",
+      "color": "#a467b9",
       "source": "archive/lzma2",
       "smallSource": "archive/lzma2-small",
       "sizeSources": {
@@ -211,7 +211,7 @@
     {
       "name": "liz",
       "label": "LIZ",
-      "color": "#77a071",
+      "color": "#5f8f59",
       "source": "archive/liz",
       "smallSource": "archive/liz-small",
       "sizeSources": {
@@ -225,7 +225,7 @@
     {
       "name": "lzh",
       "label": "LZH",
-      "color": "#b3956b",
+      "color": "#a68252",
       "source": "archive/lzh",
       "smallSource": "archive/lzh-small",
       "sizeSources": {
@@ -239,7 +239,7 @@
     {
       "name": "lha",
       "label": "LHA",
-      "color": "#bc8e74",
+      "color": "#b07a5b",
       "source": "archive/lha",
       "smallSource": "archive/lha-small",
       "sizeSources": {
@@ -253,7 +253,7 @@
     {
       "name": "z",
       "label": "Z",
-      "color": "#789eaf",
+      "color": "#618da1",
       "source": "archive/z",
       "smallSource": "archive/z-small",
       "sizeSources": {
@@ -267,7 +267,7 @@
     {
       "name": "arj",
       "label": "ARJ",
-      "color": "#be7e80",
+      "color": "#b2686a",
       "source": "archive/arj",
       "smallSource": "archive/arj-small",
       "sizeSources": {
@@ -281,7 +281,7 @@
     {
       "name": "cab",
       "label": "CAB",
-      "color": "#bb995e",
+      "color": "#af8742",
       "source": "archive/cab",
       "smallSource": "archive/cab-small",
       "sizeSources": {
@@ -295,7 +295,7 @@
     {
       "name": "cpio",
       "label": "CPIO",
-      "color": "#96a266",
+      "color": "#84924b",
       "source": "archive/cpio",
       "smallSource": "archive/cpio-small",
       "sizeSources": {
@@ -309,7 +309,7 @@
     {
       "name": "xar",
       "label": "XAR",
-      "color": "#7e9889",
+      "color": "#688675",
       "source": "archive/xar",
       "smallSource": "archive/xar-small",
       "sizeSources": {
@@ -323,7 +323,7 @@
     {
       "name": "split",
       "label": "001",
-      "color": "#969daa",
+      "color": "#848c9b",
       "source": "archive/split",
       "smallSource": "archive/split-small",
       "sizeSources": {
@@ -337,7 +337,7 @@
     {
       "name": "deb",
       "label": "DEB",
-      "color": "#cb728a",
+      "color": "#c15a76",
       "source": "archive/deb",
       "smallSource": "archive/deb-small",
       "sizeSources": {
@@ -351,7 +351,7 @@
     {
       "name": "rpm",
       "label": "RPM",
-      "color": "#c5806b",
+      "color": "#ba6a51",
       "source": "archive/rpm",
       "smallSource": "archive/rpm-small",
       "sizeSources": {
@@ -365,7 +365,7 @@
     {
       "name": "iso",
       "label": "ISO",
-      "color": "#C9CDD0",
+      "color": "#96a0ab",
       "source": "archive/iso",
       "smallSource": "archive/iso-small",
       "sizeSources": {
@@ -379,7 +379,7 @@
     {
       "name": "dmg",
       "label": "DMG",
-      "color": "#9298bc",
+      "color": "#7f86b0",
       "source": "archive/dmg",
       "smallSource": "archive/dmg-small",
       "sizeSources": {
@@ -393,7 +393,7 @@
     {
       "name": "vhd",
       "label": "VHD",
-      "color": "#658fa4",
+      "color": "#4b7b95",
       "source": "archive/vhd",
       "smallSource": "archive/vhd-small",
       "sizeSources": {
@@ -407,7 +407,7 @@
     {
       "name": "wim",
       "label": "WIM",
-      "color": "#C9CDD0",
+      "color": "#8297a4",
       "source": "archive/wim",
       "smallSource": "archive/wim-small",
       "sizeSources": {
@@ -421,7 +421,7 @@
     {
       "name": "apfs",
       "label": "APFS",
-      "color": "#8897b8",
+      "color": "#7385ab",
       "source": "archive/apfs",
       "smallSource": "archive/apfs-small",
       "sizeSources": {
@@ -435,7 +435,7 @@
     {
       "name": "hfs",
       "label": "HFS",
-      "color": "#a793af",
+      "color": "#9880a1",
       "source": "archive/hfs",
       "smallSource": "archive/hfs-small",
       "sizeSources": {
@@ -449,7 +449,7 @@
     {
       "name": "ntfs",
       "label": "NTFS",
-      "color": "#7d92a0",
+      "color": "#677f8f",
       "source": "archive/ntfs",
       "smallSource": "archive/ntfs-small",
       "sizeSources": {
@@ -463,7 +463,7 @@
     {
       "name": "fat",
       "label": "FAT",
-      "color": "#95a286",
+      "color": "#839271",
       "source": "archive/fat",
       "smallSource": "archive/fat-small",
       "sizeSources": {
@@ -477,7 +477,7 @@
     {
       "name": "sqfs",
       "label": "SQFS",
-      "color": "#7e9c97",
+      "color": "#688b85",
       "source": "archive/sqfs",
       "smallSource": "archive/sqfs-small",
       "sizeSources": {

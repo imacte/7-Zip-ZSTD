@@ -1,26 +1,30 @@
 <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
     <defs/>
-    <path fill="#77a071" stroke="none" d="M 8 1 L 31 1 L 31 31 L 8 31 Z"/>
-    <path fill="#000000" fill-opacity="0.09411765" stroke="none" d="M 30 1 L 31 1 L 31 31 L 30 31 Z"/>
-    <path fill="#82908b" stroke="none" d="M 26 1 L 29 1 L 29 31 L 26 31 Z"/>
-    <path fill="#d8dedb" stroke="none" d="M 26 1 L 27 1 L 27 31 L 26 31 Z"/>
-    <path fill="#e8eeeb" stroke="none" d="M 28 6 L 29 6 L 29 7 L 28 7 Z"/>
-    <path fill="#e8eeeb" stroke="none" d="M 28 9 L 29 9 L 29 10 L 28 10 Z"/>
-    <path fill="#e8eeeb" stroke="none" d="M 28 12 L 29 12 L 29 13 L 28 13 Z"/>
-    <path fill="#e8eeeb" stroke="none" d="M 28 15 L 29 15 L 29 16 L 28 16 Z"/>
-    <path fill="#e8eeeb" stroke="none" d="M 28 18 L 29 18 L 29 19 L 28 19 Z"/>
-    <path fill="#e8eeeb" stroke="none" d="M 28 21 L 29 21 L 29 22 L 28 22 Z"/>
-    <path fill="#e8eeeb" stroke="none" d="M 28 24 L 29 24 L 29 25 L 28 25 Z"/>
-    <path fill="#e8eeeb" stroke="none" d="M 28 27 L 29 27 L 29 28 L 28 28 Z"/>
-    <path fill="#e8eeeb" stroke="none" d="M 28 30 L 29 30 L 29 31 L 28 31 Z"/>
-    <path fill="#cbd3d0" stroke="none" d="M 26 1 L 29 1 L 29 4 L 26 4 Z"/>
-    <path fill="#f1f4f2" stroke="none" d="M 26 1 L 27 1 L 27 3 L 26 3 Z"/>
-    <path fill="#687970" stroke="none" d="M 28 3 L 29 3 L 29 5 L 28 5 Z"/>
-    <path fill="#c1c8cc" stroke="none" d="M 0 18 L 18 18 L 18 29 L 0 29 Z"/>
-    <path fill="#ffffff" stroke="none" d="M 0 18 L 17 18 L 17 28 L 0 28 Z"/>
-    <g transform="matrix(1 0 0 1 0 16)">
+    <path fill="#3c7350" stroke="none" d="M 2 15 L 31 15 L 31 22 L 2 22 Z"/>
+    <path fill="#498c61" stroke="none" d="M 1 16 L 28 16 L 28 22 L 1 22 Z"/>
+    <path fill="#77a989" stroke="none" d="M 2 15 L 28 15 L 28 16 L 2 16 Z"/>
+    <path fill="#e4dcc5" stroke="none" d="M 28 16 L 31 16 L 31 21 L 28 21 Z"/>
+    <path fill="#dec795" stroke="none" d="M 3 17 L 4 17 L 4 21 L 3 21 Z"/>
+    <path fill="#336a82" stroke="none" d="M 2 8 L 31 8 L 31 15 L 2 15 Z"/>
+    <path fill="#3e819f" stroke="none" d="M 1 9 L 28 9 L 28 15 L 1 15 Z"/>
+    <path fill="#6ea1b7" stroke="none" d="M 2 8 L 28 8 L 28 9 L 2 9 Z"/>
+    <path fill="#e4dcc5" stroke="none" d="M 28 9 L 31 9 L 31 14 L 28 14 Z"/>
+    <path fill="#dec795" stroke="none" d="M 3 10 L 4 10 L 4 14 L 3 14 Z"/>
+    <path fill="#4e7549" stroke="none" d="M 2 1 L 31 1 L 31 8 L 2 8 Z"/>
+    <path fill="#5f8f59" stroke="none" d="M 1 2 L 28 2 L 28 8 L 1 8 Z"/>
+    <path fill="#87ab83" stroke="none" d="M 2 1 L 28 1 L 28 2 L 2 2 Z"/>
+    <path fill="#e4dcc5" stroke="none" d="M 28 2 L 31 2 L 31 7 L 28 7 Z"/>
+    <path fill="#dec795" stroke="none" d="M 3 3 L 4 3 L 4 7 L 3 7 Z"/>
+    <path fill="#91603b" stroke="none" d="M 19 1 L 23 1 L 23 22 L 19 22 Z"/>
+    <path fill="#c0996a" stroke="none" d="M 19 1 L 20 1 L 20 22 L 19 22 Z"/>
+    <path fill="#dce3e3" stroke="none" d="M 18 8 L 24 8 L 24 14 L 18 14 Z"/>
+    <path fill="#765335" stroke="none" d="M 19 9 L 23 9 L 23 13 L 19 13 Z"/>
+    <path fill="#edf1ee" stroke="none" d="M 20 9 L 21 9 L 21 13 L 20 13 Z"/>
+    <path fill="#bec2be" stroke="none" d="M 0 21 L 18 21 L 18 32 L 0 32 Z"/>
+    <path fill="#fffdf7" stroke="none" d="M 0 21 L 17 21 L 17 31 L 0 31 Z"/>
+    <g transform="matrix(1 0 0 1 0 19)">
         <g>
-            <path fill="#27333b" stroke="none" d="M 5.6894536 12 L 1.0371094 12 L 1.0371094 3.5976563 L 2.4316406 3.5976563 L 2.4316406 10.822266 L 5.6894536 10.822266 L 5.6894536 12 Z M 8.332031 12 L 6.8964844 12 L 6.8964844 3.5976563 L 8.332031 3.5976563 L 8.332031 12 Z M 16.13086 4.2070313 L 11.52539 10.822266 L 16.072266 10.822266 L 16.072266 12 L 9.574219 12 L 9.574219 11.361329 L 14.197266 4.78125 L 9.931641 4.78125 L 9.931641 3.5976563 L 16.13086 3.5976563 L 16.13086 4.2070313 Z"/>
+            <path fill="#28363f" stroke="none" d="M 5.6894536 12 L 1.0371094 12 L 1.0371094 3.5976563 L 2.4316406 3.5976563 L 2.4316406 10.822266 L 5.6894536 10.822266 L 5.6894536 12 Z M 8.332031 12 L 6.8964844 12 L 6.8964844 3.5976563 L 8.332031 3.5976563 L 8.332031 12 Z M 16.13086 4.2070313 L 11.52539 10.822266 L 16.072266 10.822266 L 16.072266 12 L 9.574219 12 L 9.574219 11.361329 L 14.197266 4.78125 L 9.931641 4.78125 L 9.931641 3.5976563 L 16.13086 3.5976563 L 16.13086 4.2070313 Z"/>
         </g>
     </g>
 </svg>

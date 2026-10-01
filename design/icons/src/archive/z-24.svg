@@ -1,23 +1,30 @@
 <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <defs/>
-    <path fill="#789eaf" stroke="none" d="M 6 1 L 23 1 L 23 23 L 6 23 Z"/>
-    <path fill="#000000" fill-opacity="0.09411765" stroke="none" d="M 22 1 L 23 1 L 23 23 L 22 23 Z"/>
-    <path fill="#82908b" stroke="none" d="M 18 1 L 21 1 L 21 23 L 18 23 Z"/>
-    <path fill="#d8dedb" stroke="none" d="M 18 1 L 19 1 L 19 23 L 18 23 Z"/>
-    <path fill="#e8eeeb" stroke="none" d="M 20 6 L 21 6 L 21 7 L 20 7 Z"/>
-    <path fill="#e8eeeb" stroke="none" d="M 20 9 L 21 9 L 21 10 L 20 10 Z"/>
-    <path fill="#e8eeeb" stroke="none" d="M 20 12 L 21 12 L 21 13 L 20 13 Z"/>
-    <path fill="#e8eeeb" stroke="none" d="M 20 15 L 21 15 L 21 16 L 20 16 Z"/>
-    <path fill="#e8eeeb" stroke="none" d="M 20 18 L 21 18 L 21 19 L 20 19 Z"/>
-    <path fill="#e8eeeb" stroke="none" d="M 20 21 L 21 21 L 21 22 L 20 22 Z"/>
-    <path fill="#cbd3d0" stroke="none" d="M 18 1 L 21 1 L 21 4 L 18 4 Z"/>
-    <path fill="#f1f4f2" stroke="none" d="M 18 1 L 19 1 L 19 3 L 18 3 Z"/>
-    <path fill="#687970" stroke="none" d="M 20 3 L 21 3 L 21 5 L 20 5 Z"/>
-    <path fill="#c1c8cc" stroke="none" d="M 0 11 L 8 11 L 8 21 L 0 21 Z"/>
-    <path fill="#ffffff" stroke="none" d="M 0 11 L 7 11 L 7 20 L 0 20 Z"/>
-    <g transform="matrix(1 0 0 1 1 10)">
+    <path fill="#3c725b" stroke="none" d="M 2 11 L 23 11 L 23 16 L 2 16 Z"/>
+    <path fill="#498b6f" stroke="none" d="M 1 12 L 20 12 L 20 16 L 1 16 Z"/>
+    <path fill="#77a893" stroke="none" d="M 2 11 L 20 11 L 20 12 L 2 12 Z"/>
+    <path fill="#e4dcc5" stroke="none" d="M 20 12 L 23 12 L 23 15 L 20 15 Z"/>
+    <path fill="#dec795" stroke="none" d="M 3 13 L 4 13 L 4 15 L 3 15 Z"/>
+    <path fill="#346990" stroke="none" d="M 2 6 L 23 6 L 23 11 L 2 11 Z"/>
+    <path fill="#3f80b0" stroke="none" d="M 1 7 L 20 7 L 20 11 L 1 11 Z"/>
+    <path fill="#6fa0c4" stroke="none" d="M 2 6 L 20 6 L 20 7 L 2 7 Z"/>
+    <path fill="#e4dcc5" stroke="none" d="M 20 7 L 23 7 L 23 10 L 20 10 Z"/>
+    <path fill="#dec795" stroke="none" d="M 3 8 L 4 8 L 4 10 L 3 10 Z"/>
+    <path fill="#507484" stroke="none" d="M 2 1 L 23 1 L 23 6 L 2 6 Z"/>
+    <path fill="#618da1" stroke="none" d="M 1 2 L 20 2 L 20 6 L 1 6 Z"/>
+    <path fill="#89aab9" stroke="none" d="M 2 1 L 20 1 L 20 2 L 2 2 Z"/>
+    <path fill="#e4dcc5" stroke="none" d="M 20 2 L 23 2 L 23 5 L 20 5 Z"/>
+    <path fill="#dec795" stroke="none" d="M 3 3 L 4 3 L 4 5 L 3 5 Z"/>
+    <path fill="#91603b" stroke="none" d="M 14 1 L 18 1 L 18 16 L 14 16 Z"/>
+    <path fill="#c0996a" stroke="none" d="M 14 1 L 15 1 L 15 16 L 14 16 Z"/>
+    <path fill="#dce3e3" stroke="none" d="M 13 6 L 19 6 L 19 12 L 13 12 Z"/>
+    <path fill="#765335" stroke="none" d="M 14 7 L 18 7 L 18 11 L 14 11 Z"/>
+    <path fill="#edf1ee" stroke="none" d="M 15 7 L 16 7 L 16 11 L 15 11 Z"/>
+    <path fill="#bec2be" stroke="none" d="M 0 14 L 8 14 L 8 24 L 0 24 Z"/>
+    <path fill="#fffdf7" stroke="none" d="M 0 14 L 7 14 L 7 23 L 0 23 Z"/>
+    <g transform="matrix(1 0 0 1 1 13)">
         <g>
-            <path fill="#27333b" stroke="none" d="M 5.6396484 3.5058596 L 1.8017578 9.018555 L 5.5908203 9.018555 L 5.5908203 10 L 0.17578124 10 L 0.17578124 9.467773 L 4.0283203 3.984375 L 0.4736328 3.984375 L 0.4736328 2.9980466 L 5.6396484 2.9980466 L 5.6396484 3.5058596 Z"/>
+            <path fill="#28363f" stroke="none" d="M 5.6396484 3.5058596 L 1.8017578 9.018555 L 5.5908203 9.018555 L 5.5908203 10 L 0.17578124 10 L 0.17578124 9.467773 L 4.0283203 3.984375 L 0.4736328 3.984375 L 0.4736328 2.9980466 L 5.6396484 2.9980466 L 5.6396484 3.5058596 Z"/>
         </g>
     </g>
 </svg>

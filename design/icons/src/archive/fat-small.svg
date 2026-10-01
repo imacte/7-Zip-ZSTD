@@ -1,26 +1,30 @@
 <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
     <defs/>
-    <path fill="#95a286" stroke="none" d="M 8 1 L 31 1 L 31 31 L 8 31 Z"/>
-    <path fill="#000000" fill-opacity="0.09411765" stroke="none" d="M 30 1 L 31 1 L 31 31 L 30 31 Z"/>
-    <path fill="#82908b" stroke="none" d="M 26 1 L 29 1 L 29 31 L 26 31 Z"/>
-    <path fill="#d8dedb" stroke="none" d="M 26 1 L 27 1 L 27 31 L 26 31 Z"/>
-    <path fill="#e8eeeb" stroke="none" d="M 28 6 L 29 6 L 29 7 L 28 7 Z"/>
-    <path fill="#e8eeeb" stroke="none" d="M 28 9 L 29 9 L 29 10 L 28 10 Z"/>
-    <path fill="#e8eeeb" stroke="none" d="M 28 12 L 29 12 L 29 13 L 28 13 Z"/>
-    <path fill="#e8eeeb" stroke="none" d="M 28 15 L 29 15 L 29 16 L 28 16 Z"/>
-    <path fill="#e8eeeb" stroke="none" d="M 28 18 L 29 18 L 29 19 L 28 19 Z"/>
-    <path fill="#e8eeeb" stroke="none" d="M 28 21 L 29 21 L 29 22 L 28 22 Z"/>
-    <path fill="#e8eeeb" stroke="none" d="M 28 24 L 29 24 L 29 25 L 28 25 Z"/>
-    <path fill="#e8eeeb" stroke="none" d="M 28 27 L 29 27 L 29 28 L 28 28 Z"/>
-    <path fill="#e8eeeb" stroke="none" d="M 28 30 L 29 30 L 29 31 L 28 31 Z"/>
-    <path fill="#cbd3d0" stroke="none" d="M 26 1 L 29 1 L 29 4 L 26 4 Z"/>
-    <path fill="#f1f4f2" stroke="none" d="M 26 1 L 27 1 L 27 3 L 26 3 Z"/>
-    <path fill="#687970" stroke="none" d="M 28 3 L 29 3 L 29 5 L 28 5 Z"/>
-    <path fill="#c1c8cc" stroke="none" d="M 0 18 L 20 18 L 20 29 L 0 29 Z"/>
-    <path fill="#ffffff" stroke="none" d="M 0 18 L 19 18 L 19 28 L 0 28 Z"/>
-    <g transform="matrix(1 0 0 1 0 16)">
+    <path fill="#427354" stroke="none" d="M 2 15 L 31 15 L 31 22 L 2 22 Z"/>
+    <path fill="#508c66" stroke="none" d="M 1 16 L 28 16 L 28 22 L 1 22 Z"/>
+    <path fill="#7ca98c" stroke="none" d="M 2 15 L 28 15 L 28 16 L 2 16 Z"/>
+    <path fill="#e4dcc5" stroke="none" d="M 28 16 L 31 16 L 31 21 L 28 21 Z"/>
+    <path fill="#dec795" stroke="none" d="M 3 17 L 4 17 L 4 21 L 3 21 Z"/>
+    <path fill="#3a6a87" stroke="none" d="M 2 8 L 31 8 L 31 15 L 2 15 Z"/>
+    <path fill="#4781a5" stroke="none" d="M 1 9 L 28 9 L 28 15 L 1 15 Z"/>
+    <path fill="#75a1bc" stroke="none" d="M 2 8 L 28 8 L 28 9 L 2 9 Z"/>
+    <path fill="#e4dcc5" stroke="none" d="M 28 9 L 31 9 L 31 14 L 28 14 Z"/>
+    <path fill="#dec795" stroke="none" d="M 3 10 L 4 10 L 4 14 L 3 14 Z"/>
+    <path fill="#6b785d" stroke="none" d="M 2 1 L 31 1 L 31 8 L 2 8 Z"/>
+    <path fill="#839271" stroke="none" d="M 1 2 L 28 2 L 28 8 L 1 8 Z"/>
+    <path fill="#a2ad95" stroke="none" d="M 2 1 L 28 1 L 28 2 L 2 2 Z"/>
+    <path fill="#e4dcc5" stroke="none" d="M 28 2 L 31 2 L 31 7 L 28 7 Z"/>
+    <path fill="#dec795" stroke="none" d="M 3 3 L 4 3 L 4 7 L 3 7 Z"/>
+    <path fill="#91603b" stroke="none" d="M 19 1 L 23 1 L 23 22 L 19 22 Z"/>
+    <path fill="#c0996a" stroke="none" d="M 19 1 L 20 1 L 20 22 L 19 22 Z"/>
+    <path fill="#dce3e3" stroke="none" d="M 18 8 L 24 8 L 24 14 L 18 14 Z"/>
+    <path fill="#765335" stroke="none" d="M 19 9 L 23 9 L 23 13 L 19 13 Z"/>
+    <path fill="#edf1ee" stroke="none" d="M 20 9 L 21 9 L 21 13 L 20 13 Z"/>
+    <path fill="#bec2be" stroke="none" d="M 0 21 L 20 21 L 20 32 L 0 32 Z"/>
+    <path fill="#fffdf7" stroke="none" d="M 0 21 L 19 21 L 19 31 L 0 31 Z"/>
+    <g transform="matrix(1 0 0 1 0 19)">
         <g>
-            <path fill="#27333b" stroke="none" d="M 5.5722656 4.78125 L 2.4316406 4.78125 L 2.4316406 7.3066406 L 5.326172 7.3066406 L 5.326172 8.484375 L 2.4316406 8.484375 L 2.4316406 12 L 1.0371094 12 L 1.0371094 3.5976563 L 5.5722656 3.5976563 L 5.5722656 4.78125 Z M 13.248048 12 L 11.718749 12 L 10.962891 9.861328 L 7.6582026 9.861328 L 6.93164 12 L 5.4082026 12 L 8.5546875 3.5976563 L 10.125 3.5976563 L 13.248048 12 Z M 10.59375 8.724609 L 9.427734 5.373047 Q 9.375 5.2089844 9.316406 4.845703 L 9.292969 4.845703 Q 9.240234 5.1796875 9.175781 5.373047 L 8.021484 8.724609 L 10.59375 8.724609 Z M 18.94336 4.78125 L 16.529297 4.78125 L 16.529297 12 L 15.134766 12 L 15.134766 4.78125 L 12.7265625 4.78125 L 12.7265625 3.5976563 L 18.94336 3.5976563 L 18.94336 4.78125 Z"/>
+            <path fill="#28363f" stroke="none" d="M 5.5722656 4.78125 L 2.4316406 4.78125 L 2.4316406 7.3066406 L 5.326172 7.3066406 L 5.326172 8.484375 L 2.4316406 8.484375 L 2.4316406 12 L 1.0371094 12 L 1.0371094 3.5976563 L 5.5722656 3.5976563 L 5.5722656 4.78125 Z M 13.248048 12 L 11.718749 12 L 10.962891 9.861328 L 7.6582026 9.861328 L 6.93164 12 L 5.4082026 12 L 8.5546875 3.5976563 L 10.125 3.5976563 L 13.248048 12 Z M 10.59375 8.724609 L 9.427734 5.373047 Q 9.375 5.2089844 9.316406 4.845703 L 9.292969 4.845703 Q 9.240234 5.1796875 9.175781 5.373047 L 8.021484 8.724609 L 10.59375 8.724609 Z M 18.94336 4.78125 L 16.529297 4.78125 L 16.529297 12 L 15.134766 12 L 15.134766 4.78125 L 12.7265625 4.78125 L 12.7265625 3.5976563 L 18.94336 3.5976563 L 18.94336 4.78125 Z"/>
         </g>
     </g>
 </svg>
