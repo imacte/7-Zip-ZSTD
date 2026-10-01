@@ -4,9 +4,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Resvg } from '@resvg/resvg-js';
+import { smallIcon } from './small-icons.mjs';
 
 const dir = path.dirname(fileURLToPath(import.meta.url));
 const fontFile = process.env.ICON_FONT || 'C:/Windows/Fonts/segoeui.ttf';
+const smallFontFile = process.env.ICON_SMALL_FONT || 'C:/Windows/Fonts/seguisb.ttf';
 if (!fs.existsSync(fontFile)) throw new Error('Set ICON_FONT to a Segoe UI font file. Ordinary builds do not need it.');
 // Keep the original palette as the input so regeneration never lightens twice.
 const baseFormats = [
@@ -31,7 +33,7 @@ const formats=baseFormats.map(([name,label,color])=>[name,label,overrides[name] 
 const xml = s => s.replaceAll('&','&amp;').replaceAll('<','&lt;');
 const wrap = (body,size=64) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${body}</svg>`;
 function outlined(svg) {
-  return new Resvg(svg, {font:{loadSystemFonts:false,fontFiles:[fontFile]}}).toString().trimEnd()+'\n';
+  return new Resvg(svg, {font:{loadSystemFonts:false,fontFiles:[fontFile,smallFontFile]}}).toString().trimEnd()+'\n';
 }
 function write(name, svg) {
   const target=path.join(dir,'src',name+'.svg');
@@ -83,15 +85,6 @@ function book(label,color,variant='archive',small=false) {
   body+=actionBadge(variant);
   return wrap(body);
 }
-function micro(label,color,variant='archive') {
-  const short=variant==='archive'?({LZMA:'LM',LZMA2:'L2',ZSTD:'ZS',CPIO:'CP',APFS:'AP',NTFS:'NT',SQFS:'SQ'}[label] || label):'7Z';
-  let b=`<path d="M4 1h10v14H4Z" fill="${color}"/><path d="M13 1h1v14h-1Z" fill="${mix(color,'#000000',.12)}"/>
-    <path d="M10.5 1h2v14h-2Z" fill="#7c8b83"/><path d="M10.5 1h2v3h-2Z" fill="#d9dfd9"/>
-    <path d="M10.5 5h1m0 1h1m-2 1h1m0 1h1m-2 1h1m0 1h1m-2 1h1m0 1h1m-2 1h1m0 1h1" stroke="#d8e0d8" stroke-width="1"/>`;
-  b+=labelPlate(short,.75,8.3,12.1,5.3,6);
-  if(variant!=='archive'&&variant!=='app') b+=`<g transform="translate(.5 .5) scale(.25)">${actionBadge(variant)}</g>`;
-  return wrap(b,16);
-}
 const tools={
   Add:'<path d="M12 4v16M4 12h16"/>',
   Extract:'<path d="M3 8V6a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8h14"/><path d="M10 14h7m-3-3 3 3-3 3"/>',
@@ -104,9 +97,9 @@ const tools={
 const manifest={sizes:[16,20,24,32,40,48,64,96,128,256],formats:[],applications:[],toolbars:[],package:[]};
 for(const [name,label,color] of formats) {
   const source=`archive/${name}`;
-  write(source,book(label,color)); write(source+'-16',micro(label,color));
-  write(source+'-small',book(label,color,'archive',true));
-  manifest.formats.push({name,label,color,source,smallSource:source+'-small',target:`CPP/7zip/Archive/Icons/${name}.ico`});
+  write(source,book(label,color));
+  for(const size of [16,20,24,32]) write(source+(size===32?'-small':'-'+size),smallIcon(label,color,'archive',size,smallFontFile));
+  manifest.formats.push({name,label,color,source,smallSource:source+'-small',sizeSources:{16:source+'-16',20:source+'-20',24:source+'-24',32:source+'-small'},target:`CPP/7zip/Archive/Icons/${name}.ico`});
 }
 const apps=[
   ['app',['CPP/7zip/UI/FileManager/FM.ico','CPP/7zip/UI/GUI/FM.ico','CPP/7zip/UI/FileManager/7zipLogo.ico']],
@@ -116,9 +109,9 @@ const apps=[
 ];
 for(const [name,targets] of apps) {
   const source=`app/${name}`;
-  write(source,book('7-Zip',overrides['7z'],name));write(source+'-16',micro('7-Zip',overrides['7z'],name));
-  write(source+'-small',book('7-Zip',overrides['7z'],name,true));
-  manifest.applications.push({name,source,smallSource:source+'-small',targets});
+  write(source,book('7-ZIP',overrides['7z'],name));
+  for(const size of [16,20,24,32]) write(source+(size===32?'-small':'-'+size),smallIcon('7-ZIP',overrides['7z'],name,size,smallFontFile));
+  manifest.applications.push({name,source,smallSource:source+'-small',sizeSources:{16:source+'-16',20:source+'-20',24:source+'-24',32:source+'-small'},targets});
 }
 for(const [name,geometry] of Object.entries(tools)) {
   const source=`toolbar/${name.toLowerCase()}`;
@@ -129,4 +122,4 @@ for(const [name,size] of [['StoreLogo',50],['Square44x44Logo',44],['Square150x15
 manifest.menu={target:'CPP/7zip/UI/Explorer/MenuLogo.bmp',size:16};
 manifest.excluded=['DarkMode/lib/dmlib_demo/demo.ico'];
 fs.writeFileSync(path.join(dir,'manifest.json'),JSON.stringify(manifest,null,2)+'\n');
-console.log('Created 121 font-independent SVG masters and resource manifest.');
+console.log('Created 197 font-independent SVG masters and resource manifest.');

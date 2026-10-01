@@ -77,7 +77,7 @@ public static class IconResourceCheck {
       } finally { DeleteObject(info.color);DeleteObject(info.mask); }
     } finally { DestroyIcon(icon); }
   }
-  public static void Bitmap(string path, int width, int height) {
+  public static void Bitmap(string path, int width, int height, bool requireAntialiasing) {
     IntPtr bitmap=LoadImage(IntPtr.Zero,path,0,0,0,0x10|0x2000);
     if(bitmap==IntPtr.Zero) throw new Exception("LoadImage BITMAP failed: "+path);
     try {
@@ -92,7 +92,8 @@ public static class IconResourceCheck {
         transparent|=a==0;visible|=a>=128;antialiased|=a>0&&a<255;
         if(pixels[p]>a || pixels[p+1]>a || pixels[p+2]>a) throw new Exception("RGB is not premultiplied: "+path);
       }
-      if(!transparent || !visible || !antialiased) throw new Exception("Missing alpha coverage: "+path);
+      if(!transparent || !visible || (requireAntialiasing && !antialiased)) throw new Exception("Missing alpha coverage: "+path);
+      if(!requireAntialiasing && antialiased) throw new Exception("Pixel-aligned menu acquired a soft alpha edge: "+path);
       IntPtr list=ImageList_Create(width,height,0x21,0,1);
       if(list==IntPtr.Zero) throw new Exception("ImageList_Create failed");
       try { if(ImageList_Add(list,bitmap,IntPtr.Zero)!=0) throw new Exception("ImageList_Add failed: "+path); }
@@ -112,8 +113,8 @@ foreach ($icon in $icons) {
   }
 }
 $bmps = @($manifest.toolbars | ForEach-Object { $_.targets })
-foreach ($bmp in $bmps) { [IconResourceCheck]::Bitmap((Join-Path $root $bmp.path),$bmp.width,$bmp.height) }
-[IconResourceCheck]::Bitmap((Join-Path $root $manifest.menu.target),$manifest.menu.size,$manifest.menu.size)
+foreach ($bmp in $bmps) { [IconResourceCheck]::Bitmap((Join-Path $root $bmp.path),$bmp.width,$bmp.height,$true) }
+[IconResourceCheck]::Bitmap((Join-Path $root $manifest.menu.target),$manifest.menu.size,$manifest.menu.size,$false)
 $mapped = @($icons) + @($bmps | ForEach-Object { $_.path }) + @($manifest.package | ForEach-Object { $_.target }) + @($manifest.menu.target) + @($manifest.excluded)
 $tracked = & git -C $root ls-files '*.ico' '*.bmp' '*.png' '*.svg'
 foreach ($file in $tracked) {

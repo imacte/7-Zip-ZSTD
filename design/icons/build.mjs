@@ -11,7 +11,7 @@ const check=process.argv.includes('--check');
 const outputs=[];
 const source=name=>fs.readFileSync(path.join(dir,'src',name+'.svg'),'utf8');
 const render=(svg,width)=>new Resvg(svg,{fitTo:{mode:'width',value:width},font:{loadSystemFonts:false}}).render();
-const iconImage=(entry,size)=>render(source(size===16?entry.source+'-16':size<=32&&entry.smallSource?entry.smallSource:entry.source),size);
+const iconImage=(entry,size)=>render(source(entry.sizeSources?.[size] || (size===16?entry.source+'-16':size<=32&&entry.smallSource?entry.smallSource:entry.source)),size);
 function emit(target,data) {
   const dest=path.resolve(root,target);
   if(!dest.startsWith(root+path.sep)) throw new Error('Output outside repository');
@@ -130,7 +130,7 @@ if(!check) {
   let body='<rect width="1080" height="770" fill="#f3f6fa"/>';
   for(const [i,e] of cases.entries()) {
     const x=12+i*178;
-    body+=`<text x="${x+12}" y="32" font-family="Segoe UI" font-size="17" fill="#263445">${e.label || '7-Zip'}</text>`;
+    body+=`<text x="${x+12}" y="32" font-family="Segoe UI" font-size="17" fill="#263445">${e.label || '7-ZIP'}</text>`;
     for(const [j,size] of [16,24,32].entries()) {
       const y=48+j*236,im=iconImage(e,size);
       body+=`<rect x="${x}" y="${y}" width="164" height="225" rx="8" fill="#fff"/><rect x="${x}" y="${y+65}" width="164" height="160" fill="#272e39"/>`;

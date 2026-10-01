@@ -1,67 +1,26 @@
-<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-        <linearGradient id="cover" x1="0" y1="0" x2="1" y2="0.4">
-            <stop offset="0" stop-color="#82a87c"/>
-            <stop offset="0.7" stop-color="#77a071"/>
-            <stop offset="1" stop-color="#70966a"/>
-        </linearGradient>
-        <linearGradient id="teeth" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0" stop-color="#e1e6e3"/>
-            <stop offset="0.4" stop-color="#aeb8b4"/>
-            <stop offset="1" stop-color="#65736d"/>
-        </linearGradient>
-        <linearGradient id="metal" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0" stop-color="#eef0ee"/>
-            <stop offset="0.22" stop-color="#b4bcba"/>
-            <stop offset="0.48" stop-color="#f2f3ef"/>
-            <stop offset="0.68" stop-color="#b9c0bc"/>
-            <stop offset="1" stop-color="#788480"/>
-        </linearGradient>
-    </defs>
-    <g opacity="0.12">
-        <path fill="#000000" stroke="none" d="M 15 5 L 58 5 L 58 60 L 15 60 Z"/>
-    </g>
-    <path fill="url(#cover)" stroke="none" d="M 15 4 L 58 4 L 58 59 L 15 59 Z"/>
-    <path fill="#698d63" stroke="none" d="M 54 4 L 58 4 L 58 59 L 54 59 Z"/>
-    <path fill="#000000" stroke="#ffffff" stroke-opacity="0.3" stroke-width="0.7" d="M 15 4 L 54 4"/>
-    <path fill="#729a6c" stroke="none" d="M 54 37 L 59 42 L 59 59 L 54 59 Z"/>
-    <path fill="#000000" stroke="#ffffff" stroke-opacity="0.3" stroke-width="0.6" d="M 54 37 L 54 59"/>
-    <path fill="#63716c" stroke="none" d="M 41.5 4 L 48.5 4 L 48.5 59 L 41.5 59 Z"/>
-    <path fill="#c6cfca" stroke="none" d="M 41.5 4 L 42.5 4 L 42.5 59 L 41.5 59 Z M 47.5 4 L 48.5 4 L 48.5 59 L 47.5 59 Z"/>
-    <path fill="url(#teeth)" stroke="none" d="M 42 18 L 45.699997 18 L 45.699997 19.92 L 42 19.92 Z M 44.300003 20 L 48 20 L 48 21.84 L 44.300003 21.84 Z"/>
-    <path fill="#000000" stroke="#edf0e9" stroke-opacity="0.8" stroke-width="0.45" d="M 42 18 L 45.699997 18 M 44.300003 20 L 48 20"/>
-    <path fill="url(#teeth)" stroke="none" d="M 42 22 L 45.699997 22 L 45.699997 23.92 L 42 23.92 Z M 44.300003 24 L 48 24 L 48 25.84 L 44.300003 25.84 Z"/>
-    <path fill="#000000" stroke="#edf0e9" stroke-opacity="0.8" stroke-width="0.45" d="M 42 22 L 45.699997 22 M 44.300003 24 L 48 24"/>
-    <path fill="url(#teeth)" stroke="none" d="M 42 26 L 45.699997 26 L 45.699997 27.92 L 42 27.92 Z M 44.300003 28 L 48 28 L 48 29.84 L 44.300003 29.84 Z"/>
-    <path fill="#000000" stroke="#edf0e9" stroke-opacity="0.8" stroke-width="0.45" d="M 42 26 L 45.699997 26 M 44.300003 28 L 48 28"/>
-    <path fill="url(#teeth)" stroke="none" d="M 42 30 L 45.699997 30 L 45.699997 31.92 L 42 31.92 Z M 44.300003 32 L 48 32 L 48 33.84 L 44.300003 33.84 Z"/>
-    <path fill="#000000" stroke="#edf0e9" stroke-opacity="0.8" stroke-width="0.45" d="M 42 30 L 45.699997 30 M 44.300003 32 L 48 32"/>
-    <path fill="url(#teeth)" stroke="none" d="M 42 34 L 45.699997 34 L 45.699997 35.92 L 42 35.92 Z M 44.300003 36 L 48 36 L 48 37.84 L 44.300003 37.84 Z"/>
-    <path fill="#000000" stroke="#edf0e9" stroke-opacity="0.8" stroke-width="0.45" d="M 42 34 L 45.699997 34 M 44.300003 36 L 48 36"/>
-    <path fill="url(#teeth)" stroke="none" d="M 42 38 L 45.699997 38 L 45.699997 39.92 L 42 39.92 Z M 44.300003 40 L 48 40 L 48 41.84 L 44.300003 41.84 Z"/>
-    <path fill="#000000" stroke="#edf0e9" stroke-opacity="0.8" stroke-width="0.45" d="M 42 38 L 45.699997 38 M 44.300003 40 L 48 40"/>
-    <path fill="url(#teeth)" stroke="none" d="M 42 42 L 45.699997 42 L 45.699997 43.92 L 42 43.92 Z M 44.300003 44 L 48 44 L 48 45.84 L 44.300003 45.84 Z"/>
-    <path fill="#000000" stroke="#edf0e9" stroke-opacity="0.8" stroke-width="0.45" d="M 42 42 L 45.699997 42 M 44.300003 44 L 48 44"/>
-    <path fill="url(#teeth)" stroke="none" d="M 42 46 L 45.699997 46 L 45.699997 47.92 L 42 47.92 Z M 44.300003 48 L 48 48 L 48 49.84 L 44.300003 49.84 Z"/>
-    <path fill="#000000" stroke="#edf0e9" stroke-opacity="0.8" stroke-width="0.45" d="M 42 46 L 45.699997 46 M 44.300003 48 L 48 48"/>
-    <path fill="url(#teeth)" stroke="none" d="M 42 50 L 45.699997 50 L 45.699997 51.92 L 42 51.92 Z M 44.300003 52 L 48 52 L 48 53.84 L 44.300003 53.84 Z"/>
-    <path fill="#000000" stroke="#edf0e9" stroke-opacity="0.8" stroke-width="0.45" d="M 42 50 L 45.699997 50 M 44.300003 52 L 48 52"/>
-    <path fill="url(#teeth)" stroke="none" d="M 42 54 L 45.699997 54 L 45.699997 55.92 L 42 55.92 Z M 44.300003 56 L 48 56 L 48 57.84 L 44.300003 57.84 Z"/>
-    <path fill="#000000" stroke="#edf0e9" stroke-opacity="0.8" stroke-width="0.45" d="M 42 54 L 45.699997 54 M 44.300003 56 L 48 56"/>
-    <g opacity="0.15" transform="matrix(1 0 0 1 0.6 0.6)">
-        <path fill="#000000" stroke="none" d="M 41.5 4 L 48.5 4 L 48 12 L 46.8 14 L 46.8 19.5 L 43.2 19.5 L 43.2 14 L 42 12 Z"/>
-    </g>
-    <path fill="url(#metal)" stroke="none" d="M 41.5 4 L 48.5 4 L 48 12 L 46.8 14 L 46.8 19.5 L 43.2 19.5 L 43.2 14 L 42 12 Z"/>
-    <path fill="#6e7a74" stroke="none" d="M 43 5.5 L 46.8 5.5 L 46.8 7.5 L 43 7.5 Z"/>
-    <path fill="#82908a" stroke="none" d="M 44.2 12.5 L 45.699997 12.5 L 45.699997 17.3 L 44.2 17.3 Z"/>
-    <path fill="#000000" stroke="#ffffff" stroke-opacity="0.65" stroke-width="0.6" d="M 43 4 L 43 10"/>
-    <g opacity="0.1">
-        <path fill="#000000" stroke="none" d="M 3.3 32.7 L 33.52 32.7 L 33.52 51.699997 L 3.3 51.699997 Z"/>
-    </g>
-    <path fill="#ffffff" stroke="#c8ccce" stroke-width="0.6" d="M 3 32 L 33.22 32 L 33.22 51 L 3 51 Z"/>
-    <g transform="matrix(1 0 0 1 5.61 30)">
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+    <defs/>
+    <path fill="#77a071" stroke="none" d="M 8 1 L 31 1 L 31 31 L 8 31 Z"/>
+    <path fill="#000000" fill-opacity="0.09411765" stroke="none" d="M 30 1 L 31 1 L 31 31 L 30 31 Z"/>
+    <path fill="#82908b" stroke="none" d="M 26 1 L 29 1 L 29 31 L 26 31 Z"/>
+    <path fill="#d8dedb" stroke="none" d="M 26 1 L 27 1 L 27 31 L 26 31 Z"/>
+    <path fill="#e8eeeb" stroke="none" d="M 28 6 L 29 6 L 29 7 L 28 7 Z"/>
+    <path fill="#e8eeeb" stroke="none" d="M 28 9 L 29 9 L 29 10 L 28 10 Z"/>
+    <path fill="#e8eeeb" stroke="none" d="M 28 12 L 29 12 L 29 13 L 28 13 Z"/>
+    <path fill="#e8eeeb" stroke="none" d="M 28 15 L 29 15 L 29 16 L 28 16 Z"/>
+    <path fill="#e8eeeb" stroke="none" d="M 28 18 L 29 18 L 29 19 L 28 19 Z"/>
+    <path fill="#e8eeeb" stroke="none" d="M 28 21 L 29 21 L 29 22 L 28 22 Z"/>
+    <path fill="#e8eeeb" stroke="none" d="M 28 24 L 29 24 L 29 25 L 28 25 Z"/>
+    <path fill="#e8eeeb" stroke="none" d="M 28 27 L 29 27 L 29 28 L 28 28 Z"/>
+    <path fill="#e8eeeb" stroke="none" d="M 28 30 L 29 30 L 29 31 L 28 31 Z"/>
+    <path fill="#cbd3d0" stroke="none" d="M 26 1 L 29 1 L 29 4 L 26 4 Z"/>
+    <path fill="#f1f4f2" stroke="none" d="M 26 1 L 27 1 L 27 3 L 26 3 Z"/>
+    <path fill="#687970" stroke="none" d="M 28 3 L 29 3 L 29 5 L 28 5 Z"/>
+    <path fill="#c1c8cc" stroke="none" d="M 0 18 L 18 18 L 18 29 L 0 29 Z"/>
+    <path fill="#ffffff" stroke="none" d="M 0 18 L 17 18 L 17 28 L 0 28 Z"/>
+    <g transform="matrix(1 0 0 1 0 16)">
         <g>
-            <path fill="#52595c" stroke="none" d="M 8.191406 18 L 1.6523436 18 L 1.6523436 5.3964844 L 3.1289063 5.3964844 L 3.1289063 16.664063 L 8.191406 16.664063 L 8.191406 18 Z M 11.6015625 18 L 10.125 18 L 10.125 5.3964844 L 11.6015625 5.3964844 L 11.6015625 18 Z M 23.141602 5.748047 L 15.758789 16.664063 L 22.965822 16.664063 L 22.965822 18 L 13.552734 18 L 13.552734 17.586914 L 20.874023 6.732422 L 14.141602 6.732422 L 14.141602 5.3964844 L 23.141602 5.3964844 L 23.141602 5.748047 Z"/>
+            <path fill="#27333b" stroke="none" d="M 5.6894536 12 L 1.0371094 12 L 1.0371094 3.5976563 L 2.4316406 3.5976563 L 2.4316406 10.822266 L 5.6894536 10.822266 L 5.6894536 12 Z M 8.332031 12 L 6.8964844 12 L 6.8964844 3.5976563 L 8.332031 3.5976563 L 8.332031 12 Z M 16.13086 4.2070313 L 11.52539 10.822266 L 16.072266 10.822266 L 16.072266 12 L 9.574219 12 L 9.574219 11.361329 L 14.197266 4.78125 L 9.931641 4.78125 L 9.931641 3.5976563 L 16.13086 3.5976563 L 16.13086 4.2070313 Z"/>
         </g>
     </g>
 </svg>

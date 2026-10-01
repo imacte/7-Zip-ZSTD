@@ -18,6 +18,12 @@
       "color": "#8ED7F5",
       "source": "archive/7z",
       "smallSource": "archive/7z-small",
+      "sizeSources": {
+        "16": "archive/7z-16",
+        "20": "archive/7z-20",
+        "24": "archive/7z-24",
+        "32": "archive/7z-small"
+      },
       "target": "CPP/7zip/Archive/Icons/7z.ico"
     },
     {
@@ -26,6 +32,12 @@
       "color": "#FFE386",
       "source": "archive/zip",
       "smallSource": "archive/zip-small",
+      "sizeSources": {
+        "16": "archive/zip-16",
+        "20": "archive/zip-20",
+        "24": "archive/zip-24",
+        "32": "archive/zip-small"
+      },
       "target": "CPP/7zip/Archive/Icons/zip.ico"
     },
     {
@@ -34,6 +46,12 @@
       "color": "#C348A2",
       "source": "archive/rar",
       "smallSource": "archive/rar-small",
+      "sizeSources": {
+        "16": "archive/rar-16",
+        "20": "archive/rar-20",
+        "24": "archive/rar-24",
+        "32": "archive/rar-small"
+      },
       "target": "CPP/7zip/Archive/Icons/rar.ico"
     },
     {
@@ -42,6 +60,12 @@
       "color": "#529fa0",
       "source": "archive/tar",
       "smallSource": "archive/tar-small",
+      "sizeSources": {
+        "16": "archive/tar-16",
+        "20": "archive/tar-20",
+        "24": "archive/tar-24",
+        "32": "archive/tar-small"
+      },
       "target": "CPP/7zip/Archive/Icons/tar.ico"
     },
     {
@@ -50,6 +74,12 @@
       "color": "#5dae7a",
       "source": "archive/gz",
       "smallSource": "archive/gz-small",
+      "sizeSources": {
+        "16": "archive/gz-16",
+        "20": "archive/gz-20",
+        "24": "archive/gz-24",
+        "32": "archive/gz-small"
+      },
       "target": "CPP/7zip/Archive/Icons/gz.ico"
     },
     {
@@ -58,6 +88,12 @@
       "color": "#7d84dd",
       "source": "archive/xz",
       "smallSource": "archive/xz-small",
+      "sizeSources": {
+        "16": "archive/xz-16",
+        "20": "archive/xz-20",
+        "24": "archive/xz-24",
+        "32": "archive/xz-small"
+      },
       "target": "CPP/7zip/Archive/Icons/xz.ico"
     },
     {
@@ -66,6 +102,12 @@
       "color": "#da7980",
       "source": "archive/zst",
       "smallSource": "archive/zst-small",
+      "sizeSources": {
+        "16": "archive/zst-16",
+        "20": "archive/zst-20",
+        "24": "archive/zst-24",
+        "32": "archive/zst-small"
+      },
       "target": "CPP/7zip/Archive/Icons/zst.ico"
     },
     {
@@ -74,6 +116,12 @@
       "color": "#cb6e80",
       "source": "archive/zstd",
       "smallSource": "archive/zstd-small",
+      "sizeSources": {
+        "16": "archive/zstd-16",
+        "20": "archive/zstd-20",
+        "24": "archive/zstd-24",
+        "32": "archive/zstd-small"
+      },
       "target": "CPP/7zip/Archive/Icons/zstd.ico"
     },
     {
@@ -82,6 +130,12 @@
       "color": "#50a8b5",
       "source": "archive/bz2",
       "smallSource": "archive/bz2-small",
+      "sizeSources": {
+        "16": "archive/bz2-16",
+        "20": "archive/bz2-20",
+        "24": "archive/bz2-24",
+        "32": "archive/bz2-small"
+      },
       "target": "CPP/7zip/Archive/Icons/bz2.ico"
     },
     {
@@ -90,6 +144,12 @@
       "color": "#c277ad",
       "source": "archive/br",
       "smallSource": "archive/br-small",
+      "sizeSources": {
+        "16": "archive/br-16",
+        "20": "archive/br-20",
+        "24": "archive/br-24",
+        "32": "archive/br-small"
+      },
       "target": "CPP/7zip/Archive/Icons/br.ico"
     },
     {
@@ -98,6 +158,12 @@
       "color": "#5d97c7",
       "source": "archive/lz4",
       "smallSource": "archive/lz4-small",
+      "sizeSources": {
+        "16": "archive/lz4-16",
+        "20": "archive/lz4-20",
+        "24": "archive/lz4-24",
+        "32": "archive/lz4-small"
+      },
       "target": "CPP/7zip/Archive/Icons/lz4.ico"
     },
     {
@@ -106,6 +172,12 @@
       "color": "#7b8ebe",
       "source": "archive/lz5",
       "smallSource": "archive/lz5-small",
+      "sizeSources": {
+        "16": "archive/lz5-16",
+        "20": "archive/lz5-20",
+        "24": "archive/lz5-24",
+        "32": "archive/lz5-small"
+      },
       "target": "CPP/7zip/Archive/Icons/lz5.ico"
     },
     {
@@ -114,6 +186,12 @@
       "color": "#9382c4",
       "source": "archive/lzma",
       "smallSource": "archive/lzma-small",
+      "sizeSources": {
+        "16": "archive/lzma-16",
+        "20": "archive/lzma-20",
+        "24": "archive/lzma-24",
+        "32": "archive/lzma-small"
+      },
       "target": "CPP/7zip/Archive/Icons/lzma.ico"
     },
     {
@@ -122,6 +200,12 @@
       "color": "#b27dc4",
       "source": "archive/lzma2",
       "smallSource": "archive/lzma2-small",
+      "sizeSources": {
+        "16": "archive/lzma2-16",
+        "20": "archive/lzma2-20",
+        "24": "archive/lzma2-24",
+        "32": "archive/lzma2-small"
+      },
       "target": "CPP/7zip/Archive/Icons/lzma2.ico"
     },
     {
@@ -130,6 +214,12 @@
       "color": "#77a071",
       "source": "archive/liz",
       "smallSource": "archive/liz-small",
+      "sizeSources": {
+        "16": "archive/liz-16",
+        "20": "archive/liz-20",
+        "24": "archive/liz-24",
+        "32": "archive/liz-small"
+      },
       "target": "CPP/7zip/Archive/Icons/liz.ico"
     },
     {
@@ -138,6 +228,12 @@
       "color": "#b3956b",
       "source": "archive/lzh",
       "smallSource": "archive/lzh-small",
+      "sizeSources": {
+        "16": "archive/lzh-16",
+        "20": "archive/lzh-20",
+        "24": "archive/lzh-24",
+        "32": "archive/lzh-small"
+      },
       "target": "CPP/7zip/Archive/Icons/lzh.ico"
     },
     {
@@ -146,6 +242,12 @@
       "color": "#bc8e74",
       "source": "archive/lha",
       "smallSource": "archive/lha-small",
+      "sizeSources": {
+        "16": "archive/lha-16",
+        "20": "archive/lha-20",
+        "24": "archive/lha-24",
+        "32": "archive/lha-small"
+      },
       "target": "CPP/7zip/Archive/Icons/lha.ico"
     },
     {
@@ -154,6 +256,12 @@
       "color": "#789eaf",
       "source": "archive/z",
       "smallSource": "archive/z-small",
+      "sizeSources": {
+        "16": "archive/z-16",
+        "20": "archive/z-20",
+        "24": "archive/z-24",
+        "32": "archive/z-small"
+      },
       "target": "CPP/7zip/Archive/Icons/z.ico"
     },
     {
@@ -162,6 +270,12 @@
       "color": "#be7e80",
       "source": "archive/arj",
       "smallSource": "archive/arj-small",
+      "sizeSources": {
+        "16": "archive/arj-16",
+        "20": "archive/arj-20",
+        "24": "archive/arj-24",
+        "32": "archive/arj-small"
+      },
       "target": "CPP/7zip/Archive/Icons/arj.ico"
     },
     {
@@ -170,6 +284,12 @@
       "color": "#bb995e",
       "source": "archive/cab",
       "smallSource": "archive/cab-small",
+      "sizeSources": {
+        "16": "archive/cab-16",
+        "20": "archive/cab-20",
+        "24": "archive/cab-24",
+        "32": "archive/cab-small"
+      },
       "target": "CPP/7zip/Archive/Icons/cab.ico"
     },
     {
@@ -178,6 +298,12 @@
       "color": "#96a266",
       "source": "archive/cpio",
       "smallSource": "archive/cpio-small",
+      "sizeSources": {
+        "16": "archive/cpio-16",
+        "20": "archive/cpio-20",
+        "24": "archive/cpio-24",
+        "32": "archive/cpio-small"
+      },
       "target": "CPP/7zip/Archive/Icons/cpio.ico"
     },
     {
@@ -186,6 +312,12 @@
       "color": "#7e9889",
       "source": "archive/xar",
       "smallSource": "archive/xar-small",
+      "sizeSources": {
+        "16": "archive/xar-16",
+        "20": "archive/xar-20",
+        "24": "archive/xar-24",
+        "32": "archive/xar-small"
+      },
       "target": "CPP/7zip/Archive/Icons/xar.ico"
     },
     {
@@ -194,6 +326,12 @@
       "color": "#969daa",
       "source": "archive/split",
       "smallSource": "archive/split-small",
+      "sizeSources": {
+        "16": "archive/split-16",
+        "20": "archive/split-20",
+        "24": "archive/split-24",
+        "32": "archive/split-small"
+      },
       "target": "CPP/7zip/Archive/Icons/split.ico"
     },
     {
@@ -202,6 +340,12 @@
       "color": "#cb728a",
       "source": "archive/deb",
       "smallSource": "archive/deb-small",
+      "sizeSources": {
+        "16": "archive/deb-16",
+        "20": "archive/deb-20",
+        "24": "archive/deb-24",
+        "32": "archive/deb-small"
+      },
       "target": "CPP/7zip/Archive/Icons/deb.ico"
     },
     {
@@ -210,6 +354,12 @@
       "color": "#c5806b",
       "source": "archive/rpm",
       "smallSource": "archive/rpm-small",
+      "sizeSources": {
+        "16": "archive/rpm-16",
+        "20": "archive/rpm-20",
+        "24": "archive/rpm-24",
+        "32": "archive/rpm-small"
+      },
       "target": "CPP/7zip/Archive/Icons/rpm.ico"
     },
     {
@@ -218,6 +368,12 @@
       "color": "#C9CDD0",
       "source": "archive/iso",
       "smallSource": "archive/iso-small",
+      "sizeSources": {
+        "16": "archive/iso-16",
+        "20": "archive/iso-20",
+        "24": "archive/iso-24",
+        "32": "archive/iso-small"
+      },
       "target": "CPP/7zip/Archive/Icons/iso.ico"
     },
     {
@@ -226,6 +382,12 @@
       "color": "#9298bc",
       "source": "archive/dmg",
       "smallSource": "archive/dmg-small",
+      "sizeSources": {
+        "16": "archive/dmg-16",
+        "20": "archive/dmg-20",
+        "24": "archive/dmg-24",
+        "32": "archive/dmg-small"
+      },
       "target": "CPP/7zip/Archive/Icons/dmg.ico"
     },
     {
@@ -234,6 +396,12 @@
       "color": "#658fa4",
       "source": "archive/vhd",
       "smallSource": "archive/vhd-small",
+      "sizeSources": {
+        "16": "archive/vhd-16",
+        "20": "archive/vhd-20",
+        "24": "archive/vhd-24",
+        "32": "archive/vhd-small"
+      },
       "target": "CPP/7zip/Archive/Icons/vhd.ico"
     },
     {
@@ -242,6 +410,12 @@
       "color": "#C9CDD0",
       "source": "archive/wim",
       "smallSource": "archive/wim-small",
+      "sizeSources": {
+        "16": "archive/wim-16",
+        "20": "archive/wim-20",
+        "24": "archive/wim-24",
+        "32": "archive/wim-small"
+      },
       "target": "CPP/7zip/Archive/Icons/wim.ico"
     },
     {
@@ -250,6 +424,12 @@
       "color": "#8897b8",
       "source": "archive/apfs",
       "smallSource": "archive/apfs-small",
+      "sizeSources": {
+        "16": "archive/apfs-16",
+        "20": "archive/apfs-20",
+        "24": "archive/apfs-24",
+        "32": "archive/apfs-small"
+      },
       "target": "CPP/7zip/Archive/Icons/apfs.ico"
     },
     {
@@ -258,6 +438,12 @@
       "color": "#a793af",
       "source": "archive/hfs",
       "smallSource": "archive/hfs-small",
+      "sizeSources": {
+        "16": "archive/hfs-16",
+        "20": "archive/hfs-20",
+        "24": "archive/hfs-24",
+        "32": "archive/hfs-small"
+      },
       "target": "CPP/7zip/Archive/Icons/hfs.ico"
     },
     {
@@ -266,6 +452,12 @@
       "color": "#7d92a0",
       "source": "archive/ntfs",
       "smallSource": "archive/ntfs-small",
+      "sizeSources": {
+        "16": "archive/ntfs-16",
+        "20": "archive/ntfs-20",
+        "24": "archive/ntfs-24",
+        "32": "archive/ntfs-small"
+      },
       "target": "CPP/7zip/Archive/Icons/ntfs.ico"
     },
     {
@@ -274,6 +466,12 @@
       "color": "#95a286",
       "source": "archive/fat",
       "smallSource": "archive/fat-small",
+      "sizeSources": {
+        "16": "archive/fat-16",
+        "20": "archive/fat-20",
+        "24": "archive/fat-24",
+        "32": "archive/fat-small"
+      },
       "target": "CPP/7zip/Archive/Icons/fat.ico"
     },
     {
@@ -282,6 +480,12 @@
       "color": "#7e9c97",
       "source": "archive/sqfs",
       "smallSource": "archive/sqfs-small",
+      "sizeSources": {
+        "16": "archive/sqfs-16",
+        "20": "archive/sqfs-20",
+        "24": "archive/sqfs-24",
+        "32": "archive/sqfs-small"
+      },
       "target": "CPP/7zip/Archive/Icons/sqfs.ico"
     }
   ],
@@ -290,6 +494,12 @@
       "name": "app",
       "source": "app/app",
       "smallSource": "app/app-small",
+      "sizeSources": {
+        "16": "app/app-16",
+        "20": "app/app-20",
+        "24": "app/app-24",
+        "32": "app/app-small"
+      },
       "targets": [
         "CPP/7zip/UI/FileManager/FM.ico",
         "CPP/7zip/UI/GUI/FM.ico",
@@ -300,6 +510,12 @@
       "name": "install",
       "source": "app/install",
       "smallSource": "app/install-small",
+      "sizeSources": {
+        "16": "app/install-16",
+        "20": "app/install-20",
+        "24": "app/install-24",
+        "32": "app/install-small"
+      },
       "targets": [
         "C/Util/7zipInstall/7zip.ico",
         "C/Util/SfxSetup/setup.ico",
@@ -310,6 +526,12 @@
       "name": "uninstall",
       "source": "app/uninstall",
       "smallSource": "app/uninstall-small",
+      "sizeSources": {
+        "16": "app/uninstall-16",
+        "20": "app/uninstall-20",
+        "24": "app/uninstall-24",
+        "32": "app/uninstall-small"
+      },
       "targets": [
         "C/Util/7zipUninstall/7zipUninstall.ico"
       ]
@@ -318,6 +540,12 @@
       "name": "sfx",
       "source": "app/sfx",
       "smallSource": "app/sfx-small",
+      "sizeSources": {
+        "16": "app/sfx-16",
+        "20": "app/sfx-20",
+        "24": "app/sfx-24",
+        "32": "app/sfx-small"
+      },
       "targets": [
         "CPP/7zip/Bundles/SFXWin/7z.ico",
         "CPP/7zip/Bundles/SFXCon/7z.ico"

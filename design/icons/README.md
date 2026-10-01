@@ -50,7 +50,7 @@ captions use system fonts; the icon artwork itself does not.
 The fixed palette is 7Z `#8ED7F5`, ZIP `#FFE386`, RAR `#C348A2`, and ISO/WIM
 `#C9CDD0`. Other formats mix the original palette with white at a 75:25 ratio;
 the bootstrap retains the original inputs so repeated runs do not lighten again.
-Applications share the 7Z sleeve with a `7-Zip` label and their existing action
+Applications share the 7Z sleeve with a `7-ZIP` label and their existing action
 badges. Label plate widths are measured from the outlined lettering.
 
 ## Small sizes and Windows integration
@@ -59,10 +59,14 @@ ICOs contain 16, 20, 24, 32, 40, 48, 64, 96, 128 and 256 pixel frames. Sizes
 through 48 use straight-alpha DIBs and AND masks; larger frames use PNG to keep
 resource size down. The 16px masters simplify geometry and abbreviate long
 labels: LM=LZMA, L2=LZMA2, ZS=ZSTD, CP=CPIO, AP=APFS, NT=NTFS, SQ=SQFS.
-The 16px application label is `7Z`. Separate `-small.svg` masters, selected via
-`smallSource` in the manifest, enlarge the label and simplify zipper teeth at
-20/24/32px without abbreviating the text. The remaining sizes use the regular
-masters and full labels. Split archives use `001`.
+The 16px application label is `7Z`. Native 16/20/24/32px masters are selected via
+`sizeSources` in the manifest (`-small.svg` is the 32px master). They use whole-pixel
+sleeve geometry, larger dark Segoe UI Semibold labels and a simplified metal track.
+`small-icons.mjs` defines native geometry and typography; the bootstrap requires
+`C:/Windows/Fonts/seguisb.ttf` (or `ICON_SMALL_FONT`) and converts lettering to
+font-independent outlines. 20px and above retain full uppercase labels.
+The remaining sizes use the unchanged smooth masters and full labels. Split
+archives use `001`.
 
 Toolbar BMPs retain the original 48x36 and 24x24 dimensions. They now carry
 premultiplied BGRA, are loaded as DIB sections, and are tinted to the current

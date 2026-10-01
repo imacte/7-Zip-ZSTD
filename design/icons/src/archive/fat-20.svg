@@ -1,0 +1,22 @@
+<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+    <defs/>
+    <path fill="#95a286" stroke="none" d="M 5 1 L 19 1 L 19 19 L 5 19 Z"/>
+    <path fill="#000000" fill-opacity="0.09411765" stroke="none" d="M 18 1 L 19 1 L 19 19 L 18 19 Z"/>
+    <path fill="#82908b" stroke="none" d="M 16 1 L 18 1 L 18 19 L 16 19 Z"/>
+    <path fill="#d8dedb" stroke="none" d="M 16 1 L 17 1 L 17 19 L 16 19 Z"/>
+    <path fill="#e8eeeb" stroke="none" d="M 17 6 L 18 6 L 18 7 L 17 7 Z"/>
+    <path fill="#e8eeeb" stroke="none" d="M 17 9 L 18 9 L 18 10 L 17 10 Z"/>
+    <path fill="#e8eeeb" stroke="none" d="M 17 12 L 18 12 L 18 13 L 17 13 Z"/>
+    <path fill="#e8eeeb" stroke="none" d="M 17 15 L 18 15 L 18 16 L 17 16 Z"/>
+    <path fill="#e8eeeb" stroke="none" d="M 17 18 L 18 18 L 18 19 L 17 19 Z"/>
+    <path fill="#cbd3d0" stroke="none" d="M 16 1 L 18 1 L 18 4 L 16 4 Z"/>
+    <path fill="#f1f4f2" stroke="none" d="M 16 1 L 17 1 L 17 3 L 16 3 Z"/>
+    <path fill="#687970" stroke="none" d="M 17 3 L 18 3 L 18 5 L 17 5 Z"/>
+    <path fill="#c1c8cc" stroke="none" d="M 0 10 L 17 10 L 17 19 L 0 19 Z"/>
+    <path fill="#ffffff" stroke="none" d="M 0 10 L 16 10 L 16 18 L 0 18 Z"/>
+    <g transform="matrix(1 0 0 1 1 9)">
+        <g>
+            <path fill="#27333b" stroke="none" d="M 4.179199 3.5859375 L 1.8237303 3.5859375 L 1.8237303 5.47998 L 3.994629 5.47998 L 3.994629 6.3632813 L 1.8237303 6.3632813 L 1.8237303 9 L 0.777832 9 L 0.777832 2.6982422 L 4.179199 2.6982422 L 4.179199 3.5859375 Z M 9.936035 9 L 8.7890625 9 L 8.222168 7.395996 L 5.7436523 7.395996 L 5.1987305 9 L 4.0561523 9 L 6.416015 2.6982422 L 7.5937495 2.6982422 L 9.936035 9 Z M 7.9453125 6.5434575 L 7.070801 4.029785 Q 7.03125 3.9067383 6.987305 3.6342773 L 6.9697266 3.6342773 Q 6.930176 3.8847659 6.881836 4.029785 L 6.0161133 6.5434575 L 7.9453125 6.5434575 Z M 14.20752 3.5859375 L 12.396973 3.5859375 L 12.396973 9 L 11.351074 9 L 11.351074 3.5859375 L 9.544922 3.5859375 L 9.544922 2.6982422 L 14.20752 2.6982422 L 14.20752 3.5859375 Z"/>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,22 @@
+<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+    <defs/>
+    <path fill="#ffe386" stroke="none" d="M 5 1 L 19 1 L 19 19 L 5 19 Z"/>
+    <path fill="#000000" fill-opacity="0.09411765" stroke="none" d="M 18 1 L 19 1 L 19 19 L 18 19 Z"/>
+    <path fill="#82908b" stroke="none" d="M 16 1 L 18 1 L 18 19 L 16 19 Z"/>
+    <path fill="#d8dedb" stroke="none" d="M 16 1 L 17 1 L 17 19 L 16 19 Z"/>
+    <path fill="#e8eeeb" stroke="none" d="M 17 6 L 18 6 L 18 7 L 17 7 Z"/>
+    <path fill="#e8eeeb" stroke="none" d="M 17 9 L 18 9 L 18 10 L 17 10 Z"/>
+    <path fill="#e8eeeb" stroke="none" d="M 17 12 L 18 12 L 18 13 L 17 13 Z"/>
+    <path fill="#e8eeeb" stroke="none" d="M 17 15 L 18 15 L 18 16 L 17 16 Z"/>
+    <path fill="#e8eeeb" stroke="none" d="M 17 18 L 18 18 L 18 19 L 17 19 Z"/>
+    <path fill="#cbd3d0" stroke="none" d="M 16 1 L 18 1 L 18 4 L 16 4 Z"/>
+    <path fill="#f1f4f2" stroke="none" d="M 16 1 L 17 1 L 17 3 L 16 3 Z"/>
+    <path fill="#687970" stroke="none" d="M 17 3 L 18 3 L 18 5 L 17 5 Z"/>
+    <path fill="#c1c8cc" stroke="none" d="M 0 10 L 15 10 L 15 19 L 0 19 Z"/>
+    <path fill="#ffffff" stroke="none" d="M 0 10 L 14 10 L 14 18 L 0 18 Z"/>
+    <g transform="matrix(1 0 0 1 1 9)">
+        <g>
+            <path fill="#27333b" stroke="none" d="M 5.0756836 3.1552732 L 1.621582 8.116699 L 5.0317383 8.116699 L 5.0317383 9 L 0.15820313 9 L 0.15820313 8.520996 L 3.6254883 3.5859375 L 0.42626953 3.5859375 L 0.42626953 2.6982422 L 5.0756836 2.6982422 L 5.0756836 3.1552732 Z M 7.1323247 9 L 6.055664 9 L 6.055664 2.6982422 L 7.1323247 2.6982422 L 7.1323247 9 Z M 9.725098 6.7148438 L 9.725098 9 L 8.683594 9 L 8.683594 2.6982422 L 10.595215 2.6982422 Q 11.680664 2.6982422 12.27832 3.2036135 Q 12.875977 3.7089844 12.875977 4.6274414 Q 12.875977 5.5458984 12.251952 6.130371 Q 11.62793 6.7148438 10.564453 6.7148438 L 9.725098 6.7148438 Z M 9.725098 3.5595703 L 9.725098 5.8623047 L 10.401855 5.8623047 Q 11.074218 5.8623047 11.425782 5.550293 Q 11.777344 5.2382813 11.777344 4.6713867 Q 11.777344 3.5595703 10.485352 3.5595703 L 9.725098 3.5595703 Z"/>
+        </g>
+    </g>
+</svg>
