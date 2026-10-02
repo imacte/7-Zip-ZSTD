@@ -48,6 +48,12 @@
 #endif
 #include "ShellIntegrationModern.h"
 
+// The SDK hides this message for the non-dark x86 target (_WIN32_WINNT=0x0500).
+// Keep handling theme changes on newer Windows without raising the minimum OS.
+#ifndef WM_THEMECHANGED
+#define WM_THEMECHANGED 0x031A
+#endif
+
 using namespace NWindows;
 using namespace NFile;
 using namespace NFind;
