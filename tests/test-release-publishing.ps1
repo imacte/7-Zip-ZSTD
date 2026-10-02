@@ -126,3 +126,7 @@ try {
     }
     Remove-Item -LiteralPath $resolved -Recurse -Force
 }
+
+# GitHub's pwsh wrapper propagates LASTEXITCODE. Successful negative tests must
+# not leak the simulated GitHub CLI failure into the step's final exit status.
+exit 0
