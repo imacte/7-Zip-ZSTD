@@ -4,7 +4,17 @@ import { Resvg } from '@resvg/resvg-js';
 export function mixColor(color,other,weight) {
   return '#'+[1,3,5].map(i=>Math.round(parseInt(color.slice(i,i+2),16)*(1-weight)+parseInt(other.slice(i,i+2),16)*weight).toString(16).padStart(2,'0')).join('');
 }
-export function bookColors(color,variant) {
+export function brightenColor(color) {
+  const rgb=[1,3,5].map(i=>parseInt(color.slice(i,i+2),16)/255);
+  const high=Math.max(...rgb),low=Math.min(...rgb),delta=high-low;
+  const v=Math.min(.98,high*1.13+.035),s=high?delta/high:0;
+  const saturation=s>.18?s+.05*(1-s):s;
+  return '#'+rgb.map(c=>Math.round(255*v*(1-saturation+saturation*(delta?(c-low)/delta:0))).toString(16).padStart(2,'0')).join('');
+}
+export function bookColors(color,variant,vivid=false) {
+  if(vivid) return variant==='archive'
+    ? [brightenColor(color),mixColor(brightenColor(color),'#2b9fdf',.84),mixColor(brightenColor(color),'#43be72',.88)]
+    : ['#cb69db','#3cb5f1','#5ed17e'];
   return variant==='archive'
     ? [color,mixColor(color,'#347cb5',.76),mixColor(color,'#438b63',.8)]
     : ['#a654ad','#388dc1','#519669'];
@@ -17,14 +27,16 @@ export function fittedLabel(label,fontSize,maxWidth,fontFile) {
   box=measure(fontSize);
   return {box,text:text(fontSize)};
 }
-export function stackedBook(label,color,variant,fontFile,showLabel=true) {
-  const colors=bookColors(color,variant);
+export function stackedBook(label,color,variant,fontFile,showLabel=true,vivid=false) {
+  const colors=bookColors(color,variant,vivid);
   let b=`<defs>
     <linearGradient id="leather"><stop stop-color="#ba8b58"/><stop offset=".22" stop-color="#986b40"/><stop offset=".8" stop-color="#80522f"/><stop offset="1" stop-color="#684128"/></linearGradient>
     <linearGradient id="buckle" x2=".8" y2="1"><stop stop-color="#ffffff"/><stop offset=".45" stop-color="#d7dee2"/><stop offset=".75" stop-color="#8c9a9f"/><stop offset="1" stop-color="#f3f6f5"/></linearGradient>
     <linearGradient id="paper"><stop stop-color="#f9f2da"/><stop offset="1" stop-color="#d6ccb0"/></linearGradient>`;
-  colors.forEach((c,i)=>{b+=`<linearGradient id="spine${i}" x1="0" y1="0" x2="0" y2="1"><stop stop-color="${mixColor(c,'#ffffff',.15)}"/><stop offset=".35" stop-color="${c}"/><stop offset="1" stop-color="${mixColor(c,'#000000',.24)}"/></linearGradient>`;});
-  b+='</defs><ellipse cx="32" cy="56" rx="27" ry="3" fill="#18242e" opacity=".12"/>';
+  colors.forEach((c,i)=>{b+=`<linearGradient id="spine${i}" x1="0" y1="0" x2="0" y2="1"><stop stop-color="${mixColor(c,'#ffffff',vivid?.24:.15)}"/><stop offset=".35" stop-color="${c}"/><stop offset="1" stop-color="${mixColor(c,'#000000',vivid?.15:.24)}"/></linearGradient>`;});
+  b+='</defs>';
+  if(vivid&&!showLabel)b+='<g transform="translate(-3.6 -3.6) scale(1.12)">';
+  b+='<ellipse cx="32" cy="56" rx="27" ry="3" fill="#18242e" opacity=".12"/>';
   // Draw the bottom volume first. Each volume has a cover, rounded spine and pages.
   for(let i=2;i>=0;i--) {
     const y=7+i*14,c=colors[i];
@@ -51,6 +63,7 @@ export function stackedBook(label,color,variant,fontFile,showLabel=true) {
     <rect x="4" y="49" width="${width}" height="13" rx="2" fill="#fffdf7" stroke="#b6bab5" stroke-width=".65"/>
     <g fill="#28363f" transform="translate(${7.5-box.x} ${49+(13-box.height)/2-box.y})">${text}</g>`;
   }
+  if(vivid&&!showLabel)b+='</g>';
   if(variant!=='archive'&&variant!=='app') {
     const badge=variant==='uninstall'?'#c1454b':variant==='sfx'?'#24836b':'#267ec1';
     b+=`<circle cx="53" cy="53" r="10" fill="#fffdf7"/><circle cx="53" cy="53" r="8.5" fill="${badge}"/>`;

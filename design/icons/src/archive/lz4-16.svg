@@ -1,20 +1,20 @@
 <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
     <defs/>
-    <path fill="#377160" stroke="none" d="M 2 9 L 15 9 L 15 13 L 2 13 Z"/>
-    <path fill="#438a75" stroke="none" d="M 1 10 L 13 10 L 13 13 L 1 13 Z"/>
-    <path fill="#72a798" stroke="none" d="M 2 9 L 13 9 L 13 10 L 2 10 Z"/>
-    <path fill="#e4dcc5" stroke="none" d="M 13 10 L 15 10 L 15 12 L 13 12 Z"/>
-    <path fill="#2d6796" stroke="none" d="M 2 5 L 15 5 L 15 9 L 2 9 Z"/>
-    <path fill="#377eb7" stroke="none" d="M 1 6 L 13 6 L 13 9 L 1 9 Z"/>
-    <path fill="#699ec9" stroke="none" d="M 2 5 L 13 5 L 13 6 L 2 6 Z"/>
-    <path fill="#e4dcc5" stroke="none" d="M 13 6 L 15 6 L 15 8 L 13 8 Z"/>
-    <path fill="#356d9b" stroke="none" d="M 2 1 L 15 1 L 15 5 L 2 5 Z"/>
-    <path fill="#4185bd" stroke="none" d="M 1 2 L 13 2 L 13 5 L 1 5 Z"/>
-    <path fill="#71a4ce" stroke="none" d="M 2 1 L 13 1 L 13 2 L 2 2 Z"/>
-    <path fill="#e4dcc5" stroke="none" d="M 13 2 L 15 2 L 15 4 L 13 4 Z"/>
-    <path fill="#91603b" stroke="none" d="M 10 1 L 13 1 L 13 13 L 10 13 Z"/>
-    <path fill="#c0996a" stroke="none" d="M 10 1 L 11 1 L 11 13 L 10 13 Z"/>
-    <path fill="#dce3e3" stroke="none" d="M 9 5 L 14 5 L 14 9 L 9 9 Z"/>
+    <path fill="#3ca470" stroke="none" d="M 1 10 L 16 10 L 16 15 L 1 15 Z"/>
+    <path fill="#44ba7f" stroke="none" d="M 0 11 L 14 11 L 14 15 L 0 15 Z"/>
+    <path fill="#73cb9f" stroke="none" d="M 1 10 L 14 10 L 14 11 L 1 11 Z"/>
+    <path fill="#fff0ce" stroke="none" d="M 14 11 L 16 11 L 16 14 L 14 14 Z"/>
+    <path fill="#2a8bc4" stroke="none" d="M 1 5 L 16 5 L 16 10 L 1 10 Z"/>
+    <path fill="#309edf" stroke="none" d="M 0 6 L 14 6 L 14 10 L 0 10 Z"/>
+    <path fill="#64b6e7" stroke="none" d="M 1 5 L 14 5 L 14 6 L 1 6 Z"/>
+    <path fill="#fff0ce" stroke="none" d="M 14 6 L 16 6 L 16 9 L 14 9 Z"/>
+    <path fill="#4088c3" stroke="none" d="M 1 0 L 16 0 L 16 5 L 1 5 Z"/>
+    <path fill="#499bde" stroke="none" d="M 0 1 L 14 1 L 14 5 L 0 5 Z"/>
+    <path fill="#77b4e6" stroke="none" d="M 1 0 L 14 0 L 14 1 L 1 1 Z"/>
+    <path fill="#fff0ce" stroke="none" d="M 14 1 L 16 1 L 16 4 L 14 4 Z"/>
+    <path fill="#a67644" stroke="none" d="M 10 0 L 13 0 L 13 15 L 10 15 Z"/>
+    <path fill="#e1b877" stroke="none" d="M 10 0 L 11 0 L 11 15 L 10 15 Z"/>
+    <path fill="#f1f6f4" stroke="none" d="M 9 5 L 14 5 L 14 9 L 9 9 Z"/>
     <path fill="#765335" stroke="none" d="M 10 6 L 13 6 L 13 8 L 10 8 Z"/>
     <path fill="#edf1ee" stroke="none" d="M 11 6 L 12 6 L 12 8 L 11 8 Z"/>
 </svg>

@@ -12,7 +12,7 @@ const fontFile=process.env.ICON_SMALL_FONT || 'C:/Windows/Fonts/seguisb.ttf';
 const app={label:'7-ZIP',color:'#a654ad',variant:'app',source:'app/app'};
 const cases=[app,...['7z','zip','rar','iso'].map(name=>({...manifest.formats.find(e=>e.name===name),variant:'archive'}))];
 const render=(svg,size)=>new Resvg(svg,{fitTo:{mode:'width',value:size},font:{fontFiles:[fontFile]}}).render();
-const withoutLabel=(e,size)=>render(size<=32?smallIcon(e.label,e.color,e.variant,size,fontFile,false):stackedBook(e.label,e.color,e.variant,fontFile,false),size);
+const withoutLabel=(e,size)=>render(size<=32?smallIcon(e.label,e.color,e.variant,size,fontFile,false,manifest.vivid):stackedBook(e.label,e.color,e.variant,fontFile,false,manifest.vivid),size);
 const embed=(im,x,y)=>`<image x="${x}" y="${y}" width="${im.width}" height="${im.height}" href="data:image/png;base64,${im.asPng().toString('base64')}"/>`;
 const text=(s,x,y,size=15,fill='#28363f')=>`<text x="${x}" y="${y}" font-family="Segoe UI" font-size="${size}" fill="${fill}">${s}</text>`;
 let b='<rect width="920" height="700" fill="#f5f2eb"/>';
@@ -20,7 +20,7 @@ b+=text('BOUND BOOKS / NO TEXT',28,40,25);
 for(const [i,e] of cases.entries()) {
   const x=150+i*150;
   b+=text(e.label,x,76,16);
-  b+=embed(render(stackedBook(e.label,e.color,e.variant,fontFile,true),96),x,91);
+  b+=embed(render(stackedBook(e.label,e.color,e.variant,fontFile,true,manifest.vivid),96),x,91);
   b+=embed(withoutLabel(e,96),x,220);
 }
 b+=text('WITH TEXT',28,145,14)+text('NO TEXT',28,276,14);

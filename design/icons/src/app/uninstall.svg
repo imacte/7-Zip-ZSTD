@@ -5,19 +5,19 @@
             <stop offset="1" stop-color="#d6ccb0"/>
         </linearGradient>
         <linearGradient id="spine2" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#6ba680"/>
-            <stop offset="0.35" stop-color="#519669"/>
-            <stop offset="1" stop-color="#3e7250"/>
+            <stop offset="0" stop-color="#85dc9d"/>
+            <stop offset="0.35" stop-color="#5ed17e"/>
+            <stop offset="1" stop-color="#50b26b"/>
         </linearGradient>
         <linearGradient id="spine1" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#569eca"/>
-            <stop offset="0.35" stop-color="#388dc1"/>
-            <stop offset="1" stop-color="#2b6b93"/>
+            <stop offset="0" stop-color="#6bc7f4"/>
+            <stop offset="0.35" stop-color="#3cb5f1"/>
+            <stop offset="1" stop-color="#339acd"/>
         </linearGradient>
         <linearGradient id="spine0" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#b36eb9"/>
-            <stop offset="0.35" stop-color="#a654ad"/>
-            <stop offset="1" stop-color="#7e4083"/>
+            <stop offset="0" stop-color="#d78de4"/>
+            <stop offset="0.35" stop-color="#cb69db"/>
+            <stop offset="1" stop-color="#ad59ba"/>
         </linearGradient>
         <linearGradient id="leather" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0" stop-color="#ba8b58"/>
@@ -32,47 +32,49 @@
             <stop offset="1" stop-color="#f3f6f5"/>
         </linearGradient>
     </defs>
-    <g opacity="0.12">
-        <path fill="#18242e" stroke="none" d="M 59 56 C 59 57.656853 46.911686 59 32 59 C 17.088312 59 5 57.656853 5 56 C 5 54.343147 17.088312 53 32 53 C 46.911686 53 59 54.343147 59 56 Z"/>
+    <g transform="matrix(1.12 0 0 1.12 -3.6 -3.6)">
+        <g opacity="0.12">
+            <path fill="#18242e" stroke="none" d="M 59 56 C 59 57.656853 46.911686 59 32 59 C 17.088312 59 5 57.656853 5 56 C 5 54.343147 17.088312 53 32 53 C 46.911686 53 59 54.343147 59 56 Z"/>
+        </g>
+        <path fill="#3d8852" stroke="none" d="M 7 41 L 17 35 L 58 35 L 58 46 L 48 52 L 10 52 Q 6 52 6 48 L 6 44 Q 6 42 7 41 Z"/>
+        <path fill="#8bdea2" stroke="none" d="M 8 40 L 17 35 L 58 35 L 48 41 L 8 41 Z"/>
+        <path fill="url(#paper)" stroke="none" d="M 48 42 L 57 37 L 57 45 L 48 50 Z"/>
+        <path fill="#000000" stroke="#948a72" stroke-opacity="0.35" stroke-width="0.55" d="M 49 44 L 56 40 M 49 46 L 56 42 M 49 48 L 56 44"/>
+        <path fill="url(#spine2)" stroke="none" d="M 10 41 L 48 41 L 48 51 L 10 51 Q 6 51 6 47 L 6 45 Q 6 41 10 41 Z"/>
+        <path fill="#000000" stroke="#ffffff" stroke-opacity="0.22" stroke-width="0.6" d="M 10 42 L 47 42"/>
+        <path fill="#000000" stroke="#ead394" stroke-opacity="0.8" stroke-width="1.1" d="M 12 43 L 12 49 M 15 43 L 15 49"/>
+        <path fill="#000000" stroke="#4ba765" stroke-width="1.2" d="M 48 51 L 58 45"/>
+        <path fill="#27769d" stroke="none" d="M 7 27 L 17 21 L 58 21 L 58 32 L 48 38 L 10 38 Q 6 38 6 34 L 6 30 Q 6 28 7 27 Z"/>
+        <path fill="#73caf5" stroke="none" d="M 8 26 L 17 21 L 58 21 L 48 27 L 8 27 Z"/>
+        <path fill="url(#paper)" stroke="none" d="M 48 28 L 57 23 L 57 31 L 48 36 Z"/>
+        <path fill="#000000" stroke="#948a72" stroke-opacity="0.35" stroke-width="0.55" d="M 49 30 L 56 26 M 49 32 L 56 28 M 49 34 L 56 30"/>
+        <path fill="url(#spine1)" stroke="none" d="M 10 27 L 48 27 L 48 37 L 10 37 Q 6 37 6 33 L 6 31 Q 6 27 10 27 Z"/>
+        <path fill="#000000" stroke="#ffffff" stroke-opacity="0.22" stroke-width="0.6" d="M 10 28 L 47 28"/>
+        <path fill="#000000" stroke="#ead394" stroke-opacity="0.8" stroke-width="1.1" d="M 12 29 L 12 35 M 15 29 L 15 35"/>
+        <path fill="#000000" stroke="#3091c1" stroke-width="1.2" d="M 48 37 L 58 31"/>
+        <path fill="#84448e" stroke="none" d="M 7 13 L 17 7 L 58 7 L 58 18 L 48 24 L 10 24 Q 6 24 6 20 L 6 16 Q 6 14 7 13 Z"/>
+        <path fill="#da93e5" stroke="none" d="M 8 12 L 17 7 L 58 7 L 48 13 L 8 13 Z"/>
+        <path fill="url(#paper)" stroke="none" d="M 48 14 L 57 9 L 57 17 L 48 22 Z"/>
+        <path fill="#000000" stroke="#948a72" stroke-opacity="0.35" stroke-width="0.55" d="M 49 16 L 56 12 M 49 18 L 56 14 M 49 20 L 56 16"/>
+        <path fill="url(#spine0)" stroke="none" d="M 10 13 L 48 13 L 48 23 L 10 23 Q 6 23 6 19 L 6 17 Q 6 13 10 13 Z"/>
+        <path fill="#000000" stroke="#ffffff" stroke-opacity="0.22" stroke-width="0.6" d="M 10 14 L 47 14"/>
+        <path fill="#000000" stroke="#ead394" stroke-opacity="0.8" stroke-width="1.1" d="M 12 15 L 12 21 M 15 15 L 15 21"/>
+        <path fill="#000000" stroke="#a254af" stroke-width="1.2" d="M 48 23 L 58 17"/>
+        <path fill="#b88a55" stroke="none" d="M 34 13 L 44 7 L 52 7 L 42 13 Z"/>
+        <g opacity="0.2">
+            <path fill="#17232c" stroke="none" d="M 33.5 13 L 42.5 13 L 42.5 52 L 33.5 52 Z"/>
+        </g>
+        <path fill="url(#leather)" stroke="none" d="M 34 13 L 42 13 L 42 51 Q 38 53 34 51 Z"/>
+        <g opacity="0.65">
+            <path fill="#000000" stroke="#dec39a" stroke-width="0.55" stroke-dasharray="1.5 1.5" d="M 35.4 14 L 35.4 49 M 40.6 14 L 40.6 49"/>
+        </g>
+        <g opacity="0.3">
+            <path fill="#202a30" stroke="none" d="M 34.7 29.7 L 42.300003 29.7 C 43.404568 29.7 44.300003 30.59543 44.300003 31.7 L 44.300003 40.1 C 44.300003 41.204567 43.404568 42.1 42.300003 42.1 L 34.7 42.1 C 33.595432 42.1 32.7 41.204567 32.7 40.1 L 32.7 31.7 C 32.7 30.59543 33.595432 29.7 34.7 29.7 Z"/>
+        </g>
+        <path fill="url(#buckle)" stroke="none" d="M 34 29 L 42 29 C 43.10457 29 44 29.89543 44 31 L 44 39 C 44 40.10457 43.10457 41 42 41 L 34 41 C 32.89543 41 32 40.10457 32 39 L 32 31 C 32 29.89543 32.89543 29 34 29 Z"/>
+        <path fill="#785132" stroke="none" d="M 35.4 31.500002 L 40.6 31.500002 C 40.785652 31.500002 40.9637 31.57375 41.094975 31.705025 C 41.22625 31.8363 41.3 32.014347 41.3 32.2 L 41.3 37.8 C 41.3 37.985653 41.22625 38.1637 41.094975 38.294975 C 40.9637 38.42625 40.785652 38.5 40.6 38.5 L 35.4 38.5 C 35.214348 38.5 35.0363 38.42625 34.905025 38.294975 C 34.77375 38.1637 34.7 37.985653 34.7 37.8 L 34.7 32.2 C 34.7 32.014347 34.77375 31.8363 34.905025 31.705025 C 35.0363 31.57375 35.214348 31.500002 35.4 31.500002 Z"/>
+        <path fill="#000000" stroke="#edf1ef" stroke-width="1.5" stroke-linecap="round" d="M 38 31 L 38 39"/>
     </g>
-    <path fill="#356244" stroke="none" d="M 7 41 L 17 35 L 58 35 L 58 46 L 48 52 L 10 52 Q 6 52 6 48 L 6 44 Q 6 42 7 41 Z"/>
-    <path fill="#82b393" stroke="none" d="M 8 40 L 17 35 L 58 35 L 48 41 L 8 41 Z"/>
-    <path fill="url(#paper)" stroke="none" d="M 48 42 L 57 37 L 57 45 L 48 50 Z"/>
-    <path fill="#000000" stroke="#948a72" stroke-opacity="0.35" stroke-width="0.55" d="M 49 44 L 56 40 M 49 46 L 56 42 M 49 48 L 56 44"/>
-    <path fill="url(#spine2)" stroke="none" d="M 10 41 L 48 41 L 48 51 L 10 51 Q 6 51 6 47 L 6 45 Q 6 41 10 41 Z"/>
-    <path fill="#000000" stroke="#ffffff" stroke-opacity="0.22" stroke-width="0.6" d="M 10 42 L 47 42"/>
-    <path fill="#000000" stroke="#ead394" stroke-opacity="0.8" stroke-width="1.1" d="M 12 43 L 12 49 M 15 43 L 15 49"/>
-    <path fill="#000000" stroke="#417854" stroke-width="1.2" d="M 48 51 L 58 45"/>
-    <path fill="#245c7d" stroke="none" d="M 7 27 L 17 21 L 58 21 L 58 32 L 48 38 L 10 38 Q 6 38 6 34 L 6 30 Q 6 28 7 27 Z"/>
-    <path fill="#70add2" stroke="none" d="M 8 26 L 17 21 L 58 21 L 48 27 L 8 27 Z"/>
-    <path fill="url(#paper)" stroke="none" d="M 48 28 L 57 23 L 57 31 L 48 36 Z"/>
-    <path fill="#000000" stroke="#948a72" stroke-opacity="0.35" stroke-width="0.55" d="M 49 30 L 56 26 M 49 32 L 56 28 M 49 34 L 56 30"/>
-    <path fill="url(#spine1)" stroke="none" d="M 10 27 L 48 27 L 48 37 L 10 37 Q 6 37 6 33 L 6 31 Q 6 27 10 27 Z"/>
-    <path fill="#000000" stroke="#ffffff" stroke-opacity="0.22" stroke-width="0.6" d="M 10 28 L 47 28"/>
-    <path fill="#000000" stroke="#ead394" stroke-opacity="0.8" stroke-width="1.1" d="M 12 29 L 12 35 M 15 29 L 15 35"/>
-    <path fill="#000000" stroke="#2d719a" stroke-width="1.2" d="M 48 37 L 58 31"/>
-    <path fill="#6c3770" stroke="none" d="M 7 13 L 17 7 L 58 7 L 58 18 L 48 24 L 10 24 Q 6 24 6 20 L 6 16 Q 6 14 7 13 Z"/>
-    <path fill="#bf84c4" stroke="none" d="M 8 12 L 17 7 L 58 7 L 48 13 L 8 13 Z"/>
-    <path fill="url(#paper)" stroke="none" d="M 48 14 L 57 9 L 57 17 L 48 22 Z"/>
-    <path fill="#000000" stroke="#948a72" stroke-opacity="0.35" stroke-width="0.55" d="M 49 16 L 56 12 M 49 18 L 56 14 M 49 20 L 56 16"/>
-    <path fill="url(#spine0)" stroke="none" d="M 10 13 L 48 13 L 48 23 L 10 23 Q 6 23 6 19 L 6 17 Q 6 13 10 13 Z"/>
-    <path fill="#000000" stroke="#ffffff" stroke-opacity="0.22" stroke-width="0.6" d="M 10 14 L 47 14"/>
-    <path fill="#000000" stroke="#ead394" stroke-opacity="0.8" stroke-width="1.1" d="M 12 15 L 12 21 M 15 15 L 15 21"/>
-    <path fill="#000000" stroke="#85438a" stroke-width="1.2" d="M 48 23 L 58 17"/>
-    <path fill="#b88a55" stroke="none" d="M 34 13 L 44 7 L 52 7 L 42 13 Z"/>
-    <g opacity="0.2">
-        <path fill="#17232c" stroke="none" d="M 33.5 13 L 42.5 13 L 42.5 52 L 33.5 52 Z"/>
-    </g>
-    <path fill="url(#leather)" stroke="none" d="M 34 13 L 42 13 L 42 51 Q 38 53 34 51 Z"/>
-    <g opacity="0.65">
-        <path fill="#000000" stroke="#dec39a" stroke-width="0.55" stroke-dasharray="1.5 1.5" d="M 35.4 14 L 35.4 49 M 40.6 14 L 40.6 49"/>
-    </g>
-    <g opacity="0.3">
-        <path fill="#202a30" stroke="none" d="M 34.7 29.7 L 42.300003 29.7 C 43.404568 29.7 44.300003 30.59543 44.300003 31.7 L 44.300003 40.1 C 44.300003 41.204567 43.404568 42.1 42.300003 42.1 L 34.7 42.1 C 33.595432 42.1 32.7 41.204567 32.7 40.1 L 32.7 31.7 C 32.7 30.59543 33.595432 29.7 34.7 29.7 Z"/>
-    </g>
-    <path fill="url(#buckle)" stroke="none" d="M 34 29 L 42 29 C 43.10457 29 44 29.89543 44 31 L 44 39 C 44 40.10457 43.10457 41 42 41 L 34 41 C 32.89543 41 32 40.10457 32 39 L 32 31 C 32 29.89543 32.89543 29 34 29 Z"/>
-    <path fill="#785132" stroke="none" d="M 35.4 31.500002 L 40.6 31.500002 C 40.785652 31.500002 40.9637 31.57375 41.094975 31.705025 C 41.22625 31.8363 41.3 32.014347 41.3 32.2 L 41.3 37.8 C 41.3 37.985653 41.22625 38.1637 41.094975 38.294975 C 40.9637 38.42625 40.785652 38.5 40.6 38.5 L 35.4 38.5 C 35.214348 38.5 35.0363 38.42625 34.905025 38.294975 C 34.77375 38.1637 34.7 37.985653 34.7 37.8 L 34.7 32.2 C 34.7 32.014347 34.77375 31.8363 34.905025 31.705025 C 35.0363 31.57375 35.214348 31.500002 35.4 31.500002 Z"/>
-    <path fill="#000000" stroke="#edf1ef" stroke-width="1.5" stroke-linecap="round" d="M 38 31 L 38 39"/>
     <path fill="#fffdf7" stroke="none" d="M 63 53 C 63 58.522842 58.522842 63 53 63 C 47.477158 63 43 58.522842 43 53 C 43 47.477158 47.477158 43 53 43 C 58.522842 43 63 47.477158 63 53 Z"/>
     <path fill="#c1454b" stroke="none" d="M 61.5 53 C 61.5 57.694416 57.694416 61.5 53 61.5 C 48.305584 61.5 44.5 57.694416 44.5 53 C 44.5 48.305584 48.305584 44.5 53 44.5 C 57.694416 44.5 61.5 48.305584 61.5 53 Z"/>
     <path fill="#000000" stroke="#ffffff" stroke-width="2" stroke-linecap="round" d="M 50 50 L 56 56 M 56 50 L 50 56"/>

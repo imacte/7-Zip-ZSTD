@@ -1,27 +1,29 @@
 // Native 16–32px book stacks: whole-pixel covers, quiet pages, real semibold text.
 import { bookColors, mixColor, fittedLabel } from './stacked-books.mjs';
 
-export function smallIcon(label,color,variant,size,fontFile,showLabel=true) {
+export function smallIcon(label,color,variant,size,fontFile,showLabel=true,vivid=false) {
   const short={LZMA:'LM',LZMA2:'L2',ZSTD:'ZS',CPIO:'CP',APFS:'AP',NTFS:'NT',SQFS:'SQ'};
   if(size===16) label=variant==='archive'?(short[label] || label):'7Z';
-  const colors=bookColors(color,variant);
+  const colors=bookColors(color,variant,vivid);
   let b='';
   const rect=(x,y,w,h,fill)=>{b+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${fill}"/>`;};
-  const left=1,right=size-1,top=1,depth=size>=24?3:2;
+  const fuller=vivid&&!showLabel;
+  const left=fuller?0:1,right=fuller?size:size-1,top=fuller?0:1,depth=size>=24?3:2;
   const rowHeight=showLabel?{16:3,20:4,24:5,32:7}[size]:Math.floor((size-2)/3);
+  const rows=fuller?[0,Math.round((size-1)/3),Math.round(2*(size-1)/3),size-1]:[top,top+rowHeight,top+rowHeight*2,top+rowHeight*3];
   for(let i=2;i>=0;i--) {
-    const y=top+i*rowHeight,c=colors[i],front=right-depth;
-    rect(left+1,y,right-left-1,rowHeight,mixColor(c,'#000000',.18));
-    rect(left,y+1,front-left,rowHeight-1,c);
+    const y=rows[i],height=rows[i+1]-y,c=colors[i],front=right-depth;
+    rect(left+1,y,right-left-1,height,mixColor(c,'#000000',vivid?.12:.18));
+    rect(left,y+1,front-left,height-1,c);
     rect(left+1,y,front-left-1,1,mixColor(c,'#ffffff',.25));
-    rect(front,y+1,depth,rowHeight-2,'#e4dcc5');
-    if(size>=24)rect(left+2,y+2,1,rowHeight-3,'#dec795');
+    rect(front,y+1,depth,height-2,vivid?'#fff0ce':'#e4dcc5');
+    if(size>=24)rect(left+2,y+2,1,height-3,vivid?'#f8dc9b':'#dec795');
   }
   const beltX=Math.round(size*.6),beltW=size>=24?4:3;
-  rect(beltX,top,beltW,rowHeight*3,'#91603b');
-  rect(beltX,top,1,rowHeight*3,'#c0996a');
-  const buckleY=top+rowHeight,buckleH=size>=24?6:4;
-  rect(beltX-1,buckleY,beltW+2,buckleH,'#dce3e3');
+  rect(beltX,top,beltW,rows[3]-top,vivid?'#a67644':'#91603b');
+  rect(beltX,top,1,rows[3]-top,vivid?'#e1b877':'#c0996a');
+  const buckleY=rows[1],buckleH=size>=24?6:4;
+  rect(beltX-1,buckleY,beltW+2,buckleH,vivid?'#f1f6f4':'#dce3e3');
   rect(beltX,buckleY+1,beltW,buckleH-2,'#765335');
   rect(beltX+1,buckleY+1,1,buckleH-2,'#edf1ee');
   if(showLabel) {

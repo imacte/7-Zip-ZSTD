@@ -1,23 +1,23 @@
 <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
     <defs/>
-    <path fill="#476a5d" stroke="none" d="M 2 21 L 31 21 L 31 31 L 2 31 Z"/>
-    <path fill="#568171" stroke="none" d="M 1 22 L 28 22 L 28 31 L 1 31 Z"/>
-    <path fill="#80a195" stroke="none" d="M 2 21 L 28 21 L 28 22 L 2 22 Z"/>
-    <path fill="#e4dcc5" stroke="none" d="M 28 22 L 31 22 L 31 30 L 28 30 Z"/>
-    <path fill="#dec795" stroke="none" d="M 3 23 L 4 23 L 4 30 L 3 30 Z"/>
-    <path fill="#415e92" stroke="none" d="M 2 11 L 31 11 L 31 21 L 2 21 Z"/>
-    <path fill="#4f73b2" stroke="none" d="M 1 12 L 28 12 L 28 21 L 1 21 Z"/>
-    <path fill="#7b96c5" stroke="none" d="M 2 11 L 28 11 L 28 12 L 2 12 Z"/>
-    <path fill="#e4dcc5" stroke="none" d="M 28 12 L 31 12 L 31 20 L 28 20 Z"/>
-    <path fill="#dec795" stroke="none" d="M 3 13 L 4 13 L 4 20 L 3 20 Z"/>
-    <path fill="#86478b" stroke="none" d="M 2 1 L 31 1 L 31 11 L 2 11 Z"/>
-    <path fill="#a457aa" stroke="none" d="M 1 2 L 28 2 L 28 11 L 1 11 Z"/>
-    <path fill="#bb81bf" stroke="none" d="M 2 1 L 28 1 L 28 2 L 2 2 Z"/>
-    <path fill="#e4dcc5" stroke="none" d="M 28 2 L 31 2 L 31 10 L 28 10 Z"/>
-    <path fill="#dec795" stroke="none" d="M 3 3 L 4 3 L 4 10 L 3 10 Z"/>
-    <path fill="#91603b" stroke="none" d="M 19 1 L 23 1 L 23 31 L 19 31 Z"/>
-    <path fill="#c0996a" stroke="none" d="M 19 1 L 20 1 L 20 31 L 19 31 Z"/>
-    <path fill="#dce3e3" stroke="none" d="M 18 11 L 24 11 L 24 17 L 18 17 Z"/>
-    <path fill="#765335" stroke="none" d="M 19 12 L 23 12 L 23 16 L 19 16 Z"/>
-    <path fill="#edf1ee" stroke="none" d="M 20 12 L 21 12 L 21 16 L 20 16 Z"/>
+    <path fill="#489e6d" stroke="none" d="M 1 21 L 32 21 L 32 31 L 1 31 Z"/>
+    <path fill="#52b37c" stroke="none" d="M 0 22 L 29 22 L 29 31 L 0 31 Z"/>
+    <path fill="#7dc69d" stroke="none" d="M 1 21 L 29 21 L 29 22 L 1 22 Z"/>
+    <path fill="#fff0ce" stroke="none" d="M 29 22 L 32 22 L 32 30 L 29 30 Z"/>
+    <path fill="#f8dc9b" stroke="none" d="M 2 23 L 3 23 L 3 30 L 2 30 Z"/>
+    <path fill="#3b83c1" stroke="none" d="M 1 10 L 32 10 L 32 21 L 1 21 Z"/>
+    <path fill="#4395db" stroke="none" d="M 0 11 L 29 11 L 29 21 L 0 21 Z"/>
+    <path fill="#72b0e4" stroke="none" d="M 1 10 L 29 10 L 29 11 L 1 11 Z"/>
+    <path fill="#fff0ce" stroke="none" d="M 29 11 L 32 11 L 32 20 L 29 20 Z"/>
+    <path fill="#f8dc9b" stroke="none" d="M 2 12 L 3 12 L 3 20 L 2 20 Z"/>
+    <path fill="#ab56b1" stroke="none" d="M 1 0 L 32 0 L 32 10 L 1 10 Z"/>
+    <path fill="#c262c9" stroke="none" d="M 0 1 L 29 1 L 29 10 L 0 10 Z"/>
+    <path fill="#d189d7" stroke="none" d="M 1 0 L 29 0 L 29 1 L 1 1 Z"/>
+    <path fill="#fff0ce" stroke="none" d="M 29 1 L 32 1 L 32 9 L 29 9 Z"/>
+    <path fill="#f8dc9b" stroke="none" d="M 2 2 L 3 2 L 3 9 L 2 9 Z"/>
+    <path fill="#a67644" stroke="none" d="M 19 0 L 23 0 L 23 31 L 19 31 Z"/>
+    <path fill="#e1b877" stroke="none" d="M 19 0 L 20 0 L 20 31 L 19 31 Z"/>
+    <path fill="#f1f6f4" stroke="none" d="M 18 10 L 24 10 L 24 16 L 18 16 Z"/>
+    <path fill="#765335" stroke="none" d="M 19 11 L 23 11 L 23 15 L 19 15 Z"/>
+    <path fill="#edf1ee" stroke="none" d="M 20 11 L 21 11 L 21 15 L 20 15 Z"/>
 </svg>
