@@ -160,6 +160,11 @@ jobs:
           powershell -NoProfile -ExecutionPolicy Bypass -File tests\run-options-tests.ps1
           if errorlevel 1 exit /b 1
 
+      - name: Release publishing regression tests
+        if: matrix.arch == 'x64' && matrix.darkmode == ''
+        shell: pwsh
+        run: ./tests/test-release-publishing.ps1
+
       - name: Build standalone File Manager bundle
         if: matrix.arch == 'x64'
         shell: cmd
@@ -217,3 +222,26 @@ jobs:
         path: |
           artifact\*.exe
           artifact\*.7z
+        if-no-files-found: error
+
+  publish-release:
+    # Pull requests and non-release branches only produce Actions artifacts.
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v'))
+    needs: [linux, do-release]
+    runs-on: windows-latest
+    permissions:
+      actions: read
+      contents: write
+    steps:
+    - uses: actions/checkout@v6
+
+    - uses: actions/download-artifact@v7
+      with:
+        name: 7-Zip ZS Release binaries
+        path: release
+
+    - name: Publish GitHub Release
+      shell: pwsh
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: ./.github/scripts/publish-release.ps1 -ArtifactDirectory release
