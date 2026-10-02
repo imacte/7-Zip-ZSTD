@@ -59,6 +59,11 @@ try {
         Set-Content (Join-Path $fixture "7z$version-zstd-$arch.exe") 'test fixture'
         Set-Content (Join-Path $fixture "Codecs-$arch.7z") 'test fixture'
     }
+    foreach ($arch in @('x64', 'arm64')) {
+        foreach ($compiler in @('gcc', 'clang')) {
+            Set-Content (Join-Path $fixture "7z$version-zstd-linux-$arch-$compiler.tar.gz") 'test fixture'
+        }
+    }
 
     Run-Publisher
     $create = $releaseTestContext.Calls | Where-Object { $_[1] -eq 'create' }
@@ -66,8 +71,8 @@ try {
     Assert ($create -contains '--prerelease') 'Master must create a prerelease.'
     Assert ($create -contains 'build-42-aaaaaaaa') 'Development tag must identify the build and commit.'
     $upload = $releaseTestContext.Calls | Where-Object { $_[1] -eq 'upload' }
-    Assert (@($upload | Where-Object { Test-Path -LiteralPath $_ -PathType Leaf }).Count -eq 14) 'Expected 13 packages and a checksum file.'
-    Assert (@(Get-Content (Join-Path $fixture 'SHA256SUMS.txt')).Count -eq 13) 'Checksums must cover all packages.'
+    Assert (@($upload | Where-Object { Test-Path -LiteralPath $_ -PathType Leaf }).Count -eq 18) 'Expected 17 Windows/Linux packages and a checksum file.'
+    Assert (@(Get-Content (Join-Path $fixture 'SHA256SUMS.txt')).Count -eq 17) 'Checksums must cover all packages.'
     Assert ($releaseTestContext.Calls[3][1] -eq 'edit') 'Publication must follow upload.'
     Assert ($releaseTestContext.Calls[3] -contains '--latest=false') 'Development builds must not become the latest stable release.'
     Write-Output 'PASS: master prerelease and asset checksums'
@@ -106,6 +111,17 @@ try {
     Assert ($releaseTestContext.Calls.Count -eq 0) 'Feature branches must not call GitHub.'
     $env:GITHUB_REF = 'refs/heads/master'
     Write-Output 'PASS: pull request and branch guards'
+
+    foreach ($arch in @('x64', 'arm64')) {
+        foreach ($compiler in @('gcc', 'clang')) {
+            $linuxPackage = Join-Path $fixture "7z$version-zstd-linux-$arch-$compiler.tar.gz"
+            Remove-Item -LiteralPath $linuxPackage
+            Assert-Rejected
+            Assert ($releaseTestContext.Calls.Count -eq 0) 'Missing Linux packages must fail before contacting GitHub.'
+            Set-Content -LiteralPath $linuxPackage 'test fixture'
+        }
+    }
+    Write-Output 'PASS: all four Linux packages are required'
 
     Set-Content -LiteralPath (Join-Path $fixture 'TotalCmd.7z') -Value '' -NoNewline
     Assert-Rejected

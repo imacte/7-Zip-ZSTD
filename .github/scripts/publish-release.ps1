@@ -19,6 +19,11 @@ $expected = @('TotalCmd.7z')
 foreach ($arch in @('x86', 'x64', 'arm64', 'x86-ndm', 'x64-ndm', 'arm64-ndm')) {
     $expected += "7z$version-zstd-$arch.exe", "Codecs-$arch.7z"
 }
+foreach ($arch in @('x64', 'arm64')) {
+    foreach ($compiler in @('gcc', 'clang')) {
+        $expected += "7z$version-zstd-linux-$arch-$compiler.tar.gz"
+    }
+}
 $assets = @(foreach ($name in $expected) {
     $file = Get-Item -LiteralPath (Join-Path $ArtifactDirectory $name)
     if ($file.Length -eq 0) { throw "Empty release asset: $name" }
@@ -63,7 +68,7 @@ Build and test results: $runUrl
 
 Windows installers: x64, x86 and ARM64. Files with the -ndm suffix omit dark mode.
 Codecs packages and the Total Commander plugin are included. SHA256SUMS.txt lists asset checksums.
-Linux binaries remain available in the linked Actions run.
+Linux tar.gz packages: x64 and ARM64, built with GCC and Clang. Each includes 7z, 7za, 7zr, 7zz and 7z.so with executable permissions preserved.
 "@
     $notesPath = Join-Path $ArtifactDirectory 'release-notes.md'
     Set-Content -LiteralPath $notesPath -Value $notes -Encoding utf8
